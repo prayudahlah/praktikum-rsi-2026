@@ -1,8 +1,3 @@
-/**
- * Shared copy-to-clipboard behavior for code/terminal blocks.
- * Call `initCopyButtons()` once per page (Astro <script> or inline).
- * Finds all `.copy-btn[data-code]` and wires click → clipboard → icon swap.
- */
 export function initCopyButtons(): void {
     document.querySelectorAll<HTMLButtonElement>('.copy-btn').forEach(btn => {
         btn.addEventListener('click', async () => {

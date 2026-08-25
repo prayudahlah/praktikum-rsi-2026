@@ -14,7 +14,7 @@ html, body {
   --color-warning: #F59E0B;
   --color-error: #EF4444;
 
-  /* Accent colors (dark mode — one shade brighter for contrast) */
+  /* Accent colors (dark mode) */
   --color-primary-dark: #60A5FA;
   --color-success-dark: #34D399;
   --color-accent-dark: #A78BFA;
@@ -33,7 +33,7 @@ html, body {
   --font-mono: "JetBrains Mono", monospace;
 }
 
-/* Active item in ScrollyTOC (toggled by initScrolly) */
+/* Active item in ScrollyTOC */
 [data-toc-item].toc-item-active {
     background-color: rgb(59 130 246 / 0.1);
     color: var(--color-primary);

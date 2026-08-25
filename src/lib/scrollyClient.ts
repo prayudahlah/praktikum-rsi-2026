@@ -12,7 +12,7 @@ export function initScrolly() {
     const firstStep = steps[0];
     const lastStep = steps[steps.length - 1];
 
-    // ===== JavaScript Snap (desktop only) =====
+    // JavaScript Snap (desktop only)
     let snapTimeout: ReturnType<typeof setTimeout>;
     let isSnapping = false;
 
@@ -53,7 +53,7 @@ export function initScrolly() {
     };
     window.addEventListener('scroll', onScroll);
 
-    // ===== TOC: toggle, backdrop, click-outside, jump =====
+    // TOC: toggle, backdrop, click-outside, jump
     const toggle = document.querySelector<HTMLElement>('[data-toc-toggle]');
     const tocPanel = document.querySelector<HTMLElement>('[data-toc-panel]');
     const backdrop = document.querySelector<HTMLElement>('[data-toc-backdrop]');
@@ -93,7 +93,7 @@ export function initScrolly() {
         });
     });
 
-    // ===== Active step → diagram crossfade + TOC highlight =====
+    // Active step → diagram crossfade + TOC highlight
     let currentSrc = diagram?.src;
 
     if (diagram) {
@@ -132,7 +132,7 @@ export function initScrolly() {
 
     steps.forEach(step => observer.observe(step));
 
-    // ===== Expand diagram (modal overlay) =====
+    // Expand diagram (modal overlay)
     const modal = document.getElementById('scrolly-modal');
     const modalWrapper = document.getElementById('scrolly-modal-wrapper');
     const modalImg = document.getElementById('scrolly-modal-img') as HTMLImageElement | null;
@@ -171,7 +171,7 @@ export function initScrolly() {
         if (e.key === 'Escape' && modal?.classList.contains('opacity-100')) closeModal();
     });
 
-    // ===== Image zoom (modal only) =====
+    // Image zoom (modal only)
     let zoomScale = 1;
     let translateX = 0;
     let translateY = 0;
