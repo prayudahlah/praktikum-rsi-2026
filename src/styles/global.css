@@ -1,0 +1,94 @@
+@import "tailwindcss";
+
+@custom-variant dark (&:is(.dark *));
+
+html, body {
+  overscroll-behavior: none;
+}
+
+@theme {
+  /* Accent colors (light mode) */
+  --color-primary: #3B82F6;
+  --color-success: #10B981;
+  --color-accent: #8B5CF6;
+  --color-warning: #F59E0B;
+  --color-error: #EF4444;
+
+  /* Accent colors (dark mode — one shade brighter for contrast) */
+  --color-primary-dark: #60A5FA;
+  --color-success-dark: #34D399;
+  --color-accent-dark: #A78BFA;
+  --color-warning-dark: #FBBF24;
+  --color-error-dark: #F87171;
+
+  /* Dark mode surfaces */
+  --color-surface-body: #0F172A;
+  --color-surface-raised: #1E293B;
+  --color-surface-overlay: #0B1120;
+
+  /* Dark mode text */
+  --color-text-primary: #E2E8F0;
+
+  --font-display: "Space Grotesk", sans-serif;
+  --font-mono: "JetBrains Mono", monospace;
+}
+
+/* Active item in ScrollyTOC (toggled by initScrolly) */
+[data-toc-item].toc-item-active {
+    background-color: rgb(59 130 246 / 0.1);
+    color: var(--color-primary);
+    font-weight: 500;
+}
+
+:root.dark [data-toc-item].toc-item-active {
+    background-color: rgb(96 165 250 / 0.15);
+    color: var(--color-primary-dark);
+}
+
+/* Step enter animation */
+@keyframes step-enter {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.step-enter {
+  animation: step-enter 0.5s ease-out;
+}
+
+/* Cat chat bubble */
+.cat-chat-bubble::after {
+  content: '';
+  position: absolute;
+  bottom: -7px;
+  right: 20px;
+  width: 0;
+  height: 0;
+  border-left: 7px solid transparent;
+  border-right: 7px solid transparent;
+  border-top: 7px solid white;
+}
+
+:root.dark .cat-chat-bubble::after {
+  border-top-color: var(--color-surface-raised);
+}
+
+/* Shiki dual theme */
+@layer base {
+    .astro-code {
+        color: var(--shiki-light);
+        background-color: #F1F5F9 !important;
+    }
+    html.dark .astro-code {
+        color: var(--shiki-dark);
+        background-color: var(--color-surface-overlay) !important;
+    }
+    html.dark .astro-code span {
+        color: var(--shiki-dark);
+    }
+}

@@ -1,0 +1,65 @@
+---
+import MeetingLayout from '../../layouts/MeetingLayout.astro';
+import { meetings } from '../../data/meetings';
+
+export function getStaticPaths() {
+    return meetings.map(meeting => ({
+        params: { slug: meeting.slug },
+    }));
+}
+
+const { slug } = Astro.params;
+
+const meeting = meetings.find(m => m.slug === slug)!;
+
+// Dynamic import for meeting content
+const meetingsModules = import.meta.glob('../../content/meetings/*.astro');
+const modulePath = `../../content/meetings/${slug}.astro`;
+const meetingModule = meetingsModules[modulePath];
+
+const isLocked = !meetingModule;
+
+let Content: (() => Promise<{ default: any }>) | null = null;
+if (!isLocked) {
+    Content = (await meetingModule!()).default;
+}
+
+// Prev/next navigation
+const currentIndex = meetings.findIndex(m => m.slug === slug);
+const prev = currentIndex > 0 ? meetings[currentIndex - 1] : null;
+const next = currentIndex < meetings.length - 1 ? meetings[currentIndex + 1] : null;
+---
+
+<MeetingLayout
+    title={meeting.title}
+    description={meeting.description}
+    prev={prev ? { slug: prev.slug, title: prev.title } : undefined}
+    next={next ? { slug: next.slug, title: next.title } : undefined}
+>
+    {isLocked ? (
+        <div class="min-h-[60vh] flex flex-col items-center justify-center text-center px-6">
+            <span class="font-mono text-7xl font-bold text-gray-200 dark:text-gray-700 select-none">
+                {String(meeting.order).padStart(2, '0')}
+            </span>
+            <h1 class="font-display text-3xl font-bold mt-4 mb-3">{meeting.title}</h1>
+            <p class="text-gray-600 dark:text-gray-400 mb-6 max-w-md">{meeting.description}</p>
+            <div class="flex items-center gap-2 text-gray-400 dark:text-gray-500 mb-8">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                </svg>
+                <span class="font-mono text-sm">Materi ini belum tersedia</span>
+            </div>
+            <a
+                href="/"
+                class="inline-flex items-center gap-2 bg-primary text-white px-6 py-3 rounded-lg font-medium transition-all hover:shadow-lg hover:shadow-primary/30 hover:-translate-y-0.5"
+            >
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+                </svg>
+                Kembali ke Beranda
+            </a>
+        </div>
+    ) : (
+        <Content />
+    )}
+</MeetingLayout>

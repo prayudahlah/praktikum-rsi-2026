@@ -1,0 +1,129 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { meetings } from '../data/meetings';
+import { FloatingBubbles } from '../components/ui/FloatingBubbles';
+import { HeroBrowserSlideshow } from '../components/ui/HeroBrowserSlideshow';
+import { Lock } from '@lucide/astro';
+---
+
+<BaseLayout title="Home">
+    <!-- Hero Section -->
+    <section class="relative min-h-screen flex items-center overflow-x-hidden">
+        <FloatingBubbles client:only="react" />
+
+        <div class="absolute inset-0 bg-linear-to-br from-blue-50/40 via-transparent to-purple-50/30 dark:from-blue-950/20 dark:via-transparent dark:to-purple-950/10 pointer-events-none"></div>
+
+        <div class="relative z-10 w-full max-w-7xl mx-auto px-6 lg:px-12 mt-10">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+                
+                <!-- KOLOM KIRI: Teks Judul -->
+                <div class="max-w-2xl">
+                    <!-- Judul menggunakan fade-up-slow dan delay ditambah -->
+                    <h1 class="fade-up-slow delay-200 font-display text-6xl md:text-8xl font-bold leading-[0.95] tracking-tight mb-6">
+                        Praktikum
+                        <span class="block text-primary">RSI</span>
+                    </h1>
+
+                    <p class="fade-up delay-300 text-lg md:text-xl text-gray-600 dark:text-gray-400 mb-10 max-w-md leading-relaxed">
+                        Belajar bikin web dari nol ദ്ദി ˉ꒳ˉ )✧
+                    </p>
+
+                    <a href={`/meetings/${meetings[0].slug}`}
+                       class="fade-up delay-400 group inline-flex items-center gap-3 bg-primary text-white px-8 py-4 rounded-lg text-lg font-medium transition-all hover:shadow-lg hover:shadow-primary/30 hover:-translate-y-0.5">
+                        Mulai Belajar
+                        <svg class="w-5 h-5 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                        </svg>
+                    </a>
+                </div>
+
+                <!-- KOLOM KANAN: Slideshow menggunakan fade-up-slow -->
+                <div class="hidden lg:block w-full fade-up-slow delay-500">
+                    <HeroBrowserSlideshow client:only="react" />
+                </div>
+
+            </div>
+        </div>
+
+        <div class="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 text-gray-400 dark:text-gray-600 fade-up delay-600">
+            <span class="font-mono text-xs tracking-widest uppercase">Scroll</span>
+            <svg class="w-4 h-4 animate-bounce" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3" />
+            </svg>
+        </div>
+    </section>
+
+    <!-- Curriculum Section -->
+    <section class="relative py-24 px-6">
+        <div class="absolute top-0 inset-x-0 h-40 bg-linear-to-b from-blue-50/40 dark:from-blue-950/10 to-transparent pointer-events-none"></div>
+
+        <div class="relative max-w-3xl mx-auto">
+            <p class="fade-up font-mono text-sm tracking-widest text-gray-400 dark:text-gray-600 uppercase mb-2">
+                {meetings.length} Pertemuan
+            </p>
+            <h2 class="fade-up delay-100 font-display text-3xl md:text-4xl font-bold mb-12">Kurikulum</h2>
+
+            <div class="space-y-0">
+                {meetings.map((meeting) => (
+                    <a href={`/meetings/${meeting.slug}`}
+                       class={`fade-up stagger-item flex items-center gap-6 py-5 px-2 border-b border-gray-200 dark:border-gray-700 transition group ${meeting.published ? 'hover:bg-gray-50 dark:hover:bg-gray-800/50' : 'text-gray-400 dark:text-gray-500'}`}
+                    >
+                        <span class={`font-mono text-2xl font-bold w-12 shrink-0 ${meeting.published ? 'text-gray-300 dark:text-gray-600 group-hover:text-primary' : 'text-gray-300 dark:text-gray-600'}`}>
+                            {String(meeting.order).padStart(2, '0')}
+                        </span>
+                        <div class="flex-1">
+                            <h3 class={`text-lg font-medium ${meeting.published ? 'group-hover:text-primary' : ''} transition`}>
+                                {meeting.title}
+                            </h3>
+                        </div>
+                        {!meeting.published && <Lock class="w-5 h-5 ml-auto shrink-0" />}
+                        {meeting.published && <svg class="w-5 h-5 text-gray-400 group-hover:text-primary group-hover:translate-x-1 transition ml-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                        </svg>}
+                    </a>
+                ))}
+            </div>
+        </div>
+    </section>
+</BaseLayout>
+
+<style>
+    /* Animasi standar (0.8s) */
+    .fade-up {
+        opacity: 0;
+        transform: translateY(30px);
+        transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    
+    /* Animasi lambat untuk Hero (3s) */
+    .fade-up-slow {
+        opacity: 0;
+        transform: translateY(30px);
+        transition: opacity 3s cubic-bezier(0.16, 1, 0.3, 1), transform 3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .fade-up.is-visible, .fade-up-slow.is-visible {
+        opacity: 1;
+        transform: translateY(0);
+    }
+</style>
+<script>
+    // Stagger delay for curriculum items
+    document.querySelectorAll('.stagger-item').forEach((item, index) => {
+        (item as HTMLElement).style.transitionDelay = `${index * 60}ms`;
+    });
+
+    // Intersection Observer for fade-in animations
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('is-visible');
+                observer.unobserve(entry.target);
+            }
+        });
+    }, { threshold: 0.1 });
+
+    document.querySelectorAll('.fade-up, .fade-up-slow').forEach(el => {
+        observer.observe(el);
+    });
+</script>

@@ -1,0 +1,44 @@
+---
+import BaseLayout from './BaseLayout.astro';
+import {ArrowLeft, ArrowRight} from '@lucide/astro';
+
+interface Props {
+    title: string;
+    description?: string;
+    prev?: { slug: string; title: string };
+    next?: { slug: string; title: string };
+}
+
+const { title, description, prev, next } = Astro.props;
+---
+
+<BaseLayout title={title} description={description}>
+    <!-- Scrollytelling Content -->
+    <div class="text-xl lg:text-2xl">
+        <slot />
+    </div>
+
+    <!-- Navigation -->
+    <nav class="my-25 pt-8 flex justify-center">
+        <div class="flex justify-between w-[90%] text-lg lg:text-xl">
+            {prev ? (
+            <a href={`/meetings/${prev.slug}`} class="flex items-center px-4 py-1 gap-2 hover:text-primary transition-colors">
+                    <ArrowLeft class="w-5 h-5" />
+                    <div class="flex flex-col items-start">
+                        <span class="text-sm opacity-60">Sebelumnya</span>
+                        <p class="font-medium">{prev.title}</p>
+                    </div>
+                </a>
+            ) : <div />}
+            {next ? (
+                <a href={`/meetings/${next.slug}`} class="flex items-center px-4 py-1 gap-2 hover:text-primary transition-colors">
+                    <div>
+                        <span class="text-sm opacity-60">Selanjutnya</span>
+                        <p class="font-medium">{next.title}</p>
+                    </div>
+                    <ArrowRight class="w-5 h-5" />
+                </a>
+            ) : <div />}
+        </div>
+    </nav>
+</BaseLayout>

@@ -1,0 +1,116 @@
+---
+interface Props {
+  code: string;
+  title?: string;
+}
+
+const { code, title = 'Terminal' } = Astro.props;
+
+function escapeHtml(str: string): string {
+    return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+}
+
+/* ---- Command highlighting (single-pass regex, no self-corrupting HTML) ---- */
+
+// Order matters: $ first (single char), then quoted strings, flags, then command words.
+const CMD_TOKEN = /(\$)|(&quot;[^&]*&quot;)|(--?\w[\w-]*)|(\b(?:git|npm|npx|node|yarn|pnpm)\b)/g;
+
+function parseCommandLines(text: string): string {
+    return text.split('\n').map(line => {
+        const escaped = escapeHtml(line);
+
+        if (escaped.trimStart().startsWith('#'))
+            return `<span class="text-gray-500 italic">${escaped}</span>`;
+        if (escaped.trim() === '') return escaped;
+
+        let result = '';
+        let cursor = 0;
+
+        for (const match of escaped.matchAll(CMD_TOKEN)) {
+            if (match.index! > cursor) result += escaped.slice(cursor, match.index);
+
+            const [full, prompt, quote, flag, cmd] = match;
+            if (prompt)          result += `<span class="text-success font-bold">$</span>`;
+            else if (quote)      result += `<span class="text-warning">${full}</span>`;
+            else if (flag)       result += `<span class="text-gray-500">${full}</span>`;
+            else if (cmd)        result += `<span class="font-bold text-white">${full}</span>`;
+            else                 result += full;
+
+            cursor = match.index! + full.length;
+        }
+
+        if (cursor < escaped.length) result += escaped.slice(cursor);
+        return result;
+    }).join('\n');
+}
+
+/* ---- Output highlighting ({tag}...{/tag} markers) ---- */
+
+const OUTPUT_TAGS: Record<string, string> = {
+    green:  'text-success',
+    red:    'text-error',
+    cyan:   'text-primary',
+    yellow: 'text-warning',
+    bold:   'font-bold',
+    dim:    'text-gray-500',
+    italic: 'italic',
+};
+
+function parseOutputLines(text: string): string {
+    return text.split('\n').map(line => {
+        let result = escapeHtml(line);
+        for (const [tag, cls] of Object.entries(OUTPUT_TAGS)) {
+            const re = new RegExp(`\\{${tag}\\}([\\s\\S]*?)\\{\\/${tag}\\}`, 'g');
+            result = result.replace(re, `<span class="${cls}">$1</span>`);
+        }
+        return result;
+    }).join('\n');
+}
+
+/* ---- Split commands / output on --- separator ---- */
+
+const parts = code.split('---');
+const hasSeparator = parts.length > 1;
+const commandSection = (hasSeparator ? parts[0] : code).trimEnd();
+const outputSection = hasSeparator ? parts.slice(1).join('---').trimEnd() : null;
+
+const renderedCommands = parseCommandLines(commandSection);
+const renderedOutput = outputSection ? parseOutputLines(outputSection) : null;
+---
+
+<div class="relative rounded-lg border border-gray-800 overflow-hidden my-4 bg-surface-overlay">
+    <!-- Header -->
+    <div class="flex items-center justify-between px-4 py-2 bg-surface-raised border-b border-gray-800">
+        <div class="flex items-center gap-2">
+            <div class="flex gap-1.5">
+                <span class="w-3 h-3 rounded-full bg-red-500/80"></span>
+                <span class="w-3 h-3 rounded-full bg-yellow-500/80"></span>
+                <span class="w-3 h-3 rounded-full bg-green-500/80"></span>
+            </div>
+            <span class="ml-2 text-xs text-gray-400 font-mono">{title}</span>
+        </div>
+        <button
+            class="copy-btn p-1.5 rounded-md hover:bg-white/10 transition-colors cursor-pointer"
+            data-code={code}
+            title="Copy"
+        >
+            <svg class="w-4 h-4 text-gray-500 copy-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+            </svg>
+            <svg class="w-4 h-4 text-green-400 check-icon hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+            </svg>
+        </button>
+    </div>
+
+    <!-- Content -->
+    <div class="p-4 font-mono text-sm leading-relaxed text-gray-300 overflow-x-auto whitespace-pre">
+        <Fragment set:html={renderedCommands} />
+        {renderedOutput && <Fragment set:html={renderedOutput} />}
+    </div>
+</div>
+
+<script>
+    import { initCopyButtons } from '../../lib/copyButton';
+    initCopyButtons();
+</script>
