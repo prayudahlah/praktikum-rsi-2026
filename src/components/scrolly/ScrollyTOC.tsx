@@ -15,7 +15,7 @@ export function ScrollyTOC({ sections }: ScrollyTOCProps) {
                 data-toc-toggle
                 aria-label="Table of Contents"
                 aria-expanded="false"
-                className="fixed bottom-6 left-6 z-50 p-3 rounded-full bg-primary text-white shadow-lg hover:bg-primary/90 transition-colors lg:bottom-8 lg:left-8"
+                className="fixed bottom-6 left-6 z-50 p-3 rounded-full bg-primary text-white shadow-lg hover:bg-primary/90 transition-colors lg:hidden"
             >
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                     <line x1="8" y1="6" x2="21" y2="6" /><line x1="8" y1="12" x2="21" y2="12" /><line x1="8" y1="18" x2="21" y2="18" />
@@ -27,7 +27,7 @@ export function ScrollyTOC({ sections }: ScrollyTOCProps) {
 
             <div
                 data-toc-panel
-                className="fixed top-0 left-0 h-full w-72 bg-white dark:bg-gray-900 border-r border-gray-200 dark:border-gray-700 z-50 transform transition-transform duration-300 ease-in-out overflow-y-auto -translate-x-full"
+                className="fixed top-0 left-0 h-full w-72 bg-white dark:bg-gray-900 border-r border-gray-200 dark:border-gray-700 z-50 transform transition-transform duration-300 ease-in-out overflow-y-auto -translate-x-full lg:hidden"
             >
                 <div className="p-4 pt-20">
                     <h3 className="text-sm font-bold uppercase tracking-wider text-gray-400 dark:text-gray-500 mb-4">
