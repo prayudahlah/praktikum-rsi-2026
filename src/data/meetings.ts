@@ -19,7 +19,7 @@ export const meetings: Meeting[] = [
         title: 'Pengantar Backend & Implementasi REST API dengan CRUD Dasar',
         description: 'Routing, CRUD dasar (GET/POST/PUT/DELETE), response format.',
         order: 2,
-        published: false,
+        published: true,
     },
     {
         slug: '03-database-backend-crud',
