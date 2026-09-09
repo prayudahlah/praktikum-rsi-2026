@@ -19,9 +19,13 @@ export function ScrollyLayout({ children, defaultSrc, placeholder }: ScrollyLayo
                         id="scrolly-diagram-content"
                         className="relative h-full min-h-0 flex items-center justify-center bg-gray-100/80 dark:bg-gray-700/20 backdrop-blur-sm border-b lg:border-b-0 lg:border-r border-gray-200 dark:border-gray-700 overflow-hidden rounded-lg lg:rounded-none"
                     >
-                        {placeholder ? (
+                        <div
+                            id="scrolly-placeholder"
+                            className={`w-full h-full ${placeholder ? '' : 'hidden'}`}
+                        >
                             <DiagramPlaceholder />
-                        ) : defaultSrc ? (
+                        </div>
+                        {defaultSrc ? (
                             <div className="w-full h-full min-h-0 min-w-0 p-2 flex items-center justify-center">
                                 <img
                                     id="scrolly-diagram"

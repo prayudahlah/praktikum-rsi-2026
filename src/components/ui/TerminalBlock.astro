@@ -23,23 +23,33 @@ function parseCommandLines(text: string): string {
             return `<span class="text-gray-500 italic">${escaped}</span>`;
         if (escaped.trim() === '') return escaped;
 
+        const commentIdx = escaped.indexOf(' #');
+        const codePart = commentIdx === -1 ? escaped : escaped.slice(0, commentIdx);
+        const commentPart = commentIdx === -1 ? '' : escaped.slice(commentIdx);
+
         let result = '';
-        let cursor = 0;
 
-        for (const match of escaped.matchAll(CMD_TOKEN)) {
-            if (match.index! > cursor) result += escaped.slice(cursor, match.index);
+        if (codePart.trim() !== '') {
+            let cursor = 0;
 
-            const [full, prompt, quote, flag, cmd] = match;
-            if (prompt)          result += `<span class="text-success font-bold">$</span>`;
-            else if (quote)      result += `<span class="text-warning">${full}</span>`;
-            else if (flag)       result += `<span class="text-gray-500">${full}</span>`;
-            else if (cmd)        result += `<span class="font-bold text-white">${full}</span>`;
-            else                 result += full;
+            for (const match of codePart.matchAll(CMD_TOKEN)) {
+                if (match.index! > cursor) result += codePart.slice(cursor, match.index);
 
-            cursor = match.index! + full.length;
+                const [full, prompt, quote, flag, cmd] = match;
+                if (prompt)          result += `<span class="text-success font-bold">$</span>`;
+                else if (quote)      result += `<span class="text-warning">${full}</span>`;
+                else if (flag)       result += `<span class="text-gray-500">${full}</span>`;
+                else if (cmd)        result += `<span class="font-bold text-white">${full}</span>`;
+                else                 result += full;
+
+                cursor = match.index! + full.length;
+            }
+
+            if (cursor < codePart.length) result += codePart.slice(cursor);
         }
 
-        if (cursor < escaped.length) result += escaped.slice(cursor);
+        if (commentPart) result += `<span class="text-gray-500 italic">${commentPart}</span>`;
+
         return result;
     }).join('\n');
 }

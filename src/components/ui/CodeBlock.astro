@@ -6,9 +6,12 @@ interface Props {
   code: string;
   language: CodeLanguage;
   filename?: string;
+  compact?: boolean;
+  mini?: boolean;
 }
 
-const { code, language, filename } = Astro.props;
+const { code, language, filename, compact, mini } = Astro.props;
+const sizeClass = mini ? 'p-2 text-[10px] sm:text-[11px]' : compact ? 'p-2 text-[11px] sm:text-xs' : 'p-2 text-xs sm:text-sm';
 ---
 
 <div class="relative rounded-lg border border-gray-200 dark:border-gray-700 overflow-hidden my-4">
@@ -20,7 +23,7 @@ const { code, language, filename } = Astro.props;
   )}
 
   <div class="relative">
-    <Code lang={language} code={code} class="p-2"/>
+    <Code lang={language} code={code} themes={{ light: 'github-light', dark: 'github-dark' }} class={sizeClass}/>
 
     <button
       class="copy-btn absolute top-2 right-2 p-2 rounded-md bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors cursor-pointer"

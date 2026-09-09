@@ -9,6 +9,7 @@ export function initScrolly() {
     });
 
     const diagram = document.getElementById('scrolly-diagram') as HTMLImageElement | null;
+    const placeholder = document.getElementById('scrolly-placeholder');
     const firstStep = steps[0];
     const lastStep = steps[steps.length - 1];
 
@@ -114,8 +115,18 @@ export function initScrolly() {
                 if (!entry.isIntersecting) return;
                 const id = entry.target.id;
                 setActiveToc(id);
+                const diagramSrc = diagramMap[id];
+                if (placeholder) {
+                    if (diagramSrc) {
+                        placeholder.classList.add('hidden');
+                        if (diagram) diagram.classList.remove('hidden');
+                    } else {
+                        placeholder.classList.remove('hidden');
+                        if (diagram) diagram.classList.add('hidden');
+                    }
+                }
                 if (diagram) {
-                    const newSrc = diagramMap[id];
+                    const newSrc = diagramSrc;
                     if (newSrc && currentSrc !== newSrc) {
                         diagram.classList.add('opacity-0');
                         setTimeout(() => {
@@ -140,6 +151,7 @@ export function initScrolly() {
 
     const openModal = () => {
         if (!modal || !modalImg || !diagram) return;
+        if (diagram.classList.contains('hidden')) return;
         modalImg.src = diagram.src;
         modalImg.style.transform = 'scale(1)';
         modalImg.style.cursor = 'grab';
