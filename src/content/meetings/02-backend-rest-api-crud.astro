@@ -363,7 +363,7 @@ const tocSections: TOCSection[] = [
                 Sebelum menulis kode backend, kita perlu membuat folder khusus dan
                 menyiapkan proyek <strong>Node.js</strong> terlebih dahulu.
             </p>
-            <TerminalBlock code={`mkdir my-api && cd my-api # Buat folder my-api dan pergi ke sana\nnpm init -y\nnpm install express\nnpm install -D typescript @types/express\nnpx tsc --init`} title="Terminal — Setup project" />
+            <TerminalBlock code={`mkdir my-api && cd my-api # Buat folder my-api dan pergi ke sana\nmkdir src # Folder khusus kode sumber\nnpm init -y\nnpm install express\nnpm install -D typescript @types/express\nnpx tsc --init`} title="Terminal — Setup project" />
             <div class="mt-4 p-3 rounded-lg bg-primary/5 dark:bg-primary/10 border-l-4 border-primary">
                 <span class="font-bold text-primary">Apa itu package.json?</span>
                 <p class="text-base text-gray-500 dark:text-gray-400 mt-1">
@@ -419,10 +419,10 @@ const tocSections: TOCSection[] = [
                 <li>
                     Yang diubah <strong>hanya</strong> field
                     <code class="font-mono text-base bg-gray-100 dark:bg-gray-800 px-1.5 py-0.5 rounded">"type": "module"</code> dan 
-                    <code class="font-mono text-base bg-gray-100 dark:bg-gray-800 px-1.5 py-0.5 rounded">"main": "index.ts"</code>.
+                    <code class="font-mono text-base bg-gray-100 dark:bg-gray-800 px-1.5 py-0.5 rounded">"main": "src/index.ts"</code>.
                 </li>
                 <li>
-                    Tanpa ini, <code class="font-mono text-base bg-gray-100 dark:bg-gray-800 px-1.5 py-0.5 rounded">node index.ts</code>
+                    Tanpa ini, <code class="font-mono text-base bg-gray-100 dark:bg-gray-800 px-1.5 py-0.5 rounded">node src/index.ts</code>
                     akan gagal dengan error
                     <code class="font-mono text-base bg-gray-100 dark:bg-gray-800 px-1.5 py-0.5 rounded">Cannot use import statement outside a module</code>.
                 </li>
@@ -433,19 +433,20 @@ const tocSections: TOCSection[] = [
             <StepHeader kicker="Pertemuan 2 · Hands-on" title="Membuat Endpoint Pertama (GET /health)" tone="success" />
             <p class="text-gray-600 dark:text-gray-400 leading-relaxed">
                 Buat file baru bernama
-                &nbsp;<code class="font-mono text-base bg-gray-100 dark:bg-gray-800 px-1.5 py-0.5 rounded">index.ts</code>&nbsp;
-                di dalam folder proyekmu. File ini adalah <strong>entry point </strong>
+                &nbsp;<code class="font-mono text-base bg-gray-100 dark:bg-gray-800 px-1.5 py-0.5 rounded">src/index.ts</code>&nbsp;
+                di dalam folder <code class="font-mono text-base bg-gray-100 dark:bg-gray-800 px-1.5 py-0.5 rounded">src</code> proyekmu.
+                File ini adalah <strong>entry point </strong>
                 di mana kita menyusun aturan server. Di tahap ini kita membuat
                 <strong> Health Check Endpoint</strong>, yaitu endpoint sederhana untuk memastikan server aktif dan merespons.
             </p>
-            <CodeBlock code={expressHealth} language="ts" filename="index.ts" />
+            <CodeBlock code={expressHealth} language="ts" filename="src/index.ts" />
         </Step>
 
         <Step id="h1-4" diagram="/diagrams/02/step8.webp">
             <StepHeader kicker="Pertemuan 2 · Hands-on" title="Menyalakan Server & Pengujian di Browser" tone="success" />
             <p class="text-gray-600 dark:text-gray-400 leading-relaxed">
                 Setelah kode di file
-                &nbsp;<code class="font-mono text-base bg-gray-100 dark:bg-gray-800 px-1.5 py-0.5 rounded">index.ts</code>&nbsp;
+                &nbsp;<code class="font-mono text-base bg-gray-100 dark:bg-gray-800 px-1.5 py-0.5 rounded">src/index.ts</code>&nbsp;
                 selesai ditulis, saatnya menghidupkan mesin server lokal dan
                 memverifikasi apakah endpoint kita berjalan sesuai harapan.
             </p>
@@ -453,7 +454,7 @@ const tocSections: TOCSection[] = [
                 <ol class="list-decimal pl-6 space-y-6 text-gray-600 dark:text-gray-400 leading-relaxed">
                     <li>
                         <span class="font-bold text-primary">Jalankan Server di Terminal</span>
-                        <TerminalBlock code={`node index.ts`} title="Terminal — Jalankan server" />
+                        <TerminalBlock code={`node src/index.ts`} title="Terminal — Jalankan server" />
                         <p>
                             Jika berhasil, terminal akan menampilkan pesan:
                             <code class="font-mono text-base bg-gray-100 dark:bg-gray-800 px-1.5 py-0.5 rounded">Server berjalan di http://localhost:3000</code>
@@ -479,7 +480,7 @@ const tocSections: TOCSection[] = [
             <StepHeader kicker="Pertemuan 2 · Hands-on" title="Mengotomatiskan Server dengan node --watch" tone="success" />
             <p class="text-gray-600 dark:text-gray-400 leading-relaxed text-lg">
                 Menekan <code class="font-mono text-base bg-gray-100 dark:bg-gray-800 px-1.5 py-0.5 rounded">Ctrl + C</code>
-                dan mengetik <code class="font-mono text-base bg-gray-100 dark:bg-gray-800 px-1.5 py-0.5 rounded">node index.ts</code>
+                dan mengetik <code class="font-mono text-base bg-gray-100 dark:bg-gray-800 px-1.5 py-0.5 rounded">node src/index.ts</code>
                 berulang kali setiap ada perubahan kode tentu sangat tidak efisien.
                 Sejak <strong>Node.js v22.18+</strong>, kita dapat menjalankan file TypeScript
                 <strong>tanpa kompilasi terpisah</strong> (<em>type stripping</em>) dan memakai fitur
@@ -490,13 +491,13 @@ const tocSections: TOCSection[] = [
                 <ol class="list-decimal pl-6 space-y-2 text-gray-600 dark:text-gray-400 leading-relaxed">
                     <li>
                         <span class="font-bold text-primary">Jalankan Perintah Watch Mode.</span>
-                        <TerminalBlock code={`node --watch index.ts`} title="Terminal — Watch mode" />
+                        <TerminalBlock code={`node --watch src/index.ts`} title="Terminal — Watch mode" />
                     </li>
                     <li>
                         <span class="font-bold text-primary">Daftarkan di package.json (Best Practice).</span>
                         <CodeBlock code={`"scripts": {
-  "start": "node index.ts",
-  "dev": "node --watch index.ts"
+  "start": "node src/index.ts",
+  "dev": "node --watch src/index.ts"
 }`} language="json" filename="package.json" />
                     </li>
                     <li>
