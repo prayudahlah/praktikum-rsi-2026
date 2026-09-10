@@ -12,6 +12,7 @@ import TerminalBlock from '../../components/ui/TerminalBlock.astro';
 import CodeBlock from '../../components/ui/CodeBlock.astro';
 import { BookOpen } from '@lucide/astro';
 import expressHealth from '../snippets/02/express-health.ts?raw';
+import packageEsm from '../snippets/02/package-esm.json?raw';
 import stallRepository from '../snippets/02/stall-repository.ts?raw';
 import stallDto from '../snippets/02/stall-dto.ts?raw';
 import stallService from '../snippets/02/stall-service.ts?raw';
@@ -36,9 +37,10 @@ const tocSections: TOCSection[] = [
         label: 'Hands-on 1',
         items: [
             { id: 'h1-1', title: 'Setup: Project & Instalasi Express' },
-            { id: 'h1-2', title: 'Membuat Endpoint Pertama (GET /health)' },
-            { id: 'h1-3', title: 'Menyalakan Server & Pengujian' },
-            { id: 'h1-4', title: 'Auto-Reload dengan node --watch' },
+            { id: 'h1-2', title: 'Mengaktifkan ES Modules' },
+            { id: 'h1-3', title: 'Membuat Endpoint Pertama (GET /health)' },
+            { id: 'h1-4', title: 'Menyalakan Server & Pengujian' },
+            { id: 'h1-5', title: 'Auto-Reload dengan node --watch' },
         ]
     },
     {
@@ -403,6 +405,31 @@ const tocSections: TOCSection[] = [
         </Step>
 
         <Step id="h1-2" diagram="/diagrams/02/step8.webp">
+            <StepHeader kicker="Pertemuan 2 · Hands-on" title="Mengaktifkan ES Modules (type: module)" tone="success" />
+            <p class="-my-2 text-gray-600 dark:text-gray-400 leading-relaxed text-lg">
+                Buka file <code class="font-mono text-base bg-gray-100 dark:bg-gray-800 px-1.5 py-0.5 rounded">package.json</code>
+                hasil <code class="font-mono text-base bg-gray-100 dark:bg-gray-800 px-1.5 py-0.5 rounded">npm init -y</code>.
+                Secara default Node.js memperlakukan proyek sebagai <strong>CommonJS</strong>, padahal kode
+                TypeScript yang akan kita tulis memakai sintaks <code class="font-mono text-base bg-gray-100 dark:bg-gray-800 px-1.5 py-0.5 rounded">import</code>
+                (<strong>ES Modules</strong>). Tambahkan/ubah field <code class="font-mono text-base bg-gray-100 dark:bg-gray-800 px-1.5 py-0.5 rounded">"type"</code>
+                menjadi <code class="font-mono text-base bg-gray-100 dark:bg-gray-800 px-1.5 py-0.5 rounded">"module"</code>:
+            </p>
+            <CodeBlock code={packageEsm} language="json" filename="package.json" compact />
+            <ul class="-mt-2 space-y-2 text-gray-600 dark:text-gray-400 leading-relaxed list-disc list-inside">
+                <li>
+                    Yang diubah <strong>hanya</strong> field
+                    <code class="font-mono text-base bg-gray-100 dark:bg-gray-800 px-1.5 py-0.5 rounded">"type": "module"</code> dan 
+                    <code class="font-mono text-base bg-gray-100 dark:bg-gray-800 px-1.5 py-0.5 rounded">"main": "index.ts"</code>.
+                </li>
+                <li>
+                    Tanpa ini, <code class="font-mono text-base bg-gray-100 dark:bg-gray-800 px-1.5 py-0.5 rounded">node index.ts</code>
+                    akan gagal dengan error
+                    <code class="font-mono text-base bg-gray-100 dark:bg-gray-800 px-1.5 py-0.5 rounded">Cannot use import statement outside a module</code>.
+                </li>
+            </ul>
+        </Step>
+
+        <Step id="h1-3" diagram="/diagrams/02/step8.webp">
             <StepHeader kicker="Pertemuan 2 · Hands-on" title="Membuat Endpoint Pertama (GET /health)" tone="success" />
             <p class="text-gray-600 dark:text-gray-400 leading-relaxed">
                 Buat file baru bernama
@@ -414,7 +441,7 @@ const tocSections: TOCSection[] = [
             <CodeBlock code={expressHealth} language="ts" filename="index.ts" />
         </Step>
 
-        <Step id="h1-3" diagram="/diagrams/02/step8.webp">
+        <Step id="h1-4" diagram="/diagrams/02/step8.webp">
             <StepHeader kicker="Pertemuan 2 · Hands-on" title="Menyalakan Server & Pengujian di Browser" tone="success" />
             <p class="text-gray-600 dark:text-gray-400 leading-relaxed">
                 Setelah kode di file
@@ -448,7 +475,7 @@ const tocSections: TOCSection[] = [
             </div>
         </Step>
 
-        <Step id="h1-4" diagram="/diagrams/02/step8.webp">
+        <Step id="h1-5" diagram="/diagrams/02/step8.webp">
             <StepHeader kicker="Pertemuan 2 · Hands-on" title="Mengotomatiskan Server dengan node --watch" tone="success" />
             <p class="text-gray-600 dark:text-gray-400 leading-relaxed text-lg">
                 Menekan <code class="font-mono text-base bg-gray-100 dark:bg-gray-800 px-1.5 py-0.5 rounded">Ctrl + C</code>
