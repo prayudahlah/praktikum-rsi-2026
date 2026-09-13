@@ -11,7 +11,7 @@ interface Props {
 }
 
 const { code, language, filename, compact, mini } = Astro.props;
-const sizeClass = mini ? 'p-2 text-[10px] sm:text-[11px]' : compact ? 'p-2 text-[11px] sm:text-xs' : 'p-2 text-xs sm:text-sm';
+const sizeClass = mini ? 'p-2 text-[10px] md:text-[11px]' : compact ? 'p-2 text-[11px] md:text-xs' : 'p-2 text-[13px] md:text-sm';
 ---
 
 <div class="relative rounded-lg border border-border overflow-hidden my-4">
