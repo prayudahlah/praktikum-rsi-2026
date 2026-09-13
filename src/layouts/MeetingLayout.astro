@@ -5,22 +5,23 @@ import {ArrowLeft, ArrowRight} from '@lucide/astro';
 interface Props {
     title: string;
     description?: string;
+    hasToc?: boolean;
     prev?: { slug: string; title: string };
     next?: { slug: string; title: string };
 }
 
-const { title, description, prev, next } = Astro.props;
+const { title, description, hasToc = false, prev, next } = Astro.props;
 ---
 
-<BaseLayout title={title} description={description}>
+<BaseLayout title={title} description={description} hasToc={hasToc}>
     <!-- Scrollytelling Content -->
-    <div class="text-base lg:text-2xl">
+    <div class="text-base md:text-lg lg:text-xl leading-relaxed">
         <slot />
     </div>
 
     <!-- Navigation -->
     <nav class="my-25 pt-8 flex justify-center">
-        <div class="flex justify-between w-[90%] text-lg lg:text-xl">
+        <div class="flex justify-between w-[90%] text-base lg:text-lg">
             {prev ? (
             <a href={`/meetings/${prev.slug}`} class="flex items-center px-4 py-1 gap-2 hover:text-primary transition-colors">
                     <ArrowLeft class="w-5 h-5" />

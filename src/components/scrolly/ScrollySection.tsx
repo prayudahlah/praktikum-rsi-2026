@@ -6,7 +6,7 @@ interface ScrollySectionProps {
 
 export function ScrollySection({ children }: ScrollySectionProps) {
     return (
-        <div className='border-y border-gray-300 dark:border-gray-700'>
+        <div className='border-y border-border'>
             {children}
         </div>
     );

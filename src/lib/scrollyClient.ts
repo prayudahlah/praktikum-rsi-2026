@@ -11,60 +11,19 @@ export function initScrolly() {
     const diagram = document.getElementById('scrolly-diagram') as HTMLImageElement | null;
     const placeholder = document.getElementById('scrolly-placeholder');
     const firstStep = steps[0];
-    const lastStep = steps[steps.length - 1];
 
-    // JavaScript Snap (desktop only)
-    let snapTimeout: ReturnType<typeof setTimeout>;
-    let isSnapping = false;
-
-    const onScroll = () => {
-        if (isSnapping) return;
-        if (window.innerWidth < 1024) return;
-
-        clearTimeout(snapTimeout);
-        snapTimeout = setTimeout(() => {
-            const scrollY = window.scrollY;
-            const viewportHeight = window.innerHeight;
-
-            const scrollyTop = firstStep.offsetTop;
-            const scrollyBottom = lastStep.offsetTop + lastStep.offsetHeight;
-
-            const inScrolly = scrollY >= scrollyTop - viewportHeight * 0.5 && scrollY < scrollyBottom - viewportHeight * 0.5;
-
-            if (!inScrolly) return;
-            if (scrollY > lastStep.offsetTop + 50) return;
-
-            let nearestStep: HTMLElement = steps[0];
-            let minDistance = Infinity;
-
-            steps.forEach(step => {
-                const distance = Math.abs(scrollY - step.offsetTop);
-                if (distance < minDistance) {
-                    minDistance = distance;
-                    nearestStep = step;
-                }
-            });
-
-            if (nearestStep && minDistance > 10) {
-                isSnapping = true;
-                nearestStep.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                setTimeout(() => { isSnapping = false; }, 600);
-            }
-        }, 120);
-    };
-    window.addEventListener('scroll', onScroll);
-
-    // TOC: toggle, backdrop, click-outside, jump
+    // TOC: toggle (header), backdrop, click-outside, close button, jump
     const toggle = document.querySelector<HTMLElement>('[data-toc-toggle]');
     const tocPanel = document.querySelector<HTMLElement>('[data-toc-panel]');
     const backdrop = document.querySelector<HTMLElement>('[data-toc-backdrop]');
+    const tocCloseBtn = document.querySelector<HTMLElement>('[data-toc-close]');
     const tocItems = Array.from(document.querySelectorAll<HTMLElement>('[data-toc-item]'));
 
     const isTocOpen = () => tocPanel?.classList.contains('translate-x-0') ?? false;
 
     const setTocOpen = (open: boolean) => {
         tocPanel?.classList.toggle('translate-x-0', open);
-        tocPanel?.classList.toggle('-translate-x-full', !open);
+        tocPanel?.classList.toggle('translate-x-full', !open);
         backdrop?.classList.toggle('hidden', !open);
         toggle?.setAttribute('aria-expanded', String(open));
     };
@@ -73,6 +32,8 @@ export function initScrolly() {
         e.stopPropagation();
         setTocOpen(!isTocOpen());
     });
+
+    tocCloseBtn?.addEventListener('click', () => setTocOpen(false));
 
     backdrop?.addEventListener('click', () => setTocOpen(false));
 
@@ -109,39 +70,128 @@ export function initScrolly() {
         });
     };
 
-    const observer = new IntersectionObserver(
-        (entries) => {
-            entries.forEach(entry => {
-                if (!entry.isIntersecting) return;
-                const id = entry.target.id;
-                setActiveToc(id);
-                const diagramSrc = diagramMap[id];
-                if (placeholder) {
-                    if (diagramSrc) {
-                        placeholder.classList.add('hidden');
-                        if (diagram) diagram.classList.remove('hidden');
-                    } else {
-                        placeholder.classList.remove('hidden');
-                        if (diagram) diagram.classList.add('hidden');
-                    }
-                }
-                if (diagram) {
-                    const newSrc = diagramSrc;
-                    if (newSrc && currentSrc !== newSrc) {
-                        diagram.classList.add('opacity-0');
-                        setTimeout(() => {
-                            diagram.src = newSrc;
-                            currentSrc = newSrc;
-                            diagram.onload = () => diagram.classList.remove('opacity-0');
-                        }, 300);
-                    }
-                }
-            });
-        },
-        { threshold: 0.5 }
-    );
+    const updateActiveStep = (step: HTMLElement) => {
+        const id = step.id;
+        setActiveToc(id);
+        const diagramSrc = diagramMap[id];
 
-    steps.forEach(step => observer.observe(step));
+        if (placeholder) {
+            if (diagramSrc) {
+                placeholder.classList.add('hidden');
+                if (diagram) diagram.classList.remove('hidden');
+            } else {
+                placeholder.classList.remove('hidden');
+                if (diagram) diagram.classList.add('hidden');
+            }
+        }
+
+        if (diagram && diagramSrc && currentSrc !== diagramSrc) {
+            diagram.classList.add('opacity-0');
+            setTimeout(() => {
+                diagram.src = diagramSrc;
+                currentSrc = diagramSrc;
+                diagram.onload = () => diagram.classList.remove('opacity-0');
+            }, 300);
+        }
+    };
+
+    // Continuous flow: activate the last step whose top has passed the reading line.
+    let activeStep = firstStep;
+    let scrollFrame = 0;
+    const updateActiveFromScroll = () => {
+        const readingLine = window.scrollY + 56 + window.innerHeight * 0.2;
+        let nextActive = firstStep;
+
+        for (const step of steps) {
+            if (step.offsetTop <= readingLine) nextActive = step;
+            else break;
+        }
+
+        if (nextActive !== activeStep) {
+            activeStep = nextActive;
+            updateActiveStep(activeStep);
+        }
+    };
+
+    const onScroll = () => {
+        if (scrollFrame) return;
+        scrollFrame = window.requestAnimationFrame(() => {
+            scrollFrame = 0;
+            updateActiveFromScroll();
+        });
+    };
+
+    updateActiveStep(activeStep);
+    window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('resize', onScroll);
+
+    // Desktop-only resizable text/diagram split. The setting survives reloads.
+    const split = document.getElementById('scrolly-split');
+    const textColumn = document.getElementById('scrolly-text-col');
+    const divider = document.getElementById('scrolly-divider');
+    const splitStorageKey = 'rsi.splitTextPct';
+    const minTextPct = 30;
+    const maxTextPct = 70;
+    let textPct = 50;
+    let isResizing = false;
+
+    const clampTextPct = (value: number) => Math.min(maxTextPct, Math.max(minTextPct, value));
+    const applyTextPct = (value: number) => {
+        textPct = clampTextPct(value);
+        if (window.innerWidth >= 1024 && textColumn) {
+            textColumn.style.width = `${textPct}%`;
+            textColumn.style.flexBasis = `${textPct}%`;
+        }
+        divider?.setAttribute('aria-valuenow', String(Math.round(textPct)));
+    };
+
+    try {
+        const savedPct = Number(localStorage.getItem(splitStorageKey));
+        if (Number.isFinite(savedPct)) textPct = clampTextPct(savedPct);
+    } catch {
+        // Storage can be unavailable in privacy-restricted browsers.
+    }
+
+    applyTextPct(textPct);
+
+    const stopResizing = () => {
+        if (!isResizing) return;
+        isResizing = false;
+        document.body.classList.remove('select-none');
+        document.body.style.cursor = '';
+        try {
+            localStorage.setItem(splitStorageKey, String(textPct));
+        } catch {
+            // Ignore storage failures; resizing still works for this session.
+        }
+    };
+
+    divider?.addEventListener('pointerdown', (event) => {
+        if (window.innerWidth < 1024 || !split) return;
+        isResizing = true;
+        divider.setPointerCapture(event.pointerId);
+        document.body.classList.add('select-none');
+        document.body.style.cursor = 'col-resize';
+        event.preventDefault();
+    });
+
+    divider?.addEventListener('pointermove', (event) => {
+        if (!isResizing || !split) return;
+        const bounds = split.getBoundingClientRect();
+        const nextPct = ((event.clientX - bounds.left) / bounds.width) * 100;
+        applyTextPct(nextPct);
+    });
+
+    divider?.addEventListener('pointerup', stopResizing);
+    divider?.addEventListener('pointercancel', stopResizing);
+    window.addEventListener('resize', () => {
+        if (window.innerWidth < 1024 && textColumn) {
+            textColumn.style.width = '';
+            textColumn.style.flexBasis = '';
+        } else {
+            applyTextPct(textPct);
+        }
+    });
 
     // Expand diagram (modal overlay)
     const modal = document.getElementById('scrolly-modal');
@@ -180,7 +230,15 @@ export function initScrolly() {
         if (e.target === modalWrapper) closeModal();
     });
     document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape' && modal?.classList.contains('opacity-100')) closeModal();
+        if (e.key !== 'Escape') return;
+        if (modal?.classList.contains('opacity-100')) {
+            closeModal();
+            return;
+        }
+        if (isTocOpen()) {
+            setTocOpen(false);
+            (toggle as HTMLElement | null)?.focus();
+        }
     });
 
     // Image zoom (modal only)

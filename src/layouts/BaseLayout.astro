@@ -1,15 +1,16 @@
 ---
 import '../styles/global.css'
-import { Sun, Moon, Menu, X, ChevronRight, House, Lock } from '@lucide/astro';
+import { Sun, Moon, Menu, X, ChevronRight, House, Lock, ListOrdered } from '@lucide/astro';
 import { ScrollProgress } from '../components/ui/ScrollProgress';
 import { meetings } from '../data/meetings';
 
 interface Props {
   title: string;
   description?: string;
+  hasToc?: boolean;
 }
 
-const { description } = Astro.props;
+const { description, hasToc = false } = Astro.props;
 
 const currentPath = Astro.url.pathname;
 ---
@@ -24,7 +25,7 @@ const currentPath = Astro.url.pathname;
     <meta name="description" content={description || "Interactive learning website untuk praktikum Rekayasa Sistem Informasi FATISDA UNS"} />
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=JetBrains+Mono:wght@400;500&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 
     <script is:inline>
         const setTheme = () => {
@@ -40,9 +41,9 @@ const currentPath = Astro.url.pathname;
         setTheme();
     </script>
 </head>
-<body class="relative bg-white dark:bg-surface-body dark:text-text-primary min-h-screen">
+<body class="relative bg-background text-foreground min-h-screen">
     <!-- Sidebar -->
-    <aside id="sidebar" class="fixed left-0 top-0 flex flex-col justify-between h-screen w-72 bg-gray-50 dark:bg-surface-raised border-r border-gray-200 dark:border-gray-700 overflow-y-auto transform -translate-x-full transition-transform z-[60]">
+    <aside id="sidebar" class="fixed left-0 top-0 flex flex-col justify-between h-screen w-72 bg-surface-raised border-r border-border overflow-y-auto transform -translate-x-full transition-transform z-[60]" aria-label="Menu navigasi">
         <div>
 
             <!-- Header -->
@@ -51,24 +52,24 @@ const currentPath = Astro.url.pathname;
                     <House class="w-5 h-5" />
                     <h2 class="text-xl font-bold">PRAKTIKUM RSI</h2>
                 </a>
-                <button id="sidebar-close">
+                <button id="sidebar-close" aria-label="Tutup menu" class="p-1 rounded hover:bg-hover transition-colors">
                     <X class='w-5 h-5' />
                 </button>
             </div>
 
             <!-- Meeting List -->
-            <nav>
+            <nav aria-label="Daftar pertemuan">
                 {meetings.map((meeting) => (
                 <a
                     href={`/meetings/${meeting.slug}`}
-                    class={`flex items-center gap-2 px-4 py-2 transition-colors
+                    class={`flex items-center gap-2 px-4 py-2 border-l-2 border-transparent transition-colors
                     ${meeting.published
-                        ? 'hover:bg-gray-200 dark:hover:bg-gray-700'
-                        : 'text-gray-400 dark:text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-700/50'
+                        ? 'hover:bg-hover'
+                        : 'text-muted-foreground hover:bg-hover'
                     }
                     ${
                         currentPath === `/meetings/${meeting.slug}`
-                        ? 'bg-primary/10 text-primary border-l-2 border-primary'
+                        ? 'bg-primary/10 text-primary border-primary'
                         : ''
                     }`}
                 >
@@ -79,28 +80,38 @@ const currentPath = Astro.url.pathname;
                 ))}
             </nav>
         </div>
-
-        <div>
-            <div class="p-4 border-t border-gray-200 dark:border-gray-700">
-                <button id="dark-mode-toggle" class="flex items-center gap-2 w-full px-4 py-2 rounded hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors">
-                    <Sun class="w-5 h-5 hidden dark:block" />
-                    <Moon class="w-5 h-5 block dark:hidden" />
-                    <span>Toggle Dark Mode</span>
-                </button>
-            </div>
-        </div>
     </aside>
 
 
     <!-- Fixed header -->
-    <header class="fixed top-0 left-0 right-0 h-14 bg-gray-50 dark:bg-surface-raised border-b border-gray-200 dark:border-gray-700 z-40 flex items-center px-4">
-        <button id="sidebar-toggle" class="p-2">
+    <header class="fixed top-0 left-0 right-0 h-14 bg-surface-raised border-b border-border z-40 flex items-center px-4 gap-1">
+        <button id="sidebar-toggle" aria-label="Buka menu" class="p-2 rounded hover:bg-hover transition-colors">
             <Menu class="w-6 h-6" />
         </button>
 
         <a href="/" class="flex items-center gap-2">
             <h2 class="text-xl font-bold">PRAKTIKUM RSI</h2>
         </a>
+
+        <div class="ml-auto flex items-center gap-1">
+            {hasToc && (
+                <button
+                    type="button"
+                    id="toc-toggle"
+                    data-toc-toggle
+                    aria-label="Daftar isi"
+                    aria-expanded="false"
+                    aria-controls="toc-panel"
+                    class="p-2 rounded hover:bg-hover transition-colors"
+                >
+                    <ListOrdered class="w-6 h-6" />
+                </button>
+            )}
+            <button data-dark-mode-toggle aria-label="Toggle dark mode" class="p-2 rounded hover:bg-hover transition-colors">
+                <Sun class="w-5 h-5 hidden dark:block" />
+                <Moon class="w-5 h-5 block dark:hidden" />
+            </button>
+        </div>
     </header>
 
     <!-- Scroll Progress Bar -->
@@ -117,14 +128,14 @@ const currentPath = Astro.url.pathname;
     </main>
 
     <!-- Footer -->
-    <footer class="mt-16 py-12 px-8 border-t border-gray-200 dark:border-gray-700">
+    <footer class="mt-16 py-12 px-8 border-t border-border">
         <div class="max-w-7xl mx-auto flex flex-col sm:flex-row sm:items-center sm:justify-between gap-6">
             <div>
                 <p class="font-medium">© 2026 Praktikum RSI</p>
-                <p class="text-sm text-gray-500 dark:text-gray-500 mt-1">Website pembelajaran untuk praktikum mata kuliah Rekayasa Sistem Informasi FATISDA UNS</p>
+                <p class="text-sm text-muted-foreground mt-1">Website pembelajaran untuk praktikum mata kuliah Rekayasa Sistem Informasi FATISDA UNS</p>
             </div>
             <div class="flex gap-4">
-                <a href="https://github.com/prayudahlah/praktikum-rsi-2026" target="_blank" rel="noopener noreferrer" class="flex items-center gap-1 text-sm text-gray-500 hover:text-gray-900 dark:hover:text-gray-300 transition-colors">
+                <a href="https://github.com/prayudahlah/praktikum-rsi-2026" target="_blank" rel="noopener noreferrer" class="flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground transition-colors">
                     <img src="/icons/github.svg" alt="Github Logo" class="w-4 h-4 invert-0 dark:invert transition-all" loading="lazy"/>
                     <span>GitHub</span>
                 </a>
@@ -135,14 +146,21 @@ const currentPath = Astro.url.pathname;
 
     <!-- Scripts -->
     <script>
-        // Dark Mode Toggle
-        const toggle = document.getElementById('dark-mode-toggle');
+        // Dark Mode Toggle (shared by header + sidebar)
         const html = document.documentElement;
-
-        toggle?.addEventListener('click', () => {
-            html.classList.toggle('dark');
-            localStorage.setItem('darkMode', html.classList.contains('dark').toString());
-        })
+        const updateDarkModeLabel = () => {
+            document.querySelectorAll('[data-dark-mode-label]').forEach((el) => {
+                el.textContent = html.classList.contains('dark') ? 'Mode Terang' : 'Mode Gelap';
+            });
+        };
+        updateDarkModeLabel();
+        document.querySelectorAll('[data-dark-mode-toggle]').forEach((btn) => {
+            btn.addEventListener('click', () => {
+                html.classList.toggle('dark');
+                localStorage.setItem('darkMode', html.classList.contains('dark').toString());
+                updateDarkModeLabel();
+            });
+        });
 
         // Sidebar Toggle
         const sidebarToggle = document.getElementById('sidebar-toggle');
@@ -154,7 +172,6 @@ const currentPath = Astro.url.pathname;
             sidebar?.classList.remove('-translate-x-full');
             sidebarOverlay?.classList.remove('hidden');
         };
-
         const closeSidebar = () => {
             sidebar?.classList.add('-translate-x-full');
             sidebarOverlay?.classList.add('hidden');
@@ -163,6 +180,14 @@ const currentPath = Astro.url.pathname;
         sidebarToggle?.addEventListener('click', openSidebar);
         sidebarClose?.addEventListener('click', closeSidebar);
         sidebarOverlay?.addEventListener('click', closeSidebar);
+
+        // Escape closes sidebar
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && sidebar && !sidebar.classList.contains('-translate-x-full')) {
+                closeSidebar();
+                sidebarToggle?.focus();
+            }
+        });
     </script>
 </body>
 </html>

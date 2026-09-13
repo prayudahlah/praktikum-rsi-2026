@@ -99,7 +99,7 @@ export function FloatingBubbles() {
                     return (
                         <motion.div
                             key={bubble.id}
-                            className="absolute rounded-full border border-gray-300/30 dark:border-gray-600/30 bg-white/30 dark:bg-gray-800/30 backdrop-blur-sm flex items-center justify-center shadow-lg pointer-events-auto cursor-pointer"
+                            className="absolute rounded-full border border-border/30 bg-white/30 dark:bg-zinc-800/30 backdrop-blur-sm flex items-center justify-center shadow-lg pointer-events-auto cursor-pointer"
                             style={{
                                 width: bubble.size,
                                 height: bubble.size,
@@ -135,7 +135,7 @@ export function FloatingBubbles() {
                             onClick={() => handlePop(bubble.id)}
                         >
                             <div
-                                className="w-1/2 h-1/2 flex items-center justify-center opacity-80 text-gray-800 dark:text-gray-200 [&>svg]:w-full [&>svg]:h-full [&>svg]:fill-current [&>svg]:stroke-current"
+                                className="w-1/2 h-1/2 flex items-center justify-center opacity-80 text-zinc-800 dark:text-zinc-200 [&>svg]:w-full [&>svg]:h-full [&>svg]:fill-current [&>svg]:stroke-current"
                                 dangerouslySetInnerHTML={{ __html: bubble.icon }}
                             />
                         </motion.div>

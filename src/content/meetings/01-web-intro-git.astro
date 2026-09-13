@@ -54,18 +54,18 @@ const tocSections: TOCSection[] = [
 
         <Step id="p1-1" diagram="/diagrams/01/step1.webp">
             <StepHeader kicker="Pertemuan 1 · Overview" title="Apa yang terjadi di balik tombol?" tone="primary" />
-            <p class="text-gray-600 dark:text-gray-400 leading-relaxed">
+            <p class="text-foreground-secondary leading-relaxed">
                 Bayangkan Anda sedang menekan tombol <strong>"Beli"</strong> di sebuah aplikasi <em>e-commerce</em>,
                 atau menekan <strong>"Login"</strong> di media sosial.
                 Bagi kita sebagai pengguna, itu hanyalah satu klik sederhana yang terasa instan.
             </p>
             <br>
-            <p class="mt-3 text-gray-600 dark:text-gray-400 leading-relaxed">
+            <p class="mt-3 text-foreground-secondary leading-relaxed">
                 Namun faktanya, satu klik tersebut sebenarnya memicu sebuah
                 <strong> reaksi berantai yang kompleks</strong> antar mesin, program, dan jaringan internet.
             </p>
             <br>
-            <p class="mt-3 text-gray-600 dark:text-gray-400 leading-relaxed">
+            <p class="mt-3 text-foreground-secondary leading-relaxed">
                 <span class="bg-yellow-200/70 dark:bg-yellow-500/20 px-1 rounded">Apa yang sebenarnya terjadi dalam sepersekian detik tersebut?</span>
             </p>
         </Step>
@@ -74,11 +74,11 @@ const tocSections: TOCSection[] = [
 
         <Step id="p1-2" diagram="/diagrams/01/step2.webp">
             <StepHeader kicker="Pertemuan 1 · Arsitektur" title="Client & Server" tone="primary" />
-            <p class="text-gray-600 dark:text-gray-400 leading-relaxed">
+            <p class="text-foreground-secondary leading-relaxed">
                 Laptop atau <em>smartphone</em> yang kalian gunakan bertindak sebagai
                 <strong class="text-primary"> Client</strong>, yaitu pihak yang mengirimkan permintaan (<em>Request</em>).
             </p>
-            <p class="mt-3 text-gray-600 dark:text-gray-400 leading-relaxed">
+            <p class="mt-3 text-foreground-secondary leading-relaxed">
                 Sementara di tempat lain, ada komputer <strong class="text-success">Server </strong>
                 yang bertugas memproses permintaan tersebut dan mengirimkan balasan
                 (<em>Response</em>) berupa data yang Anda butuhkan.
@@ -89,34 +89,34 @@ const tocSections: TOCSection[] = [
 
         <Step id="p1-3" diagram="/diagrams/01/step3.webp">
             <StepHeader kicker="Pertemuan 1 · Arsitektur" title="3-Tier Architecture" tone="success" />
-            <p class="text-gray-600 dark:text-gray-400 leading-relaxed">
+            <p class="text-foreground-secondary leading-relaxed">
                 Sebuah Server tidak bekerja sendirian. Untuk mengelola sistem yang kompleks,
                 aplikasi modern dibagikan ke dalam <strong>3 lapisan</strong> (<em>3-Tier Architecture</em>):
             </p>
             <div class="mt-4 space-y-3">
                 <div class="flex items-start gap-3 p-3 rounded-lg bg-primary/5 dark:bg-primary/10">
-                    <span class="mt-0.5 w-6 h-6 rounded-full bg-primary text-white text-xs font-bold flex items-center justify-center shrink-0">1</span>
+                    <span class="mt-0.5 w-6 h-6 rounded-full bg-primary text-primary-foreground text-xs font-bold flex items-center justify-center shrink-0">1</span>
                     <div>
                         <span class="font-bold text-primary">Presentation Tier (Client)</span>
-                        <p class="text-base text-gray-500 dark:text-gray-400 mt-1">Apa yang Anda lihat dan interaksikan di layar.</p>
+                        <p class="text-sm md:text-base text-muted-foreground mt-1">Apa yang Anda lihat dan interaksikan di layar.</p>
                     </div>
                 </div>
                 <div class="flex items-start gap-3 p-3 rounded-lg bg-success/5 dark:bg-success/10">
-                    <span class="mt-0.5 w-6 h-6 rounded-full bg-success text-white text-xs font-bold flex items-center justify-center shrink-0">2</span>
+                    <span class="mt-0.5 w-6 h-6 rounded-full bg-success text-success-foreground text-xs font-bold flex items-center justify-center shrink-0">2</span>
                     <div>
                         <span class="font-bold text-success">Logic Tier (Server)</span>
-                        <p class="text-base text-gray-500 dark:text-gray-400 mt-1">Otak dari aplikasi yang memproses aturan bisnis, komputasi perhitungan, dan mengambil keputusan.</p>
+                        <p class="text-sm md:text-base text-muted-foreground mt-1">Otak dari aplikasi yang memproses aturan bisnis, komputasi perhitungan, dan mengambil keputusan.</p>
                     </div>
                 </div>
                 <div class="flex items-start gap-3 p-3 rounded-lg bg-accent/5 dark:bg-accent/10">
-                    <span class="mt-0.5 w-6 h-6 rounded-full bg-accent text-white text-xs font-bold flex items-center justify-center shrink-0">3</span>
+                    <span class="mt-0.5 w-6 h-6 rounded-full bg-accent text-accent-foreground text-xs font-bold flex items-center justify-center shrink-0">3</span>
                     <div>
                         <span class="font-bold text-accent">Data Tier (Database)</span>
-                        <p class="text-base text-gray-500 dark:text-gray-400 mt-1">Tempat penyimpanan data secara permanen, seperti daftar produk, harga, hingga akun pengguna.</p>
+                        <p class="text-sm md:text-base text-muted-foreground mt-1">Tempat penyimpanan data secara permanen, seperti daftar produk, harga, hingga akun pengguna.</p>
                     </div>
                 </div>
             </div>
-            <p class="mt-4 text-gray-600 dark:text-gray-400 leading-relaxed">
+            <p class="mt-4 text-foreground-secondary leading-relaxed">
                 Dalam arsitektur web yang kita bangun di praktikum ini, ketiga bagian tersebut
                 diwujudkan secara nyata melalui
                 <strong class="text-primary"> Frontend</strong> (Presentation Tier),
@@ -129,12 +129,12 @@ const tocSections: TOCSection[] = [
 
         <Step id="p1-4" diagram="/diagrams/01/step4.webp">
             <StepHeader kicker="Pertemuan 1 · HTTP" title="HTTP Request & Response" tone="success" />
-            <p class="text-gray-600 dark:text-gray-400 leading-relaxed">
+            <p class="text-foreground-secondary leading-relaxed">
                 Saat <em>Client</em> berkomunikasi dengan <em>Server</em>,
                 protokol jaringan yang digunakan adalah <strong>HTTP</strong>.
                 Berikut pemetaan aksi CRUD ke metode-metode HTTP:
             </p>
-            <ul class="mt-4 space-y-2 text-gray-600 dark:text-gray-400">
+            <ul class="mt-4 space-y-2 text-foreground-secondary">
                 <li class="flex items-start gap-2 items justi">
                     <span class="mt-2 lg:mt-3 w-2 h-2 rounded-full bg-success shrink-0"></span>
                     <span><strong class="text-success">Create (POST):</strong> Membuat data baru (misal: mendaftar akun).</span>
@@ -152,7 +152,7 @@ const tocSections: TOCSection[] = [
                     <span><strong class="text-error">Delete (DELETE):</strong> Menghapus data (misal: menghapus barang dari keranjang).</span>
                 </li>
             </ul>
-            <p class="mt-4 text-gray-500 dark:text-gray-500 text-sm italic">
+            <p class="mt-4 text-muted-foreground text-sm italic">
                 *Sebenarnya metode HTTP ada banyak yang lain, namun hanya beberapa yang umum digunakan seperti 4 di atas.
             </p>
         </Step>
@@ -161,15 +161,15 @@ const tocSections: TOCSection[] = [
 
         <Step id="p1-5" diagram="/diagrams/01/step5.webp">
             <StepHeader kicker="Pertemuan 1 · Project Management" title="Kode yang rapi" tone="warning" />
-            <p class="text-gray-600 dark:text-gray-400 leading-relaxed">
+            <p class="text-foreground-secondary leading-relaxed">
                 Bayangkan sebuah aplikasi tidak hanya dibuat oleh satu orang,
                 melainkan oleh tim berisi puluhan <em>developer</em> yang bekerja secara bersamaan.
             </p>
-            <p class="mt-3 text-gray-600 dark:text-gray-400 leading-relaxed">
+            <p class="mt-3 text-foreground-secondary leading-relaxed">
                 Bagaimana caranya agar kodingan yang ditulis oleh Developer A
                 <strong> tidak saling menimpa atau merusak</strong> kodingan milik Developer B?
             </p>
-            <p class="mt-3 text-gray-600 dark:text-gray-400 leading-relaxed">
+            <p class="mt-3 text-foreground-secondary leading-relaxed">
                 <span class="bg-yellow-200/70 dark:bg-yellow-500/20 px-1 rounded">
                     Di sinilah kita membutuhkan sistem pelacak perubahan.
                 </span>
@@ -183,14 +183,14 @@ const tocSections: TOCSection[] = [
         <Step id="p2-1" diagram="/diagrams/01/step6.webp">
             <SectionDivider label="Git & Version Control" />
             <StepHeader kicker="Pertemuan 1 · Version Control" title="Git & GitHub" tone="primary" />
-            <p class="text-gray-600 dark:text-gray-400 leading-relaxed">
+            <p class="text-foreground-secondary leading-relaxed">
                 Untuk mengatasi masalah kolaborasi tersebut, kita menggunakan
                 <strong> Git</strong> dan<strong> GitHub</strong>.
             </p>
             <div class="mt-4 space-y-3">
                 <div class="p-3 rounded-lg bg-primary/5 dark:bg-primary/10 border-l-4 border-primary">
                     <span class="font-bold text-primary">Git</span>
-                    <p class="text-base text-gray-500 dark:text-gray-400 mt-1">
+                    <p class="text-sm md:text-base text-muted-foreground mt-1">
                         Sistem <em>Version Control</em> lokal yang mencatat setiap riwayat perubahan
                         pada folder project kalian di komputer. Sangat berguna untuk tracking perubahan
                         di code base kalian, apalagi saat skala project mulai membesar dan serius.
@@ -198,13 +198,13 @@ const tocSections: TOCSection[] = [
                 </div>
                 <div class="p-3 rounded-lg bg-accent/5 dark:bg-accent/10 border-l-4 border-accent">
                     <span class="font-bold text-accent">GitHub</span>
-                    <p class="text-base text-gray-500 dark:text-gray-400 mt-1">
+                    <p class="text-sm md:text-base text-muted-foreground mt-1">
                         Platform berbasis <em>cloud</em> tempat menyimpan dan membagikan <em>repository</em> Git
                         tersebut, sehingga seluruh tim dapat berkolaborasi dari mana saja.
                     </p>
                 </div>
             </div>
-            <p class="mt-4 text-gray-600 dark:text-gray-400 leading-relaxed">
+            <p class="mt-4 text-foreground-secondary leading-relaxed">
                 Silahkan download dan install Git di&nbsp
                 <a href="https://git-scm.com/install/" target="_blank" rel="noopener noreferrer"
                    class="text-primary underline underline-offset-2 hover:text-primary/80 transition-colors">
@@ -223,30 +223,30 @@ const tocSections: TOCSection[] = [
 
         <Step id="p2-2a" diagram="/diagrams/01/step7.webp">
             <StepHeader kicker="Pertemuan 1 · Local Workflow" title="3 Tahap Penyimpanan" tone="success" />
-            <p class="text-gray-600 dark:text-gray-400 leading-relaxed">
+            <p class="text-foreground-secondary leading-relaxed">
                 Ada tiga tahap penyimpanan dalam <em>workflow</em> Git:
             </p>
             <div class="mt-4 flex items-center gap-2 text-sm">
                 <div class="flex-1 p-2 rounded-lg bg-error/5 dark:bg-error/10 text-center">
                     <span class="font-bold text-error block">Working</span>
-                    <span class="text-gray-500 dark:text-gray-400">Directory</span>
+                    <span class="text-muted-foreground">Directory</span>
                 </div>
-                <svg class="w-5 h-5 text-gray-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg class="w-5 h-5 text-muted-foreground shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
                 </svg>
                 <div class="flex-1 p-2 rounded-lg bg-success/5 dark:bg-success/10 text-center">
                     <span class="font-bold text-success block">Staging</span>
-                    <span class="text-gray-500 dark:text-gray-400">Area</span>
+                    <span class="text-muted-foreground">Area</span>
                 </div>
-                <svg class="w-5 h-5 text-gray-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg class="w-5 h-5 text-muted-foreground shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
                 </svg>
                 <div class="flex-1 p-2 rounded-lg bg-primary/5 dark:bg-primary/10 text-center">
                     <span class="font-bold text-primary block">Local</span>
-                    <span class="text-gray-500 dark:text-gray-400">Repository</span>
+                    <span class="text-muted-foreground">Repository</span>
                 </div>
             </div>
-            <ol class="mt-4 space-y-2 text-gray-600 dark:text-gray-400 list-decimal list-inside">
+            <ol class="mt-4 space-y-2 text-foreground-secondary list-decimal list-inside">
                 <li><strong>Working Directory:</strong> Tempat Anda mengedit dan menulis kode.</li>
                 <li><strong>Staging Area:</strong> Tempat Anda memilih berkas mana saja yang siap untuk disimpan.</li>
                 <li><strong>Local Repository:</strong> Tempat perubahan berhasil disimpan secara resmi ke dalam riwayat Git di komputer Anda.</li>
@@ -255,19 +255,19 @@ const tocSections: TOCSection[] = [
             <div class="mt-4 space-y-2">
                 <div class="p-3 rounded-lg bg-success/5 dark:bg-success/10 border-l-4 border-success">
                     <code class="font-mono text-base font-bold text-success">git add</code>
-                    <p class="text-base text-gray-500 dark:text-gray-400 mt-1">
+                    <p class="text-sm md:text-base text-muted-foreground mt-1">
                         Menambahkan perubahan dari Working Directory ke Staging Area.
                     </p>
                 </div>
                 <div class="p-3 rounded-lg bg-primary/5 dark:bg-primary/10 border-l-4 border-primary">
                     <code class="font-mono text-base font-bold text-primary">git commit</code>
-                    <p class="text-base text-gray-500 dark:text-gray-400 mt-1">
+                    <p class="text-sm md:text-base text-muted-foreground mt-1">
                         Menyimpan perubahan dari Staging Area ke Local Repository secara resmi.
                     </p>
                 </div>
                 <div class="p-3 rounded-lg bg-warning/5 dark:bg-warning/10 border-l-4 border-warning">
                     <code class="font-mono text-base font-bold text-warning">git restore</code>
-                    <p class="text-base text-gray-500 dark:text-gray-400 mt-1">
+                    <p class="text-sm md:text-base text-muted-foreground mt-1">
                         Membatalkan perubahan, bisa dari Staging ke Working Directory, atau membatalkan perubahan kembali ke commit sebelumnya.
                     </p>
                 </div>
@@ -278,25 +278,25 @@ const tocSections: TOCSection[] = [
 
         <Step id="p2-2b" diagram="/diagrams/01/step7.webp">
             <StepHeader kicker="Pertemuan 1 · Local Workflow" title="Perintah Dasar Git" tone="success" />
-            <p class="text-gray-600 dark:text-gray-400 leading-relaxed">
+            <p class="text-foreground-secondary leading-relaxed">
                 Selain workflow di atas, berikut beberapa perintah dasar lain yang perlu diketahui:
             </p>
             <div class="mt-4 space-y-2">
                 <div class="p-3 rounded-lg bg-success/5 dark:bg-success/10 border-l-4 border-success">
                     <code class="font-mono text-base font-bold text-success">git init</code>
-                    <p class="text-base text-gray-500 dark:text-gray-400 mt-1">
+                    <p class="text-sm md:text-base text-muted-foreground mt-1">
                         Menginisialisasi repository Git baru di folder saat ini.
                     </p>
                 </div>
                 <div class="p-3 rounded-lg bg-accent/5 dark:bg-accent/10 border-l-4 border-accent">
                     <code class="font-mono text-base font-bold text-accent">git log --oneline</code>
-                    <p class="text-base text-gray-500 dark:text-gray-400 mt-1">
+                    <p class="text-sm md:text-base text-muted-foreground mt-1">
                         Melihat riwayat commit dalam format ringkas — satu baris per commit.
                     </p>
                 </div>
                 <div class="p-3 rounded-lg bg-warning/5 dark:bg-warning/10 border-l-4 border-warning">
                     <code class="font-mono text-base font-bold text-warning">git help</code>
-                    <p class="text-base text-gray-500 dark:text-gray-400 mt-1">
+                    <p class="text-sm md:text-base text-muted-foreground mt-1">
                         Menampilkan daftar perintah Git atau dokumentasi untuk perintah tertentu.
                     </p>
                 </div>
@@ -309,23 +309,23 @@ const tocSections: TOCSection[] = [
             <StepHeader kicker="Pertemuan 1 · Local Workflow" title="Memeriksa Status Repository" tone="success" />
             <div class="p-3 rounded-lg bg-success/5 dark:bg-success/10 border-l-4 border-success">
                 <code class="font-mono text-base font-bold text-success">git status</code>
-                <p class="text-base text-gray-500 dark:text-gray-400 mt-1">
+                <p class="text-sm md:text-base text-muted-foreground mt-1">
                     Menampilkan kondisi repository saat ini,
                     file mana yang sudah di-staging, belum di-staging, atau belum terlacak.
                 </p>
             </div>
-            <p class="mt-4 text-gray-600 dark:text-gray-400 leading-relaxed">
+            <p class="mt-4 text-foreground-secondary leading-relaxed">
                 Berikut contoh output yang biasanya muncul:
             </p>
             <TerminalBlock code={gitStatus} title="git status" />
             <div class="mt-4 space-y-2">
-                <div class="flex items-start gap-2 text-gray-600 dark:text-gray-400">
+                <div class="flex items-start gap-2 text-foreground-secondary">
                     <span class="text-base"><strong class="text-success">Changes to be committed</strong>: file sudah di-staging, siap di-commit.</span>
                 </div>
-                <div class="flex items-start gap-2 text-gray-600 dark:text-gray-400">
+                <div class="flex items-start gap-2 text-foreground-secondary">
                     <span class="text-base"><strong class="text-error">Changes not staged for commit</strong>: file sudah diubah tapi belum di-staging.</span>
                 </div>
-                <div class="flex items-start gap-2 text-gray-600 dark:text-gray-400">
+                <div class="flex items-start gap-2 text-foreground-secondary">
                     <span class="text-base"><strong>Untracked files</strong>: file baru yang belum pernah di-track oleh Git.</span>
                 </div>
             </div>
@@ -335,29 +335,29 @@ const tocSections: TOCSection[] = [
 
         <Step id="p2-3" diagram="/diagrams/01/step8.webp">
             <StepHeader kicker="Pertemuan 1 · Reset" title="Membatalkan Commit Terakhir" tone="warning" />
-            <p class="text-gray-600 dark:text-gray-400 leading-relaxed">
+            <p class="text-foreground-secondary leading-relaxed">
                 Bagaimana jika kita ingin membatalkan <em>commit</em> yang sudah terlanjur dibuat
                 di <em>Local Repository</em>? Git menyediakan perintah
-                <code class="font-mono text-base bg-gray-100 dark:bg-gray-800 px-1.5 py-0.5 rounded">git reset</code>
+                <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">git reset</code>
                 dengan tiga tingkat keamanan:
             </p>
             <div class="mt-4 space-y-2">
                 <div class="p-3 rounded-lg bg-success/5 dark:bg-success/10 border-l-4 border-success">
                     <code class="font-mono text-base font-bold text-success">--soft</code>
-                    <p class="text-base text-gray-500 dark:text-gray-400 mt-1">
+                    <p class="text-sm md:text-base text-muted-foreground mt-1">
                         Membatalkan <em>commit</em>, tetapi perubahan berkas tetap aman di <em>Staging Area</em>.
                     </p>
                 </div>
                 <div class="p-3 rounded-lg bg-primary/5 dark:bg-primary/10 border-l-4 border-primary">
                     <code class="font-mono text-base font-bold text-primary">--mixed</code>
-                    <span class="text-xs text-gray-400 dark:text-gray-500 ml-2">(default)</span>
-                    <p class="text-base text-gray-500 dark:text-gray-400 mt-1">
+                    <span class="text-xs text-muted-foreground ml-2">(default)</span>
+                    <p class="text-sm md:text-base text-muted-foreground mt-1">
                         Membatalkan <em>commit</em> dan <em>staging</em>, perubahan balik ke <em>Working Directory</em>.
                     </p>
                 </div>
                 <div class="p-3 rounded-lg bg-error/5 dark:bg-error/10 border-l-4 border-error">
                     <code class="font-mono text-base font-bold text-error">--hard</code>
-                    <p class="text-base text-gray-500 dark:text-gray-400 mt-1">
+                    <p class="text-sm md:text-base text-muted-foreground mt-1">
                         Membuang seluruh perubahan secara permanen dan mengembalikan proyek ke kondisi <em>commit</em> sebelumnya.
                     </p>
                 </div>
@@ -368,32 +368,32 @@ const tocSections: TOCSection[] = [
 
         <Step id="p2-4" diagram="/diagrams/01/step9.webp">
             <StepHeader kicker="Pertemuan 1 · Remote" title="Remote Repository" tone="success" />
-            <p class="text-gray-600 dark:text-gray-400 leading-relaxed">
+            <p class="text-foreground-secondary leading-relaxed">
                 Ketika seluruh perubahan di komputer lokal sudah rapi dan teruji,
                 saatnya menghubungkannya dengan tim melalui <strong>Remote Repository</strong> (GitHub):
             </p>
             <div class="mt-4 space-y-2">
                 <div class="p-3 rounded-lg bg-success/5 dark:bg-success/10 border-l-4 border-success">
                     <code class="font-mono text-base font-bold text-success">git push</code>
-                    <p class="text-base text-gray-500 dark:text-gray-400 mt-1">
+                    <p class="text-sm md:text-base text-muted-foreground mt-1">
                         Mengirimkan <em>commit</em> dari <em>Local Repository</em> ke <em>Remote Repository</em> agar bisa dilihat oleh tim.
                     </p>
                 </div>
                 <div class="p-3 rounded-lg bg-primary/5 dark:bg-primary/10 border-l-4 border-primary">
                     <code class="font-mono text-base font-bold text-primary">git pull</code>
-                    <p class="text-base text-gray-500 dark:text-gray-400 mt-1">
+                    <p class="text-sm md:text-base text-muted-foreground mt-1">
                         Mengambil dan menggabungkan pembaruan terbaru dari <em>Remote Repository</em> ke <em>Local Repository</em>.
                     </p>
                 </div>
                 <div class="p-3 rounded-lg bg-warning/5 dark:bg-warning/10 border-l-4 border-warning">
                     <code class="font-mono text-base font-bold text-warning">git fetch</code>
-                    <p class="text-base text-gray-500 dark:text-gray-400 mt-1">
+                    <p class="text-sm md:text-base text-muted-foreground mt-1">
                         Hanya mengambil informasi dari remote <strong>tanpa</strong> menggabungkan. Berguna untuk melihat perubahan sebelum memutuskan untuk merge.
                     </p>
                 </div>
                 <div class="p-3 rounded-lg bg-primary/5 dark:bg-primary/10 border-l-4 border-primary">
                     <code class="font-mono text-base font-bold text-primary">git clone &lt;url&gt;</code>
-                    <p class="text-base text-gray-500 dark:text-gray-400 mt-1">
+                    <p class="text-sm md:text-base text-muted-foreground mt-1">
                         Mengcopy repository dari remote ke komputer lokal beserta seluruh riwayatnya.
                     </p>
                 </div>
@@ -404,11 +404,11 @@ const tocSections: TOCSection[] = [
 
         <Step id="p2-5" diagram="/diagrams/01/step10.webp">
             <StepHeader kicker="Pertemuan 1 · Branching" title="Branch: Ruang aman untuk eksperimen" tone="accent" />
-            <p class="text-gray-600 dark:text-gray-400 leading-relaxed">
-                Dalam proyek nyata, kita tidak boleh langsung mengubah kode utama (<code class="font-mono text-sm bg-gray-100 dark:bg-gray-800 px-1.5 py-0.5 rounded">main</code>)
+            <p class="text-foreground-secondary leading-relaxed">
+                Dalam proyek nyata, kita tidak boleh langsung mengubah kode utama (<code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">main</code>)
                 yang sedang dipakai pengguna. Disinilah kita perlu melakukan <strong>branching</strong>.
             </p>
-            <p class="mt-3 text-gray-600 dark:text-gray-400 leading-relaxed">
+            <p class="mt-3 text-foreground-secondary leading-relaxed">
                 <strong>Branch</strong> seperti membuat cabang salinan dari kode proyek Anda.
                 Developer bisa membuat percabangan baru untuk memperbaiki bug
                 atau menambah fitur baru secara terpisah.
@@ -421,27 +421,27 @@ const tocSections: TOCSection[] = [
 
         <Step id="p2-6" diagram="/diagrams/01/step11.webp">
             <StepHeader kicker="Pertemuan 1 · Branch Commands" title="Command-command dasar manipulasi branch" tone="accent" />
-            <p class="mt-3 text-gray-600 dark:text-gray-400 leading-relaxed">
+            <p class="mt-3 text-foreground-secondary leading-relaxed">
                 Untuk mengetahui posisi <em>branch</em> dan <em>commit</em> yang sedang Anda kerjakan saat ini,
-                Git menggunakan penanda bernama <strong><code class="font-mono text-base bg-gray-100 dark:bg-gray-800 px-1.5 py-0.5 rounded">HEAD</code></strong>.
+                Git menggunakan penanda bernama <strong><code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">HEAD</code></strong>.
             </p>
             <h4 class="font-bold mt-4 mb-2">Perintah dasar branching:</h4>
             <div class="space-y-2">
                 <div class="p-3 rounded-lg bg-accent/5 dark:bg-accent/10 border-l-4 border-accent">
                     <code class="font-mono text-base font-bold text-accent">git switch -c &lt;nama-branch&gt;</code>
-                    <p class="text-base text-gray-500 dark:text-gray-400 mt-1">
+                    <p class="text-sm md:text-base text-muted-foreground mt-1">
                         Membuat branch baru sekaligus pindah ke sana.
                     </p>
                 </div>
                 <div class="p-3 rounded-lg bg-accent/5 dark:bg-accent/10 border-l-4 border-accent">
                     <code class="font-mono text-base font-bold text-accent">git switch &lt;nama-branch&gt;</code>
-                    <p class="text-base text-gray-500 dark:text-gray-400 mt-1">
+                    <p class="text-sm md:text-base text-muted-foreground mt-1">
                         Pindah ke branch yang sudah ada.
                     </p>
                 </div>
                 <div class="p-3 rounded-lg bg-accent/5 dark:bg-accent/10 border-l-4 border-accent">
                     <code class="font-mono text-base font-bold text-accent">git branch -d &lt;nama-branch&gt;</code>
-                    <p class="text-base text-gray-500 dark:text-gray-400 mt-1">
+                    <p class="text-sm md:text-base text-muted-foreground mt-1">
                         Hapus branch yang sudah tidak dipakai.
                     </p>
                 </div>
@@ -452,37 +452,37 @@ const tocSections: TOCSection[] = [
 
         <Step id="p2-7a" diagram="/diagrams/01/step12.webp">
             <StepHeader kicker="Pertemuan 1 · Merge" title="Merge Strategies" tone="success" />
-            <p class="text-gray-600 dark:text-gray-400 leading-relaxed">
+            <p class="text-foreground-secondary leading-relaxed">
                 Ketika fitur di <em>branch</em> lokal sudah selesai,
-                ada tiga metode umum untuk menggabungkannya kembali ke <code class="font-mono text-base bg-gray-100 dark:bg-gray-800 px-1.5 py-0.5 rounded">main</code>:
+                ada tiga metode umum untuk menggabungkannya kembali ke <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">main</code>:
             </p>
             <div class="mt-4 space-y-3">
                 <div class="p-3 rounded-lg bg-success/5 dark:bg-success/10 border-l-4 border-success">
                     <span class="font-bold text-success">1. Merge</span>
-                    <p class="text-base text-gray-500 dark:text-gray-400 mt-1">
+                    <p class="text-sm md:text-base text-muted-foreground mt-1">
                         Menggabungkan dua <em>branch</em> dengan membuat satu <em>commit</em> penanda baru
                         (<em>Merge Commit</em>). Riwayat percabangan tetap terlihat jelas.
                     </p>
                 </div>
                 <div class="p-3 rounded-lg bg-primary/5 dark:bg-primary/10 border-l-4 border-primary">
                     <span class="font-bold text-primary">2. Rebase</span>
-                    <p class="text-base text-gray-500 dark:text-gray-400 mt-1">
+                    <p class="text-sm md:text-base text-muted-foreground mt-1">
                         Memindahkan pangkal <em>branch</em> fitur ke ujung <code class="font-mono">main</code>,
                         sehingga riwayat <em>commit</em> terlihat lurus dan rapi.
                     </p>
                 </div>
                 <div class="p-3 rounded-lg bg-accent/5 dark:bg-accent/10 border-l-4 border-accent">
                     <span class="font-bold text-accent">3. Squash Merge</span>
-                    <p class="text-base text-gray-500 dark:text-gray-400 mt-1">
+                    <p class="text-sm md:text-base text-muted-foreground mt-1">
                         Menumpuk dan memadatkan banyak <em>commit</em> kecil menjadi <strong>satu</strong> <em>commit</em> tunggal di <code class="font-mono">main</code>,
                         menjaga riwayat <code class="font-mono">main</code> tetap bersih.
                     </p>
                 </div>
             </div>
-            <p class="mt-4 text-gray-600 dark:text-gray-400 leading-relaxed">
+            <p class="mt-4 text-foreground-secondary leading-relaxed">
                 <strong>Kapan pakai mana?</strong>
             </p>
-            <ul class="mt-2 space-y-1 text-base text-gray-500 dark:text-gray-400">
+            <ul class="mt-2 space-y-1 text-sm md:text-base text-muted-foreground">
                 <li>• <strong class="text-success">Merge</strong>: default paling aman. Gunakan untuk fitur besar yang perlu riwayat percabangan terlihat.</li>
                 <li>• <strong class="text-primary">Rebase</strong>: saat ingin riwayat commit di branch fitur tetap rapi sebelum merge.</li>
                 <li>• <strong class="text-accent">Squash</strong>: saat branch punya banyak commit kecil ("wip", "fix typo", dll) yang tidak perlu terlihat di riwayat utama.</li>
@@ -493,9 +493,9 @@ const tocSections: TOCSection[] = [
 
         <Step id="p2-7b" diagram="/diagrams/01/step12.webp">
             <StepHeader kicker="Pertemuan 1 · Merge" title="Contoh Merge" tone="success" />
-            <p class="text-gray-600 dark:text-gray-400 leading-relaxed">
-                Misalkan kita punya branch <code class="font-mono text-base bg-gray-100 dark:bg-gray-800 px-1.5 py-0.5 rounded">feature/login</code> yang sudah selesai dikerjakan.
-                Berikut cara menggabungkannya ke <code class="font-mono text-base bg-gray-100 dark:bg-gray-800 px-1.5 py-0.5 rounded">main</code> menggunakan ketiga metode:
+            <p class="text-foreground-secondary leading-relaxed">
+                Misalkan kita punya branch <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">feature/login</code> yang sudah selesai dikerjakan.
+                Berikut cara menggabungkannya ke <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">main</code> menggunakan ketiga metode:
             </p>
 
             <TerminalBlock code={gitMerge} title="Merge: feature/login → main" />
@@ -509,34 +509,34 @@ const tocSections: TOCSection[] = [
 
         <Step id="p2-8" diagram="/diagrams/01/step13.webp">
             <StepHeader kicker="Pertemuan 1 · Pull Request" title="Pull Request" tone="primary" />
-            <p class="text-gray-600 dark:text-gray-400 leading-relaxed">
+            <p class="text-foreground-secondary leading-relaxed">
                 Di dalam tim profesional, seorang <em>developer</em> tidak langsung menggabungkan
                 kodenya sendiri ke repository utama. Ada alur kerja standar yang disebut
                 <strong> Pull Request (PR)</strong>.
             </p>
-            <p class="mt-3 text-gray-600 dark:text-gray-400 leading-relaxed">
+            <p class="mt-3 text-foreground-secondary leading-relaxed">
                 <strong>Pull Request</strong> adalah permintaan yang dikirimkan oleh developer kepada tim
                 untuk menggabungkan perubahan dari branch kerja mereka ke branch utama.
-                PR menjadi tempat diskusi, code review, dan persetujuan sebelum kode benar-benar masuk ke <code class="font-mono text-base bg-gray-100 dark:bg-gray-800 px-1.5 py-0.5 rounded">main</code> atau <i>branch</i> penting lainnya.
+                PR menjadi tempat diskusi, code review, dan persetujuan sebelum kode benar-benar masuk ke <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">main</code> atau <i>branch</i> penting lainnya.
             </p>
-            <p class="mt-3 text-gray-600 dark:text-gray-400 leading-relaxed">
+            <p class="mt-3 text-foreground-secondary leading-relaxed">
                 Workflownya kira-kira seperti ini:
             </p>
             <div class="mt-4 space-y-3">
                 <div class="flex items-start gap-3 p-3 rounded-lg bg-primary/5 dark:bg-primary/10 border-l-4 border-primary">
-                    <span class="mt-0.5 w-6 h-6 rounded-full bg-primary text-white text-base font-bold flex items-center justify-center shrink-0">1</span>
+                    <span class="mt-0.5 w-6 h-6 rounded-full bg-primary text-primary-foreground text-base font-bold flex items-center justify-center shrink-0">1</span>
                     <div>
                         <span class="font-bold text-primary">Developer</span>
-                        <p class="text-base text-gray-500 dark:text-gray-400 mt-1">
+                        <p class="text-sm md:text-base text-muted-foreground mt-1">
                             Membuat <em>feature branch</em> -> Menulis kode -> <em>Push</em> commit-commitnya ke GitHub -> Membuat <em>Pull Request</em>.
                         </p>
                     </div>
                 </div>
                 <div class="flex items-start gap-3 p-3 rounded-lg bg-success/5 dark:bg-success/10 border-l-4 border-success">
-                    <span class="mt-0.5 w-6 h-6 rounded-full bg-success text-white text-base font-bold flex items-center justify-center shrink-0">2</span>
+                    <span class="mt-0.5 w-6 h-6 rounded-full bg-success text-success-foreground text-base font-bold flex items-center justify-center shrink-0">2</span>
                     <div>
                         <span class="font-bold text-success">Reviewer</span>
-                        <p class="text-base text-gray-500 dark:text-gray-400 mt-1">
+                        <p class="text-sm md:text-base text-muted-foreground mt-1">
                             Memeriksa kode yang diajukan. Jika ada catatan, <em>developer</em> memperbaiki kodenya terlebih dahulu.
                             Jika kode sudah aman, PR disetujui (<em>Approve</em>) lalu digabungkan (<em>Merge</em>).
                         </p>
@@ -549,25 +549,25 @@ const tocSections: TOCSection[] = [
 
         <Step id="p2-9a" diagram="/diagrams/01/step14.webp">
             <StepHeader kicker="Pertemuan 1 · Merge Conflict" title="Ketika kode bertabrakan" tone="error" />
-            <p class="text-gray-600 dark:text-gray-400 leading-relaxed">
+            <p class="text-foreground-secondary leading-relaxed">
                 Apa yang terjadi jika dua orang <em>developer</em> mengubah
                 <strong> baris kode yang sama di file yang sama</strong>?
                 Terjadilah <strong class="text-error">Merge Conflict</strong>.
             </p>
-            <p class="mt-3 text-gray-600 dark:text-gray-400 leading-relaxed">
+            <p class="mt-3 text-foreground-secondary leading-relaxed">
                 Git bingung memilih perubahan mana yang benar sehingga proses <em>merge</em> terhenti.
                 Di sinilah <em>developer</em> harus turun tangan secara manual untuk menentukan kode mana yang akan dipertahankan.
             </p>
-            <div class="mt-4 p-4 rounded-lg bg-gray-900 dark:bg-gray-950 font-mono text-sm leading-relaxed whitespace-pre">
-                <div class="text-gray-400">// app.js</div>
+            <div class="mt-4 p-4 rounded-lg bg-surface-overlay font-mono text-sm leading-relaxed whitespace-pre">
+                <div class="text-zinc-400">// app.js</div>
                 <div class="text-white">export default function App() {`{`}</div>
                 <div class="text-white">  return (</div>
                 <div class="text-white">    &lt;h1&gt;Hello,&lt;/h1&gt;</div>
-                <div class="text-error">  &lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD</div>
-                <div class="text-success">    &lt;h2&gt;Kelas A&lt;/h2&gt;</div>
-                <div class="text-error">  =======</div>
-                <div class="text-warning">    &lt;h2&gt;Kelas B&lt;/h2&gt;</div>
-                <div class="text-error">  &gt;&gt;&gt;&gt;&gt;&gt;&gt; feature/kelas</div>
+                <div class="text-red-400">  &lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD</div>
+                <div class="text-emerald-400">    &lt;h2&gt;Kelas A&lt;/h2&gt;</div>
+                <div class="text-red-400">  =======</div>
+                <div class="text-amber-400">    &lt;h2&gt;Kelas B&lt;/h2&gt;</div>
+                <div class="text-red-400">  &gt;&gt;&gt;&gt;&gt;&gt;&gt; feature/kelas</div>
                 <div class="text-white">  );</div>
                 <div class="text-white">{`}`}</div>
             </div>
@@ -580,28 +580,28 @@ const tocSections: TOCSection[] = [
             <div class="mt-4 space-y-2">
                 <div class="p-3 rounded-lg bg-error/5 dark:bg-error/10 border-l-4 border-error">
                     <code class="font-mono text-base font-bold text-error">&lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD</code>
-                    <p class="text-base text-gray-500 dark:text-gray-400 mt-1">
+                    <p class="text-sm md:text-base text-muted-foreground mt-1">
                         Kode di bawah tanda ini berasal dari branch kalian sekarang (branch aktif).
                     </p>
                 </div>
-                <div class="p-3 rounded-lg bg-gray-50 dark:bg-gray-800/50 border-l-4 border-gray-400">
-                    <code class="font-mono text-base font-bold text-gray-500">=======</code>
-                    <p class="text-base text-gray-500 dark:text-gray-400 mt-1">
+                <div class="p-3 rounded-lg bg-muted border-l-4 border-border">
+                    <code class="font-mono text-base font-bold text-muted-foreground">=======</code>
+                    <p class="text-sm md:text-base text-muted-foreground mt-1">
                         Pemisah antara versi branch kalian dan versi branch yang masuk.
                     </p>
                 </div>
                 <div class="p-3 rounded-lg bg-warning/5 dark:bg-warning/10 border-l-4 border-warning">
                     <code class="font-mono text-base font-bold text-warning">&gt;&gt;&gt;&gt;&gt;&gt;&gt; feature/branch</code>
-                    <p class="text-base text-gray-500 dark:text-gray-400 mt-1">
+                    <p class="text-sm md:text-base text-muted-foreground mt-1">
                         Kode di atas tanda ini berasal dari branch yang sedang digabungkan.
                     </p>
                 </div>
             </div>
-            <p class="mt-4 text-gray-600 dark:text-gray-400 leading-relaxed">
+            <p class="mt-4 text-foreground-secondary leading-relaxed">
                 Untuk resolve conflict, buka file yang bermasalah, pilih kode yang benar,
-                hapus baris marker (<code class="font-mono text-base bg-gray-100 dark:bg-gray-800 px-1.5 py-0.5 rounded">&lt;&lt;&lt;</code>,
-                <code class="font-mono text-base bg-gray-100 dark:bg-gray-800 px-1.5 py-0.5 rounded">===</code>,
-                <code class="font-mono text-base bg-gray-100 dark:bg-gray-800 px-1.5 py-0.5 rounded">&gt;&gt;&gt;</code>),
+                hapus baris marker (<code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">&lt;&lt;&lt;</code>,
+                <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">===</code>,
+                <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">&gt;&gt;&gt;</code>),
                 lalu commit hasil perbaikan.
             </p>
         </Step>

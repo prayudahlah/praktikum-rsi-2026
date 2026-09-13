@@ -71,97 +71,97 @@ const tocSections: TOCSection[] = [
         <Step id="p1-1" diagram="/diagrams/02/step1.webp">
             <SectionDivider label="REST API" />
             <StepHeader kicker="Pertemuan 2 · Backend" title="Apa itu Backend?" tone="success" />
-            <p class="text-gray-600 dark:text-gray-400 leading-relaxed">
+            <p class="text-foreground-secondary leading-relaxed">
                 <strong class="text-success">Backend</strong> adalah bagian server yang bertanggung jawab atas
                 logika bisnis, validasi, pengolahan data, dan <strong>komunikasi dengan Database</strong>.
             </p>
-            <p class="mt-3 text-gray-600 dark:text-gray-400 leading-relaxed">
+            <p class="mt-3 text-foreground-secondary leading-relaxed">
                 Client tidak langsung mengakses database. Semua permintaan melewati backend
                 yang menjadi <strong>perantara</strong> antara frontend dan data.
             </p>
-            <p class="mt-3 text-gray-600 dark:text-gray-400 leading-relaxed">
+            <p class="mt-3 text-foreground-secondary leading-relaxed">
             Bayangkan aplikasi adalah sebuah restoran. Frontend adalah meja tempat pelanggan
             melihat menu dan memesan. <strong>Backend adalah Koki di Dapur</strong>.
             </p>
-            <p class="mt-3 text-gray-600 dark:text-gray-400 leading-relaxed">
+            <p class="mt-3 text-foreground-secondary leading-relaxed">
                 Pelanggan (Client) tidak diizinkan masuk ke Gudang Makanan (Database) untuk mengambil bahan sendiri. Mereka harus meminta ke Koki. Koki inilah yang bertugas mengecek pesanan, mengambil bahan di gudang, memasaknya (logika bisnis), dan menyajikannya kembali ke pelanggan.
             </p>
         </Step>
 
         <Step id="p1-2" diagram="/diagrams/02/step1.webp">
             <StepHeader kicker="Pertemuan 2 · Backend" title="Kenapa Backend Wajib?" tone="success" />
-            <p class="text-gray-600 dark:text-gray-400 leading-relaxed">
+            <p class="text-foreground-secondary leading-relaxed">
                 Bayangkan frontend langsung terhubung ke database tanpa backend di tengah.
                 Tiga masalah fatal muncul:
             </p>
             <div class="mt-4 space-y-3">
                 <div class="p-3 rounded-lg bg-error/5 dark:bg-error/10 border-l-4 border-error">
                     <span class="font-bold text-error">Kebocoran Keamanan</span>
-                    <p class="text-base text-gray-500 dark:text-gray-400 mt-1">
+                    <p class="text-sm md:text-base text-muted-foreground mt-1">
                         Kredensial database dan query rahasia ikut terunduh di kode frontend publik,
                         siapa pun bisa mengintip isi database atau menghapus tabel.
                     </p>
                 </div>
                 <div class="p-3 rounded-lg bg-warning/5 dark:bg-warning/10 border-l-4 border-warning">
                     <span class="font-bold text-warning">Tanpa Validasi</span>
-                    <p class="text-base text-gray-500 dark:text-gray-400 mt-1">
+                    <p class="text-sm md:text-base text-muted-foreground mt-1">
                         Data bisa dimanipulasi sebelum disimpan, misalnya mengubah harga
                         barang dari Rp100.000 menjadi Rp-10.000 tanpa pengecekan ulang.
                     </p>
                 </div>
                 <div class="p-3 rounded-lg bg-accent/5 dark:bg-accent/10 border-l-4 border-accent">
                     <span class="font-bold text-accent">Kacau saat Ramai</span>
-                    <p class="text-base text-gray-500 dark:text-gray-400 mt-1">
+                    <p class="text-sm md:text-base text-muted-foreground mt-1">
                         Database tidak didesain melayani ribuan akses bersamaan. Backend menjadi
                         <strong> traffic controller</strong> yang mengamankan dan mengatur antrean.
                     </p>
                 </div>
             </div>
-            <p class="mt-4 text-gray-600 dark:text-gray-400 leading-relaxed">
+            <p class="mt-4 text-foreground-secondary leading-relaxed">
                 Karena itu backend <strong>wajib</strong> berdiri di antara frontend dan data.
             </p>
         </Step>
 
         <Step id="p1-3" diagram="/diagrams/02/step3.webp">
             <StepHeader kicker="Pertemuan 2 · REST API" title="Apa itu REST API dan HTTP Methods?" tone="primary" />
-            <p class="text-gray-600 dark:text-gray-400 leading-relaxed">
+            <p class="text-foreground-secondary leading-relaxed">
                 REST adalah <strong>arsitektur</strong> yang mengatur bagaimana frontend
                 dan backend saling berkomunikasi. Di dalam arsitektur REST ini, HTTP Methods
                 digunakan sebagai <strong>standar protokol</strong> untuk menentukan aksi apa yang ingin dilakukan terhadap data.  
             </p>
-            <div class="mt-4 space-y-1 text-lg">
+            <div class="mt-4 space-y-1">
                 <div class="p-3 rounded-lg bg-success/5 dark:bg-success/10 border-l-4 border-success">
                     <span class="font-bold text-success">POST (Create)</span>
-                    <p class="text-base text-gray-500 dark:text-gray-400 mt-1">
+                    <p class="text-sm md:text-base text-muted-foreground mt-1">
                         Membuat atau menambahkan data baru ke server, misalnya saat mendaftarkan akun baru.
                     </p>
                 </div>
                 <div class="p-3 rounded-lg bg-primary/5 dark:bg-primary/10 border-l-4 border-primary">
                     <span class="font-bold text-primary">GET (Read)</span>
-                    <p class="text-base text-gray-500 dark:text-gray-400 mt-1">
+                    <p class="text-sm md:text-base text-muted-foreground mt-1">
                         Mengambil atau melihat data dari server, misalnya menampilkan daftar produk.
                     </p>
                 </div>
                 <div class="p-3 rounded-lg bg-warning/5 dark:bg-warning/10 border-l-4 border-warning">
                     <span class="font-bold text-warning">PUT / PATCH (Update)</span>
-                    <p class="text-base text-gray-500 dark:text-gray-400 mt-1">
-                        Mengubah data yang sudah ada. <code class="font-mono text-base bg-gray-100 dark:bg-gray-800 px-1.5 py-0.5 rounded">PUT</code> mengganti seluruh
-                        bagian, <code class="font-mono text-base bg-gray-100 dark:bg-gray-800 px-1.5 py-0.5 rounded">PATCH</code> hanya sebagian.
+                    <p class="text-sm md:text-base text-muted-foreground mt-1">
+                        Mengubah data yang sudah ada. <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">PUT</code> mengganti seluruh
+                        bagian, <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">PATCH</code> hanya sebagian.
                     </p>
                 </div>
                 <div class="p-3 rounded-lg bg-error/5 dark:bg-error/10 border-l-4 border-error">
                     <span class="font-bold text-error">DELETE (Delete)</span>
-                    <p class="text-base text-gray-500 dark:text-gray-400 mt-1">
+                    <p class="text-sm md:text-base text-muted-foreground mt-1">
                         Menghapus data yang ada di server.
                     </p>
                 </div>
             </div>
-            <div class="mt-4 p-4 rounded-lg bg-accent/5 dark:bg-accent/10 border-2 border-dashed border-accent text-lg">
+            <div class="mt-4 p-4 rounded-lg bg-accent/5 dark:bg-accent/10 border-2 border-dashed border-accent">
                 <span class="flex items-center gap-2 font-bold text-accent">
                     <BookOpen class="w-4 h-4" />
                     Bacaan Lanjutan
                 </span>
-                <ul class="text-base text-gray-600 dark:text-gray-400 mt-2 space-y-1 list-disc list-inside">
+                <ul class="text-base text-foreground-secondary mt-2 space-y-1 list-disc list-inside">
                     <li>
                         <a href="https://restfulapi.net/" target="_blank" rel="noopener noreferrer" class="text-primary hover:underline">
                             REST API Tutorial (RESTful API Design)
@@ -180,7 +180,7 @@ const tocSections: TOCSection[] = [
 
         <Step id="p1-4" diagram="/diagrams/02/step4.webp">
             <StepHeader kicker="Pertemuan 2 · REST API" title="Endpoint & URL" tone="primary" />
-            <p class="text-gray-600 dark:text-gray-400 leading-relaxed">
+            <p class="text-foreground-secondary leading-relaxed">
                 Jika HTTP Method bertindak sebagai <strong>kata kerja</strong> (apa yang ingin dilakukan:
                 mengambil, membuat, menghapus), maka <strong>Endpoint & URL</strong> bertindak sebagai
                 <strong> alamat / objek tujuan</strong> dari data tersebut.
@@ -188,18 +188,18 @@ const tocSections: TOCSection[] = [
             <div class="mt-4 space-y-3">
                 <div class="p-3 rounded-lg bg-primary/5 dark:bg-primary/10 border-l-4 border-primary">
                     <span class="font-bold text-primary">Alamat Spesifik Objek/Resource</span>
-                    <p class="text-base text-gray-500 dark:text-gray-400 mt-1">
+                    <p class="text-sm md:text-base text-muted-foreground mt-1">
                         URL menunjuk data mana yang dituju, dengan nama resource jamak:
-                        <code class="font-mono text-base bg-gray-100 dark:bg-gray-800 px-1.5 py-0.5 rounded">/api/v1/users</code>
+                        <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">/api/v1/users</code>
                         untuk kumpulan pengguna, atau
-                        <code class="font-mono text-base bg-gray-100 dark:bg-gray-800 px-1.5 py-0.5 rounded">/api/v1/users/5</code>
+                        <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">/api/v1/users/5</code>
                         untuk satu pengguna dengan ID 5.
                     </p>
                 </div>
                 <div class="p-3 rounded-lg bg-accent/5 dark:bg-accent/10 border-l-4 border-accent">
                     <span class="font-bold text-accent">Keamanan Versi (Versioning)</span>
-                    <p class="text-base text-gray-500 dark:text-gray-400 mt-1">
-                        Awalan <code class="font-mono text-base bg-gray-100 dark:bg-gray-800 px-1.5 py-0.5 rounded">/api/v1/</code>
+                    <p class="text-sm md:text-base text-muted-foreground mt-1">
+                        Awalan <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">/api/v1/</code>
                         ditambahkan agar saat backend diperbarui besar-besaran, aplikasi client lama
                         tidak langsung rusak atau error.
                     </p>
@@ -207,10 +207,10 @@ const tocSections: TOCSection[] = [
             </div>
             <div class="mt-4 p-3 rounded-lg bg-success/5 dark:bg-success/10 border-l-4 border-success">
                 <span class="font-bold text-success">HTTP Method + Endpoint</span>
-                <p class="text-base text-gray-500 dark:text-gray-400 mt-1">
-                    Walaupun URL <code class="font-mono text-base bg-gray-100 dark:bg-gray-800 px-1.5 py-0.5 rounded">/api/v1/users/5</code>
-                    dipakai oleh <code class="font-mono text-base bg-gray-100 dark:bg-gray-800 px-1.5 py-0.5 rounded">GET</code>
-                    maupun <code class="font-mono text-base bg-gray-100 dark:bg-gray-800 px-1.5 py-0.5 rounded">DELETE</code>,
+                <p class="text-sm md:text-base text-muted-foreground mt-1">
+                    Walaupun URL <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">/api/v1/users/5</code>
+                    dipakai oleh <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">GET</code>
+                    maupun <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">DELETE</code>,
                     hasilnya sangat berbeda. <em>GET</em> mengambil data user, <em>DELETE</em> menghapusnya secara permanen.
                 </p>
             </div>
@@ -218,47 +218,47 @@ const tocSections: TOCSection[] = [
 
         <Step id="p1-5" diagram="/diagrams/02/step4.webp">
             <StepHeader kicker="Pertemuan 2 · REST API" title="Cara Kirim Data dari Client" tone="accent" />
-            <p class="text-gray-600 dark:text-gray-400 leading-relaxed">
+            <p class="text-foreground-secondary leading-relaxed">
                 Setelah menentukan alamat URL dan metode HTTP, bagaimana cara client
                 <strong> membungkus data</strong> yang ingin dikirim ke server? Data dikirim
                 melalui tiga bagian utama pada Request:
             </p>
-            <div class="mt-4 space-y-2 text-lg">
+            <div class="mt-4 space-y-2">
                 <div class="p-3 rounded-lg bg-accent/5 dark:bg-accent/10 border-l-4 border-accent">
                     <span class="font-bold text-accent">Path Parameter</span>
-                    <p class="text-base text-gray-500 dark:text-gray-400 mt-1">
+                    <p class="text-sm md:text-base text-muted-foreground mt-1">
                         Bagian yang melekat langsung pada URL untuk menunjuk identitas data spesifik, misalnya
-                        <code class="font-mono text-base bg-gray-100 dark:bg-gray-800 px-1.5 py-0.5 rounded">/users/5</code>,
-                        angka <code class="font-mono text-base bg-gray-100 dark:bg-gray-800 px-1.5 py-0.5 rounded">5</code> adalah ID unik milik user.
+                        <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">/users/5</code>,
+                        angka <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">5</code> adalah ID unik milik user.
                     </p>
                 </div>
                 <div class="p-3 rounded-lg bg-primary/5 dark:bg-primary/10 border-l-4 border-primary">
                     <span class="font-bold text-primary">Query Parameter</span>
-                    <p class="text-base text-gray-500 dark:text-gray-400 mt-1">
-                        Bagian tambahan di akhir URL menggunakan tanda tanya (<code class="font-mono text-base bg-gray-100 dark:bg-gray-800 px-1.5 py-0.5 rounded">?</code>),
+                    <p class="text-sm md:text-base text-muted-foreground mt-1">
+                        Bagian tambahan di akhir URL menggunakan tanda tanya (<code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">?</code>),
                         untuk filter, pencarian, atau pembagian halaman (<em>pagination</em>), misalnya
-                        <code class="font-mono text-base bg-gray-100 dark:bg-gray-800 px-1.5 py-0.5 rounded">/products?category=food&amp;page=2</code>.
+                        <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">/products?category=food&amp;page=2</code>.
                     </p>
                 </div>
                 <div class="p-3 rounded-lg bg-success/5 dark:bg-success/10 border-l-4 border-success">
                     <span class="font-bold text-success">Request Body</span>
-                    <p class="text-base text-gray-500 dark:text-gray-400 mt-1">
+                    <p class="text-sm md:text-base text-muted-foreground mt-1">
                         Ruang khusus untuk mengirim data yang lebih kompleks atau berukuran besar dalam format JSON,
                         paling sering dipakai saat mendaftarkan akun baru menggunakan metode POST.
                     </p>
                 </div>
             </div>
-            <p class="mt-4 text-gray-600 dark:text-gray-400 leading-relaxed">
+            <p class="mt-4 text-foreground-secondary leading-relaxed">
                 Masing-masing bagian memiliki fungsi spesifik dan digunakan secara bergantian
                 tergantung skenario aksi yang ingin dilakukan oleh client.
             </p>
 
-            <div class="mt-4 p-4 rounded-lg bg-accent/5 dark:bg-accent/10 border-2 border-dashed border-accent text-lg">
+            <div class="mt-4 p-4 rounded-lg bg-accent/5 dark:bg-accent/10 border-2 border-dashed border-accent">
                 <span class="flex items-center gap-2 font-bold text-accent">
                     <BookOpen class="w-4 h-4" />
                     Bacaan Lanjutan
                 </span>
-                <ul class="text-base text-gray-600 dark:text-gray-400 mt-2 space-y-1 list-disc list-inside">
+                <ul class="text-base text-foreground-secondary mt-2 space-y-1 list-disc list-inside">
                     <li>
                         <a href="https://github.com/saifaustcse/rest-api-best-practices" target="_blank" rel="noopener noreferrer" class="text-primary hover:underline">
                             GitHub: REST API Best Practices &amp; Naming Conventions
@@ -273,70 +273,70 @@ const tocSections: TOCSection[] = [
 
         <Step id="p1-6" diagram="/diagrams/02/step5.webp">
             <StepHeader kicker="Pertemuan 2 · REST API" title="Server Menjawab Dengan Format JSON" tone="success" />
-            <p class="text-gray-600 dark:text-gray-400 leading-relaxed">
+            <p class="text-foreground-secondary leading-relaxed">
                 Setelah backend selesai memproses request, saatnya backend memberikan
                 <strong> Response</strong>. Agar bisa dipahami platform apa pun, data dibungkus dengan format universal yaitu <strong>JSON </strong>
                  (<em>JavaScript Object Notation</em>).
             </p>
-            <div class="mt-4 p-4 rounded-lg bg-gray-900 dark:bg-gray-950 font-mono text-sm leading-relaxed whitespace-pre">
-                <div class="text-gray-400">{`{`}</div>
-                <div>  <span class="text-accent">"success"</span>: <span class="text-warning">true</span>,</div>
-                <div>  <span class="text-accent">"message"</span>: <span class="text-warning">"Data pengguna berhasil diambil"</span>,</div>
-                <div>  <span class="text-accent">"data"</span>: <span class="text-gray-400">{`{`}</span></div>
-                <div>    <span class="text-accent">"id"</span>: <span class="text-warning">5</span>,</div>
-                <div>    <span class="text-accent">"name"</span>: <span class="text-warning">"Prayuda Afifan"</span>,</div>
-                <div>    <span class="text-accent">"role"</span>: <span class="text-warning">"customer"</span>,</div>
-                <div>    <span class="text-accent">"email"</span>: <span class="text-warning">"prayuda@example.com"</span></div>
-                <div>  <span class="text-gray-400">{`}`}</span></div>
-                <div class="text-gray-400">{`}`}</div>
+             <div class="mt-4 p-4 rounded-lg bg-surface-overlay font-mono text-sm leading-relaxed whitespace-pre">
+                 <div class="text-zinc-400">{`{`}</div>
+                 <div>  <span class="text-violet-400">"success"</span>: <span class="text-amber-400">true</span>,</div>
+                 <div>  <span class="text-violet-400">"message"</span>: <span class="text-amber-400">"Data pengguna berhasil diambil"</span>,</div>
+                 <div>  <span class="text-violet-400">"data"</span>: <span class="text-zinc-400">{`{`}</span></div>
+                 <div>    <span class="text-violet-400">"id"</span>: <span class="text-amber-400">5</span>,</div>
+                 <div>    <span class="text-violet-400">"name"</span>: <span class="text-amber-400">"Prayuda Afifan"</span>,</div>
+                 <div>    <span class="text-violet-400">"role"</span>: <span class="text-amber-400">"customer"</span>,</div>
+                 <div>    <span class="text-violet-400">"email"</span>: <span class="text-amber-400">"prayuda@example.com"</span></div>
+                 <div>  <span class="text-zinc-400">{`}`}</span></div>
+                 <div class="text-zinc-400">{`}`}</div>
             </div>
         </Step>
 
         <Step id="p1-7" diagram="/diagrams/02/step6.webp">
             <StepHeader kicker="Pertemuan 2 · REST API" title="Membaca Jawaban Server: HTTP Status Code" tone="warning" />
-            <p class="text-gray-600 dark:text-gray-400 leading-relaxed">
+            <p class="text-foreground-secondary leading-relaxed">
                 Bersamaan dengan data JSON, server selalu menyelipkan <strong>HTTP Status Code</strong>.
                 Fungsinya untuk memberi tahu client secara instan apakah permintaan berhasil, ditolak, atau gagal total,
                 tanpa harus membaca seluruh isi JSON terlebih dahulu.
             </p>
-            <p class="mt-4 text-gray-600 dark:text-gray-400 leading-relaxed">
+            <p class="mt-4 text-foreground-secondary leading-relaxed">
                 Berikut contoh yang <strong class="text-warning">paling sering muncul</strong>:
             </p>
-            <div class="mt-4 space-y-2 text-lg">
+            <div class="mt-4 space-y-2">
                 <div class="p-3 rounded-lg bg-success/5 dark:bg-success/10 border-l-4 border-success">
                     <span class="font-bold text-success">2xx (Berhasil)</span>
-                    <p class="text-base text-gray-500 dark:text-gray-400 mt-1">
+                    <p class="text-sm md:text-base text-muted-foreground mt-1">
                         Permintaan diproses tanpa masalah. Contoh:
-                        <code class="font-mono text-base bg-gray-100 dark:bg-gray-800 px-1.5 py-0.5 rounded">200 OK</code>
+                        <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">200 OK</code>
                         sukses umum (misal berhasil mengambil data produk),
-                        <code class="font-mono text-base bg-gray-100 dark:bg-gray-800 px-1.5 py-0.5 rounded">201 Created</code>
+                        <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">201 Created</code>
                         saat akun berhasil didaftarkan di database.
                     </p>
                 </div>
                 <div class="p-3 rounded-lg bg-warning/5 dark:bg-warning/10 border-l-4 border-warning">
                     <span class="font-bold text-warning">4xx (Kesalahan Client)</span>
-                    <p class="text-base text-gray-500 dark:text-gray-400 mt-1">
+                    <p class="text-sm md:text-base text-muted-foreground mt-1">
                         "Aku nggak bisa proses ini karena client yang salah kirim." Contoh:
-                        <code class="font-mono text-base bg-gray-100 dark:bg-gray-800 px-1.5 py-0.5 rounded">400</code> input salah format,
-                        <code class="font-mono text-base bg-gray-100 dark:bg-gray-800 px-1.5 py-0.5 rounded">401</code> belum login akses data rahasia,
-                        <code class="font-mono text-base bg-gray-100 dark:bg-gray-800 px-1.5 py-0.5 rounded">404</code> endpoint/data tidak ada.
+                        <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">400</code> input salah format,
+                        <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">401</code> belum login akses data rahasia,
+                        <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">404</code> endpoint/data tidak ada.
                     </p>
                 </div>
                 <div class="p-3 rounded-lg bg-error/5 dark:bg-error/10 border-l-4 border-error">
                     <span class="font-bold text-error">5xx (Kesalahan Server)</span>
-                    <p class="text-base text-gray-500 dark:text-gray-400 mt-1">
+                    <p class="text-sm md:text-base text-muted-foreground mt-1">
                         "Permintaanmu benar, tapi sistem kami (backend) yang sedang rusak." Contoh:
-                        <code class="font-mono text-base bg-gray-100 dark:bg-gray-800 px-1.5 py-0.5 rounded">500 Internal Server Error</code>
+                        <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">500 Internal Server Error</code>
                         ada bug/crash di backend atau database sedang mati.
                     </p>
                 </div>
             </div>
-            <div class="mt-4 p-4 rounded-lg bg-accent/5 dark:bg-accent/10 border-2 border-dashed border-accent text-lg">
+            <div class="mt-4 p-4 rounded-lg bg-accent/5 dark:bg-accent/10 border-2 border-dashed border-accent">
                 <span class="flex items-center gap-2 font-bold text-accent">
                     <BookOpen class="w-4 h-4" />
                     Bacaan Lanjutan
                 </span>
-                <ul class="text-base text-gray-600 dark:text-gray-400 mt-2 space-y-1 list-disc list-inside">
+                <ul class="text-base text-foreground-secondary mt-2 space-y-1 list-disc list-inside">
                     <li>
                         <a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Status" target="_blank" rel="noopener noreferrer" class="text-primary hover:underline">
                             MDN Web Docs: HTTP response status codes
@@ -359,19 +359,19 @@ const tocSections: TOCSection[] = [
         <Step id="h1-1" diagram="/diagrams/02/step8.webp">
             <SectionDivider label="Hands-on 1" />
             <StepHeader kicker="Pertemuan 2 · Hands-on" title="Setup Project & Instalasi Express" tone="success" />
-            <p class="text-gray-600 dark:text-gray-400 leading-relaxed">
+            <p class="text-foreground-secondary leading-relaxed">
                 Sebelum menulis kode backend, kita perlu membuat folder khusus dan
                 menyiapkan proyek <strong>Node.js</strong> terlebih dahulu.
             </p>
             <TerminalBlock code={`mkdir my-api && cd my-api # Buat folder my-api dan pergi ke sana\nmkdir src # Folder khusus kode sumber\nnpm init -y\nnpm install express\nnpm install -D typescript @types/express\nnpx tsc --init`} title="Terminal — Setup project" />
             <div class="mt-4 p-3 rounded-lg bg-primary/5 dark:bg-primary/10 border-l-4 border-primary">
                 <span class="font-bold text-primary">Apa itu package.json?</span>
-                <p class="text-base text-gray-500 dark:text-gray-400 mt-1">
-                    File <code class="font-mono text-base bg-gray-100 dark:bg-gray-800 px-1.5 py-0.5 rounded">package.json</code>
+                <p class="text-sm md:text-base text-muted-foreground mt-1">
+                    File <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">package.json</code>
                     bertindak sebagai "identitas" proyek yang mencatat seluruh pustaka
                     (<em>dependencies</em>) yang kita pakai. Ia dibuat otomatis oleh perintah
-                    <code class="font-mono text-base bg-gray-100 dark:bg-gray-800 px-1.5 py-0.5 rounded">npm init -y</code>,
-                    dan <code class="font-mono text-base bg-gray-100 dark:bg-gray-800 px-1.5 py-0.5 rounded">npm install express</code>
+                    <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">npm init -y</code>,
+                    dan <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">npm install express</code>
                     menyimpan Express ke dalamnya.
                 </p>
             </div>
@@ -381,7 +381,7 @@ const tocSections: TOCSection[] = [
                     <BookOpen class="w-4 h-4" />
                     Bacaan Lanjutan
                 </span>
-                <ul class="text-base text-gray-600 dark:text-gray-400 mt-2 space-y-1 list-disc list-inside">
+                <ul class="text-base text-foreground-secondary mt-2 space-y-1 list-disc list-inside">
                     <li>
                         <a href="https://nodejs.org/en/download" target="_blank" rel="noopener noreferrer" class="text-primary hover:underline">
                             Node.js Official Download
@@ -406,35 +406,35 @@ const tocSections: TOCSection[] = [
 
         <Step id="h1-2" diagram="/diagrams/02/step8.webp">
             <StepHeader kicker="Pertemuan 2 · Hands-on" title="Mengaktifkan ES Modules (type: module)" tone="success" />
-            <p class="-my-2 text-gray-600 dark:text-gray-400 leading-relaxed text-lg">
-                Buka file <code class="font-mono text-base bg-gray-100 dark:bg-gray-800 px-1.5 py-0.5 rounded">package.json</code>
-                hasil <code class="font-mono text-base bg-gray-100 dark:bg-gray-800 px-1.5 py-0.5 rounded">npm init -y</code>.
+            <p class="text-foreground-secondary leading-relaxed">
+                Buka file <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">package.json</code>
+                hasil <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">npm init -y</code>.
                 Secara default Node.js memperlakukan proyek sebagai <strong>CommonJS</strong>, padahal kode
-                TypeScript yang akan kita tulis memakai sintaks <code class="font-mono text-base bg-gray-100 dark:bg-gray-800 px-1.5 py-0.5 rounded">import</code>
-                (<strong>ES Modules</strong>). Tambahkan/ubah field <code class="font-mono text-base bg-gray-100 dark:bg-gray-800 px-1.5 py-0.5 rounded">"type"</code>
-                menjadi <code class="font-mono text-base bg-gray-100 dark:bg-gray-800 px-1.5 py-0.5 rounded">"module"</code>:
+                TypeScript yang akan kita tulis memakai sintaks <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">import</code>
+                (<strong>ES Modules</strong>). Tambahkan/ubah field <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">"type"</code>
+                menjadi <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">"module"</code>:
             </p>
             <CodeBlock code={packageEsm} language="json" filename="package.json" compact />
-            <ul class="-mt-2 space-y-2 text-gray-600 dark:text-gray-400 leading-relaxed list-disc list-inside">
+            <ul class="space-y-2 text-foreground-secondary leading-relaxed list-disc list-inside">
                 <li>
                     Yang diubah <strong>hanya</strong> field
-                    <code class="font-mono text-base bg-gray-100 dark:bg-gray-800 px-1.5 py-0.5 rounded">"type": "module"</code> dan 
-                    <code class="font-mono text-base bg-gray-100 dark:bg-gray-800 px-1.5 py-0.5 rounded">"main": "src/index.ts"</code>.
+                    <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">"type": "module"</code> dan 
+                    <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">"main": "src/index.ts"</code>.
                 </li>
                 <li>
-                    Tanpa ini, <code class="font-mono text-base bg-gray-100 dark:bg-gray-800 px-1.5 py-0.5 rounded">node src/index.ts</code>
+                    Tanpa ini, <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">node src/index.ts</code>
                     akan gagal dengan error
-                    <code class="font-mono text-base bg-gray-100 dark:bg-gray-800 px-1.5 py-0.5 rounded">Cannot use import statement outside a module</code>.
+                    <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">Cannot use import statement outside a module</code>.
                 </li>
             </ul>
         </Step>
 
         <Step id="h1-3" diagram="/diagrams/02/step8.webp">
             <StepHeader kicker="Pertemuan 2 · Hands-on" title="Membuat Endpoint Pertama (GET /health)" tone="success" />
-            <p class="text-gray-600 dark:text-gray-400 leading-relaxed">
+            <p class="text-foreground-secondary leading-relaxed">
                 Buat file baru bernama
-                &nbsp;<code class="font-mono text-base bg-gray-100 dark:bg-gray-800 px-1.5 py-0.5 rounded">src/index.ts</code>&nbsp;
-                di dalam folder <code class="font-mono text-base bg-gray-100 dark:bg-gray-800 px-1.5 py-0.5 rounded">src</code> proyekmu.
+                &nbsp;<code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">src/index.ts</code>&nbsp;
+                di dalam folder <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">src</code> proyekmu.
                 File ini adalah <strong>entry point </strong>
                 di mana kita menyusun aturan server. Di tahap ini kita membuat
                 <strong> Health Check Endpoint</strong>, yaitu endpoint sederhana untuk memastikan server aktif dan merespons.
@@ -444,20 +444,20 @@ const tocSections: TOCSection[] = [
 
         <Step id="h1-4" diagram="/diagrams/02/step8.webp">
             <StepHeader kicker="Pertemuan 2 · Hands-on" title="Menyalakan Server & Pengujian di Browser" tone="success" />
-            <p class="text-gray-600 dark:text-gray-400 leading-relaxed">
+            <p class="text-foreground-secondary leading-relaxed">
                 Setelah kode di file
-                &nbsp;<code class="font-mono text-base bg-gray-100 dark:bg-gray-800 px-1.5 py-0.5 rounded">src/index.ts</code>&nbsp;
+                &nbsp;<code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">src/index.ts</code>&nbsp;
                 selesai ditulis, saatnya menghidupkan mesin server lokal dan
                 memverifikasi apakah endpoint kita berjalan sesuai harapan.
             </p>
-            <div class="mt-2 text-lg">
-                <ol class="list-decimal pl-6 space-y-6 text-gray-600 dark:text-gray-400 leading-relaxed">
+            <div class="mt-2">
+                <ol class="list-decimal pl-6 space-y-6 text-foreground-secondary leading-relaxed">
                     <li>
                         <span class="font-bold text-primary">Jalankan Server di Terminal</span>
                         <TerminalBlock code={`node src/index.ts`} title="Terminal — Jalankan server" />
                         <p>
                             Jika berhasil, terminal akan menampilkan pesan:
-                            <code class="font-mono text-base bg-gray-100 dark:bg-gray-800 px-1.5 py-0.5 rounded">Server berjalan di http://localhost:3000</code>
+                            <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">Server berjalan di http://localhost:3000</code>
                         </p>
                     </li>
                     <li>
@@ -478,17 +478,17 @@ const tocSections: TOCSection[] = [
 
         <Step id="h1-5" diagram="/diagrams/02/step8.webp">
             <StepHeader kicker="Pertemuan 2 · Hands-on" title="Mengotomatiskan Server dengan node --watch" tone="success" />
-            <p class="text-gray-600 dark:text-gray-400 leading-relaxed text-lg">
-                Menekan <code class="font-mono text-base bg-gray-100 dark:bg-gray-800 px-1.5 py-0.5 rounded">Ctrl + C</code>
-                dan mengetik <code class="font-mono text-base bg-gray-100 dark:bg-gray-800 px-1.5 py-0.5 rounded">node src/index.ts</code>
+            <p class="text-foreground-secondary leading-relaxed">
+                Menekan <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">Ctrl + C</code>
+                dan mengetik <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">node src/index.ts</code>
                 berulang kali setiap ada perubahan kode tentu sangat tidak efisien.
                 Sejak <strong>Node.js v22.18+</strong>, kita dapat menjalankan file TypeScript
                 <strong>tanpa kompilasi terpisah</strong> (<em>type stripping</em>) dan memakai fitur
-                <code class="font-mono text-base bg-gray-100 dark:bg-gray-800 px-1.5 py-0.5 rounded">--watch</code>
+                <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">--watch</code>
                 agar server otomatis memuat ulang (<em>hot-reload</em>) setiap kali file disimpan.
             </p>
-            <div class="mt-2 text-lg">
-                <ol class="list-decimal pl-6 space-y-2 text-gray-600 dark:text-gray-400 leading-relaxed">
+            <div class="mt-2">
+                <ol class="list-decimal pl-6 space-y-2 text-foreground-secondary leading-relaxed">
                     <li>
                         <span class="font-bold text-primary">Jalankan Perintah Watch Mode.</span>
                         <TerminalBlock code={`node --watch src/index.ts`} title="Terminal — Watch mode" />
@@ -504,8 +504,8 @@ const tocSections: TOCSection[] = [
                         <span class="font-bold text-primary">Cara Menjalankan.</span>
                         <TerminalBlock code={`npm run dev`} title="Terminal — Jalankan dev server" />
                         Coba ubah pesan di endpoint
-                        <code class="font-mono text-base bg-gray-100 dark:bg-gray-800 px-1.5 py-0.5 rounded">/health</code>
-                        lalu tekan Save (<code class="font-mono text-base bg-gray-100 dark:bg-gray-800 px-1.5 py-0.5 rounded">Ctrl + S</code>).
+                        <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">/health</code>
+                        lalu tekan Save (<code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">Ctrl + S</code>).
                         Kamu akan melihat terminal otomatis me-restart server tanpa perlu diketik ulang!
                     </li>
                 </ol>
@@ -517,19 +517,19 @@ const tocSections: TOCSection[] = [
         <Step id="p4-1" diagram="/diagrams/02/step7.webp">
             <SectionDivider label="Arsitektur Layered" />
             <StepHeader kicker="Pertemuan 2 · Arsitektur" title="Mengapa Butuh Layer?" tone="success" />
-            <p class="text-gray-600 dark:text-gray-400 leading-relaxed">
+            <p class="text-foreground-secondary leading-relaxed">
                 Kita telah menulis endpoint
-                <code class="font-mono text-base bg-gray-100 dark:bg-gray-800 px-1.5 py-0.5 rounded">/health</code>
+                <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">/health</code>
                 <strong> langsung di satu file</strong>.
                 Cara tersebut sangat oke untuk skenario sederhana. Namun, bagaimana jika aplikasi
                 mulai menangani fitur kompleks seperti autentikasi, transaksi,
                 validasi input, query database, dan banyak lagi?
             </p>
-            <p class="mt-3 text-gray-600 dark:text-gray-400 leading-relaxed">
+            <p class="mt-3 text-foreground-secondary leading-relaxed">
                 Jika semua logika tersebut ditumpuk di dalam satu file atau satu fungsi handler, kode akan menjadi
                 <strong> "Spaghetti Code"</strong> yang gemuk dan sulit diperbaiki.
             </p>
-            <p class="mt-6 text-gray-700 dark:text-gray-300 leading-relaxed">
+            <p class="mt-6 text-foreground/80 leading-relaxed">
                 <span class="bg-yellow-200/70 dark:bg-yellow-500/20 px-1 rounded">
                 Lalu, bagaimana cara menjaga kode tetap bersih dan mudah
                 dipelajari saat fitur mulai bertambah banyak?</span>
@@ -538,11 +538,11 @@ const tocSections: TOCSection[] = [
 
         <Step id="p4-2" diagram="/diagrams/02/step7.webp">
             <StepHeader kicker="Pertemuan 2 · Arsitektur" title="Solusi: Layered Architecture" tone="success" />
-            <p class="text-gray-600 dark:text-gray-400 leading-relaxed">
+            <p class="text-foreground-secondary leading-relaxed">
                 Kita membagi kode ke dalam beberapa lapisan. Setiap layer hanya fokus
                 pada satu tugas spesifik (<em>Separation of Concerns</em>):
             </p>
-            <ul class="mt-4 space-y-3 text-gray-600 dark:text-gray-400 leading-relaxed list-disc list-inside">
+            <ul class="mt-4 space-y-3 text-foreground-secondary leading-relaxed list-disc list-inside">
                 <li>
                     <strong class="text-accent">Router: </strong>
                     menangkap request HTTP dan meneruskannya ke fungsi controller yang tepat berdasarkan
@@ -575,38 +575,38 @@ const tocSections: TOCSection[] = [
         <Step id="h2-1" diagram="/diagrams/02/step8.webp">
             <SectionDivider label="Hands-on 2" />
             <StepHeader kicker="Pertemuan 2 · Hands-on" title="Repository" tone="success" />
-            <p class="-my-2 text-gray-600 dark:text-gray-400 leading-relaxed text-lg">
+            <p class="text-foreground-secondary leading-relaxed">
                 Karena ini contoh dasar, kita gunakan <em>mock data</em> yaitu interface &amp; data didefinisikan
                 langsung di file ini.
             </p>
             <CodeBlock code={stallRepository} language="ts" filename="src/repositories/stallRepository.ts" />
-            <ul class="-mt-2 space-y-1 text-base text-gray-600 dark:text-gray-400 list-disc list-inside">
+            <ul class="space-y-1 text-sm md:text-base text-foreground-secondary list-disc list-inside">
                 <li>
                     <a href="https://developer.mozilla.org/en-US/docs/Learn/JavaScript/Asynchronous" target="_blank" rel="noopener noreferrer" class="text-primary hover:underline">MDN: Asynchronous JavaScript</a>
                     — panduan konsep non-blocking &amp; async/await.
                 </li>
                 <li>
                     <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Using_promises" target="_blank" rel="noopener noreferrer" class="text-primary hover:underline">MDN: Using Promises</a>
-                    — penulisan tipe <code class="font-mono text-base bg-gray-100 dark:bg-gray-800 px-1.5 py-0.5 rounded">Promise&lt;T&gt;</code>.
+                    — penulisan tipe <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">Promise&lt;T&gt;</code>.
                 </li>
             </ul>
         </Step>
 
         <Step id="h2-2" diagram="/diagrams/02/step8.webp">
             <StepHeader kicker="Pertemuan 2 · Hands-on" title="DTO (Data Transfer Object)" tone="success" />
-            <p class=" text-gray-600 dark:text-gray-400 leading-relaxed text-lg">
+            <p class="text-foreground-secondary leading-relaxed">
                 DTO berfungsi sebagai <strong>"kontrak data"</strong> untuk
                 menentukan struktur pasti data yang akan diterima atau dikembalikan oleh server.
             </p>
             <CodeBlock code={stallDto} language="ts" filename="src/dtos/stallDto.ts" />
-            <ul class="mt-2 space-y-2 text-gray-600 dark:text-gray-400 leading-relaxed list-disc list-inside text-lg">
+            <ul class="mt-2 space-y-2 text-foreground-secondary leading-relaxed list-disc list-inside">
                 <li>
                     <strong>Memisahkan struktur internal</strong> database/repository dengan struktur data
                     yang disajikan ke publik/frontend.
                 </li>
                 <li>
                     Penambahan field khusus tampilan (seperti
-                    <code class="font-mono text-base bg-gray-100 dark:bg-gray-800 px-1.5 py-0.5 rounded">isPopular</code>)
+                    <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">isPopular</code>)
                     bisa dilakukan tanpa mengacak-acak struktur tabel asli di repository.
                 </li>
             </ul>
@@ -614,22 +614,22 @@ const tocSections: TOCSection[] = [
 
         <Step id="h2-3" diagram="/diagrams/02/step8.webp">
             <StepHeader kicker="Pertemuan 2 · Hands-on" title="Service" tone="success" />
-            <p class="-my-2 text-gray-600 dark:text-gray-400 leading-relaxed text-lg">
+            <p class="text-foreground-secondary leading-relaxed">
                 Setelah kontrak DTO siap, kita buat <strong>Service Layer</strong> yang memanggil Repository
                 untuk mengambil data mentah, lalu menerapkan logika bisnis 
-                <code class="font-mono text-base bg-gray-100 dark:bg-gray-800 px-1.5 py-0.5 rounded">isPopular</code>),
-                dan mengembalikan data dalam format <code class="font-mono text-base bg-gray-100 dark:bg-gray-800 px-1.5 py-0.5 rounded">StallResponseDto</code>.
+                <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">isPopular</code>),
+                dan mengembalikan data dalam format <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">StallResponseDto</code>.
             </p>
             <CodeBlock code={stallService} language="ts" filename="src/services/stallService.ts" compact />
         </Step>
 
         <Step id="h2-4" diagram="/diagrams/02/step8.webp">
             <StepHeader kicker="Pertemuan 2 · Hands-on" title="Controller" tone="success" />
-            <p class="-my-3 text-gray-600 dark:text-gray-400 leading-relaxed text-base">
+            <p class="text-foreground-secondary leading-relaxed">
                 Controller membungkus logika bisnis di balik HTTP: menerima
-                <code class="font-mono text-base bg-gray-100 dark:bg-gray-800 px-1.5 py-0.5 rounded">req</code>,
+                <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">req</code>,
                 meneruskan parameter ke Service, lalu menyusun
-                <code class="font-mono text-base bg-gray-100 dark:bg-gray-800 px-1.5 py-0.5 rounded">res</code>
+                <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">res</code>
                 berformat JSON beserta status code yang sesuai.
             </p>
             <CodeBlock code={stallController} language="ts" filename="src/controllers/stallController.ts" mini />
@@ -637,46 +637,46 @@ const tocSections: TOCSection[] = [
 
         <Step id="h2-5" diagram="/diagrams/02/step8.webp">
             <StepHeader kicker="Pertemuan 2 · Hands-on" title="Router" tone="success" />
-            <p class="-my-2 text-gray-600 dark:text-gray-400 leading-relaxed text-lg">
+            <p class="text-foreground-secondary leading-relaxed">
                 Layer ini bertugas <strong>memetakan</strong> pasangan HTTP Method (mis. GET) dan URL Path
-                (mis. <code class="font-mono text-base bg-gray-100 dark:bg-gray-800 px-1.5 py-0.5 rounded">/</code>
-                atau <code class="font-mono text-base bg-gray-100 dark:bg-gray-800 px-1.5 py-0.5 rounded">/:id</code>)
-                ke fungsi handler yang sesuai di <code class="font-mono text-base bg-gray-100 dark:bg-gray-800 px-1.5 py-0.5 rounded">StallController</code>.
+                (mis. <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">/</code>
+                atau <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">/:id</code>)
+                ke fungsi handler yang sesuai di <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">StallController</code>.
             </p>
             <CodeBlock code={stallRouter} language="ts" filename="src/routes/stallRouter.ts" />
         </Step>
 
         <Step id="h2-6" diagram="/diagrams/02/step8.webp">
             <StepHeader kicker="Pertemuan 2 · Hands-on" title="Integrasi ke Entry Point" tone="success" />
-            <p class="-my-2 text-gray-600 dark:text-gray-400 leading-relaxed text-lg">
+            <p class="text-foreground-secondary leading-relaxed">
                 Seluruh lapisan (Repository → Service → Controller → Router) kini digabungkan
-                ke file entry point utama server, <code class="font-mono text-base bg-gray-100 dark:bg-gray-800 px-1.5 py-0.5 rounded">src/index.ts</code>.
+                ke file entry point utama server, <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">src/index.ts</code>.
             </p>
             <CodeBlock code={stallIndex} language="ts" filename="src/index.ts" />
         </Step>
 
         <Step id="h2-7" diagram="/diagrams/02/step8.webp">
             <StepHeader kicker="Pertemuan 2 · Hands-on" title="Pengujian Endpoint" tone="success" />
-            <p class="-my-2 text-gray-600 dark:text-gray-400 leading-relaxed">
+            <p class="text-foreground-secondary leading-relaxed">
                 Jalankan server dengan
-                <code class="font-mono text-base bg-gray-100 dark:bg-gray-800 px-1.5 py-0.5 rounded">npm run dev</code>,
+                <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">npm run dev</code>,
                 lalu buka browser dan uji endpoint berikut:
             </p>
-            <ol class="mt-4 space-y-4 text-gray-600 dark:text-gray-400 leading-relaxed list-decimal pl-6">
+            <ol class="mt-4 space-y-4 text-foreground-secondary leading-relaxed list-decimal pl-6">
                 <li>
                     <p><strong class="text-primary">Ambil Semua Warung.</strong></p>
                     <p class="ml-5">
-                        <code class="font-mono text-base bg-gray-100 dark:bg-gray-800 px-1.5 py-0.5 rounded">GET http://localhost:3000/api/v1/stalls</code>
+                        <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">GET http://localhost:3000/api/v1/stalls</code>
                     </p>
                     <p class="ml-5">
                         Hasil: mengembalikan daftar warung lengkap dengan properti
-                        <code class="font-mono text-base bg-gray-100 dark:bg-gray-800 px-1.5 py-0.5 rounded">isPopular</code>.
+                        <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">isPopular</code>.
                     </p>
                 </li>
                 <li>
                     <p><strong class="text-primary">Ambil Detail Warung (ID Ada).</strong></p>
                     <p class="ml-5">
-                        <code class="font-mono text-base bg-gray-100 dark:bg-gray-800 px-1.5 py-0.5 rounded">GET http://localhost:3000/api/v1/stalls/1</code>
+                        <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">GET http://localhost:3000/api/v1/stalls/1</code>
                     </p>
                     <p class="ml-5">
                         Hasil: mengembalikan objek warung Kwetiau Goreng (Status 200).
@@ -685,11 +685,11 @@ const tocSections: TOCSection[] = [
                 <li>
                     <p><strong class="text-primary">Ambil Detail Warung (ID Tidak Ada).</strong></p>
                     <p class="ml-5">
-                        <code class="font-mono text-base bg-gray-100 dark:bg-gray-800 px-1.5 py-0.5 rounded">GET http://localhost:3000/api/v1/stalls/99</code>
+                        <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">GET http://localhost:3000/api/v1/stalls/99</code>
                     </p>
                     <p class="ml-5">
                         Hasil: mengembalikan
-                        <code class="font-mono text-base bg-gray-100 dark:bg-gray-800 px-1.5 py-0.5 rounded">{`{"status":"fail","message":"Data warung tidak ditemukan"}`}</code>
+                        <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">{`{"status":"fail","message":"Data warung tidak ditemukan"}`}</code>
                         (Status 404).
                     </p>
                 </li>

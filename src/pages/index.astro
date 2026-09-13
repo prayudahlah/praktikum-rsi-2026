@@ -23,12 +23,12 @@ import { Lock } from '@lucide/astro';
                         <span class="block text-primary">RSI</span>
                     </h1>
 
-                    <p class="fade-up delay-300 text-lg md:text-xl text-gray-600 dark:text-gray-400 mb-10 max-w-md leading-relaxed">
+                    <p class="fade-up delay-300 text-lg md:text-xl text-foreground-secondary mb-10 max-w-md leading-relaxed">
                         Belajar bikin web dari nol ദ്ദി ˉ꒳ˉ )✧
                     </p>
 
-                    <a href={`/meetings/${meetings[0].slug}`}
-                       class="fade-up delay-400 group inline-flex items-center gap-3 bg-primary text-white px-8 py-4 rounded-lg text-lg font-medium transition-all hover:shadow-lg hover:shadow-primary/30 hover:-translate-y-0.5">
+                     <a href={`/meetings/${meetings[0].slug}`}
+                        class="fade-up delay-400 group inline-flex items-center gap-3 bg-primary text-primary-foreground px-8 py-4 rounded-lg text-lg font-medium transition-all hover:shadow-lg hover:shadow-primary/30 hover:-translate-y-0.5">
                         Mulai Belajar
                         <svg class="w-5 h-5 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
@@ -44,7 +44,7 @@ import { Lock } from '@lucide/astro';
             </div>
         </div>
 
-        <div class="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 text-gray-400 dark:text-gray-600 fade-up delay-600">
+         <div class="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 text-muted-foreground fade-up delay-600">
             <span class="font-mono text-xs tracking-widest uppercase">Scroll</span>
             <svg class="w-4 h-4 animate-bounce" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3" />
@@ -57,7 +57,7 @@ import { Lock } from '@lucide/astro';
         <div class="absolute top-0 inset-x-0 h-40 bg-linear-to-b from-blue-50/40 dark:from-blue-950/10 to-transparent pointer-events-none"></div>
 
         <div class="relative max-w-3xl mx-auto">
-            <p class="fade-up font-mono text-sm tracking-widest text-gray-400 dark:text-gray-600 uppercase mb-2">
+             <p class="fade-up font-mono text-sm tracking-widest text-muted-foreground uppercase mb-2">
                 {meetings.length} Pertemuan
             </p>
             <h2 class="fade-up delay-100 font-display text-3xl md:text-4xl font-bold mb-12">Kurikulum</h2>
@@ -65,9 +65,9 @@ import { Lock } from '@lucide/astro';
             <div class="space-y-0">
                 {meetings.map((meeting) => (
                     <a href={`/meetings/${meeting.slug}`}
-                       class={`fade-up stagger-item flex items-center gap-6 py-5 px-2 border-b border-gray-200 dark:border-gray-700 transition group ${meeting.published ? 'hover:bg-gray-50 dark:hover:bg-gray-800/50' : 'text-gray-400 dark:text-gray-500'}`}
+                        class={`fade-up stagger-item flex items-center gap-6 py-5 px-2 border-b border-border transition group ${meeting.published ? 'hover:bg-hover' : 'text-muted-foreground'}`}
                     >
-                        <span class={`font-mono text-2xl font-bold w-12 shrink-0 ${meeting.published ? 'text-gray-300 dark:text-gray-600 group-hover:text-primary' : 'text-gray-300 dark:text-gray-600'}`}>
+                        <span class={`font-mono text-2xl font-bold w-12 shrink-0 ${meeting.published ? 'text-muted-foreground/40 group-hover:text-primary' : 'text-muted-foreground/40'}`}>
                             {String(meeting.order).padStart(2, '0')}
                         </span>
                         <div class="flex-1">
@@ -76,7 +76,7 @@ import { Lock } from '@lucide/astro';
                             </h3>
                         </div>
                         {!meeting.published && <Lock class="w-5 h-5 ml-auto shrink-0" />}
-                        {meeting.published && <svg class="w-5 h-5 text-gray-400 group-hover:text-primary group-hover:translate-x-1 transition ml-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        {meeting.published && <svg class="w-5 h-5 text-muted-foreground group-hover:text-primary group-hover:translate-x-1 transition ml-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
                         </svg>}
                     </a>
