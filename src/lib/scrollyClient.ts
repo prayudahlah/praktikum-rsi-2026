@@ -132,7 +132,7 @@ export function initScrolly() {
     const splitStorageKey = 'rsi.splitTextPct';
     const minTextPct = 30;
     const maxTextPct = 70;
-    let textPct = 50;
+    let textPct = 60;
     let isResizing = false;
 
     const clampTextPct = (value: number) => Math.min(maxTextPct, Math.max(minTextPct, value));
@@ -146,8 +146,11 @@ export function initScrolly() {
     };
 
     try {
-        const savedPct = Number(localStorage.getItem(splitStorageKey));
-        if (Number.isFinite(savedPct)) textPct = clampTextPct(savedPct);
+        const stored = localStorage.getItem(splitStorageKey);
+        if (stored !== null) {
+            const savedPct = Number(stored);
+            if (Number.isFinite(savedPct)) textPct = clampTextPct(savedPct);
+        }
     } catch {
         // Storage can be unavailable in privacy-restricted browsers.
     }

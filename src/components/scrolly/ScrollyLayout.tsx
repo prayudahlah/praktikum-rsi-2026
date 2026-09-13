@@ -11,7 +11,7 @@ export function ScrollyLayout({ children, defaultSrc, placeholder }: ScrollyLayo
     return (
         <>
             <div id="scrolly-split" className="flex flex-col lg:flex-row">
-                <div id="scrolly-text-col" className="order-2 lg:order-1 lg:flex-none lg:w-1/2">
+                <div id="scrolly-text-col" className="order-2 lg:order-1 lg:flex-none lg:w-3/5">
                     {children}
                 </div>
                 <div id="scrolly-diagram-col" className="relative h-[40vh] sticky top-14 lg:h-[calc(100vh-3.5rem)] order-1 lg:order-2 lg:flex-1 lg:min-w-0 z-10">
@@ -22,7 +22,7 @@ export function ScrollyLayout({ children, defaultSrc, placeholder }: ScrollyLayo
                         aria-orientation="vertical"
                         aria-valuemin={30}
                         aria-valuemax={70}
-                        aria-valuenow={50}
+                        aria-valuenow={60}
                         tabIndex={0}
                         className="hidden lg:block absolute left-0 top-0 z-20 h-full w-3 -translate-x-1/2 cursor-col-resize group"
                     >
