@@ -1,5 +1,5 @@
 import express, { type Request, type Response, type Application } from 'express';
-import { stallRouter } from './routes/stallRouter';
+import { stallRouter } from './routes/stallRouter.ts';
 
 const app: Application = express();
 const PORT: number = 3000;

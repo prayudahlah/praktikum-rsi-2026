@@ -1,5 +1,5 @@
-import { Request, Response } from 'express';
-import { StallService } from '../services/stallService';
+import { type Request, type Response } from 'express';
+import { StallService } from '../services/stallService.ts';
 
 export class StallController {
   constructor(private stallService: StallService = new StallService()) {}

@@ -1,5 +1,5 @@
-import { StallRepository } from '../repositories/stallRepository';
-import { StallResponseDto } from '../dtos/stallDto';
+import { StallRepository } from '../repositories/stallRepository.ts';
+import { type StallResponseDto } from '../dtos/stallDto.ts';
 
 export class StallService {
   constructor(private stallRepository: StallRepository = new StallRepository()) {}

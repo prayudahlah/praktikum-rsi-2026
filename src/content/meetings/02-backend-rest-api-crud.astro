@@ -12,7 +12,7 @@ import TerminalBlock from '../../components/ui/TerminalBlock.astro';
 import CodeBlock from '../../components/ui/CodeBlock.astro';
 import { BookOpen } from '@lucide/astro';
 import expressHealth from '../snippets/02/express-health.ts?raw';
-import packageEsm from '../snippets/02/package-esm.json?raw';
+import packageJson from '../snippets/02/package-json.json?raw';
 import stallRepository from '../snippets/02/stall-repository.ts?raw';
 import stallDto from '../snippets/02/stall-dto.ts?raw';
 import stallService from '../snippets/02/stall-service.ts?raw';
@@ -37,10 +37,9 @@ const tocSections: TOCSection[] = [
         label: 'Hands-on 1',
         items: [
             { id: 'h1-1', title: 'Setup: Project & Instalasi Express' },
-            { id: 'h1-2', title: 'Mengaktifkan ES Modules' },
+            { id: 'h1-2', title: 'Menjalankan TypeScript dengan tsx' },
             { id: 'h1-3', title: 'Membuat Endpoint Pertama (GET /health)' },
             { id: 'h1-4', title: 'Menyalakan Server & Pengujian' },
-            { id: 'h1-5', title: 'Auto-Reload dengan node --watch' },
         ]
     },
     {
@@ -363,7 +362,13 @@ const tocSections: TOCSection[] = [
                 Sebelum menulis kode backend, kita perlu membuat folder khusus dan
                 menyiapkan proyek <strong>Node.js</strong> terlebih dahulu.
             </p>
-            <TerminalBlock code={`mkdir my-api && cd my-api # Buat folder my-api dan pergi ke sana\nmkdir src # Folder khusus kode sumber\nnpm init -y\nnpm install express\nnpm install -D typescript @types/express\nnpx tsc --init`} title="Terminal — Setup project" />
+            <a href="https://github.com/rrrambatsigma/praktikum-rsi-2026/tree/main/pertemuan-02-backend-rest-api-crud"
+               target="_blank" rel="noopener noreferrer"
+               class="my-3 inline-flex items-center gap-2 text-sm font-medium text-primary hover:underline">
+                <img src="/icons/github.svg" alt="" aria-hidden="true" class="w-4 h-4 invert-0 dark:invert" />
+                Kode Hands-on di GitHub
+            </a>
+            <TerminalBlock code={`mkdir my-api && cd my-api # Buat folder my-api dan pergi ke sana\nmkdir src # Folder khusus kode sumber\nnpm init -y\nnpm install express\nnpm install -D typescript tsx @types/express @types/node\nnpx tsc --init`} title="Terminal — Setup project" />
             <div class="mt-4 p-3 rounded-lg bg-primary/5 dark:bg-primary/10 border-l-4 border-primary">
                 <span class="font-bold text-primary">Apa itu package.json?</span>
                 <p class="text-sm md:text-base text-muted-foreground mt-1">
@@ -405,26 +410,33 @@ const tocSections: TOCSection[] = [
         </Step>
 
         <Step id="h1-2" diagram="/diagrams/02/step8.webp">
-            <StepHeader title="Mengaktifkan ES Modules (type: module)" tone="success" />
+            <StepHeader title="Menjalankan TypeScript dengan tsx" tone="success" />
             <p class="text-foreground-secondary leading-relaxed">
-                Buka file <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">package.json</code>
-                hasil <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">npm init -y</code>.
-                Secara default Node.js memperlakukan proyek sebagai <strong>CommonJS</strong>, padahal kode
-                TypeScript yang akan kita tulis memakai sintaks <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">import</code>
-                (<strong>ES Modules</strong>). Tambahkan/ubah field <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">"type"</code>
-                menjadi <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">"module"</code>:
+                Dengan <strong>tsx</strong>, kita bisa menjalankan file
+                <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">.ts</code>
+                langsung <strong>tanpa langkah kompilasi terpisah</strong>.
+                Agar mudah, kita daftarkan dua script,
+                <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">start</code>
+                dan
+                <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">dev</code>,
+                di dalam
+                <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">package.json</code>:
             </p>
-            <CodeBlock code={packageEsm} language="json" filename="package.json" compact />
+            <CodeBlock code={packageJson} language="json" filename="package.json" compact />
             <ul class="space-y-2 text-foreground-secondary leading-relaxed list-disc list-inside">
                 <li>
-                    Yang diubah <strong>hanya</strong> field
-                    <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">"type": "module"</code> dan 
-                    <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">"main": "src/index.ts"</code>.
+                    <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">"main": "src/index.ts"</code>
+                    mengarahkan main entry point proyek ke file <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">src/index.ts</code>.
                 </li>
                 <li>
-                    Tanpa ini, <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">node src/index.ts</code>
-                    akan gagal dengan error
-                    <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">Cannot use import statement outside a module</code>.
+                    <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">"start"</code>
+                    menjalankan server sekali:
+                    <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">tsx src/index.ts</code>.
+                </li>
+                <li>
+                    <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">"dev"</code>
+                    memakai <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">tsx watch</code>
+                    agar server otomatis memuat ulang (<em>hot-reload</em>) setiap file disimpan.
                 </li>
             </ul>
         </Step>
@@ -454,7 +466,7 @@ const tocSections: TOCSection[] = [
                 <ol class="list-decimal pl-6 space-y-6 text-foreground-secondary leading-relaxed">
                     <li>
                         <span class="font-bold text-primary">Jalankan Server di Terminal</span>
-                        <TerminalBlock code={`node src/index.ts`} title="Terminal — Jalankan server" />
+                        <TerminalBlock code={`npx tsx src/index.ts`} title="Terminal — Jalankan server" />
                         <p>
                             Jika berhasil, terminal akan menampilkan pesan:
                             <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">Server berjalan di http://localhost:3000</code>
@@ -471,42 +483,6 @@ const tocSections: TOCSection[] = [
   "message": "Server is running",
   "timestamp": "2026-09-09T16:46:09.000Z"
 }`} language="json" filename="response.json" />
-                    </li>
-                </ol>
-            </div>
-        </Step>
-
-        <Step id="h1-5" diagram="/diagrams/02/step8.webp">
-            <StepHeader title="Mengotomatiskan Server dengan node --watch" tone="success" />
-            <p class="text-foreground-secondary leading-relaxed">
-                Menekan <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">Ctrl + C</code>
-                dan mengetik <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">node src/index.ts</code>
-                berulang kali setiap ada perubahan kode tentu sangat tidak efisien.
-                Sejak <strong>Node.js v22.18+</strong>, kita dapat menjalankan file TypeScript
-                <strong>tanpa kompilasi terpisah</strong> (<em>type stripping</em>) dan memakai fitur
-                <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">--watch</code>
-                agar server otomatis memuat ulang (<em>hot-reload</em>) setiap kali file disimpan.
-            </p>
-            <div class="mt-2">
-                <ol class="list-decimal pl-6 space-y-2 text-foreground-secondary leading-relaxed">
-                    <li>
-                        <span class="font-bold text-primary">Jalankan Perintah Watch Mode.</span>
-                        <TerminalBlock code={`node --watch src/index.ts`} title="Terminal — Watch mode" />
-                    </li>
-                    <li>
-                        <span class="font-bold text-primary">Daftarkan di package.json (Best Practice).</span>
-                        <CodeBlock code={`"scripts": {
-  "start": "node src/index.ts",
-  "dev": "node --watch src/index.ts"
-}`} language="json" filename="package.json" />
-                    </li>
-                    <li>
-                        <span class="font-bold text-primary">Cara Menjalankan.</span>
-                        <TerminalBlock code={`npm run dev`} title="Terminal — Jalankan dev server" />
-                        Coba ubah pesan di endpoint
-                        <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">/health</code>
-                        lalu tekan Save (<code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">Ctrl + S</code>).
-                        Kamu akan melihat terminal otomatis me-restart server tanpa perlu diketik ulang!
                     </li>
                 </ol>
             </div>
@@ -579,6 +555,12 @@ const tocSections: TOCSection[] = [
                 Karena ini contoh dasar, kita gunakan <em>mock data</em> yaitu interface &amp; data didefinisikan
                 langsung di file ini.
             </p>
+            <a href="https://github.com/rrrambatsigma/praktikum-rsi-2026/tree/main/pertemuan-02-backend-rest-api-crud"
+               target="_blank" rel="noopener noreferrer"
+               class="my-3 inline-flex items-center gap-2 text-sm font-medium text-primary hover:underline">
+                <img src="/icons/github.svg" alt="" aria-hidden="true" class="w-4 h-4 invert-0 dark:invert" />
+                Kode Hands-on di GitHub
+            </a>
             <CodeBlock code={stallRepository} language="ts" filename="src/repositories/stallRepository.ts" />
             <ul class="space-y-1 text-sm md:text-base text-foreground-secondary list-disc list-inside">
                 <li>

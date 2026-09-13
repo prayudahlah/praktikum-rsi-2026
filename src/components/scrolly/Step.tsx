@@ -12,7 +12,7 @@ export function Step({ id, children, className = '', diagram }: StepProps) {
         <div
             id={id}
             data-diagram={diagram}
-            className={`min-h-[50vh] flex py-10 lg:py-16 border-t border-border first:border-t-0 scroll-mt-16 lg:scroll-mt-20 step-enter ${className}`}
+            className={`min-h-[50vh] flex py-8 border-t border-border first:border-t-0 scroll-mt-16 lg:scroll-mt-20 step-enter ${className}`}
         >
             <div className="p-6 lg:p-8 w-full max-w-[72ch]">
                 {children}
