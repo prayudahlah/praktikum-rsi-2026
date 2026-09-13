@@ -138,6 +138,8 @@ export function HeroBrowserSlideshow() {
                             key={currentIndex}
                             src={images[currentIndex]}
                             alt={`Diagram ${currentIndex + 1}`}
+                            loading="lazy"
+                            decoding="async"
                             className="absolute inset-0 w-full h-full object-contain p-4"
                             initial={{ opacity: 0 }}
                             animate={{ opacity: 1 }}

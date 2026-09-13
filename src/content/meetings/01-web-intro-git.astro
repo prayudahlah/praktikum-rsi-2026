@@ -18,7 +18,6 @@ const tocSections: TOCSection[] = [
     {
         label: 'Overview',
         items: [
-            { id: 'intro', title: 'Web Application & Environment' },
             { id: 'p1-1', title: 'Apa yang Terjadi di Balik Tombol?' },
             { id: 'p1-2', title: 'Client & Server' },
             { id: 'p1-3', title: '3-Tier Architecture' },
@@ -53,18 +52,17 @@ const tocSections: TOCSection[] = [
         <!-- STEP 1: BALIK TOMBOL -->
 
         <Step id="p1-1" diagram="/diagrams/01/step1.webp">
-            <StepHeader kicker="Pertemuan 1 · Overview" title="Apa yang terjadi di balik tombol?" tone="primary" />
+            <SectionDivider label="Overview" />
+            <StepHeader title="Apa yang terjadi di balik tombol?" tone="primary" />
             <p class="text-foreground-secondary leading-relaxed">
                 Bayangkan Anda sedang menekan tombol <strong>"Beli"</strong> di sebuah aplikasi <em>e-commerce</em>,
                 atau menekan <strong>"Login"</strong> di media sosial.
                 Bagi kita sebagai pengguna, itu hanyalah satu klik sederhana yang terasa instan.
             </p>
-            <br>
             <p class="mt-3 text-foreground-secondary leading-relaxed">
                 Namun faktanya, satu klik tersebut sebenarnya memicu sebuah
                 <strong> reaksi berantai yang kompleks</strong> antar mesin, program, dan jaringan internet.
             </p>
-            <br>
             <p class="mt-3 text-foreground-secondary leading-relaxed">
                 <span class="bg-yellow-200/70 dark:bg-yellow-500/20 px-1 rounded">Apa yang sebenarnya terjadi dalam sepersekian detik tersebut?</span>
             </p>
@@ -73,7 +71,7 @@ const tocSections: TOCSection[] = [
         <!-- STEP 2: CLIENT & SERVER -->
 
         <Step id="p1-2" diagram="/diagrams/01/step2.webp">
-            <StepHeader kicker="Pertemuan 1 · Arsitektur" title="Client & Server" tone="primary" />
+            <StepHeader title="Client & Server" tone="primary" />
             <p class="text-foreground-secondary leading-relaxed">
                 Laptop atau <em>smartphone</em> yang kalian gunakan bertindak sebagai
                 <strong class="text-primary"> Client</strong>, yaitu pihak yang mengirimkan permintaan (<em>Request</em>).
@@ -88,7 +86,7 @@ const tocSections: TOCSection[] = [
         <!-- STEP 3: 3-TIER ARCHITECTURE -->
 
         <Step id="p1-3" diagram="/diagrams/01/step3.webp">
-            <StepHeader kicker="Pertemuan 1 · Arsitektur" title="3-Tier Architecture" tone="success" />
+            <StepHeader title="3-Tier Architecture" tone="success" />
             <p class="text-foreground-secondary leading-relaxed">
                 Sebuah Server tidak bekerja sendirian. Untuk mengelola sistem yang kompleks,
                 aplikasi modern dibagikan ke dalam <strong>3 lapisan</strong> (<em>3-Tier Architecture</em>):
@@ -128,7 +126,7 @@ const tocSections: TOCSection[] = [
         <!-- STEP 4: HTTP REQUEST/RESPONSE -->
 
         <Step id="p1-4" diagram="/diagrams/01/step4.webp">
-            <StepHeader kicker="Pertemuan 1 · HTTP" title="HTTP Request & Response" tone="success" />
+            <StepHeader title="HTTP Request & Response" tone="success" />
             <p class="text-foreground-secondary leading-relaxed">
                 Saat <em>Client</em> berkomunikasi dengan <em>Server</em>,
                 protokol jaringan yang digunakan adalah <strong>HTTP</strong>.
@@ -160,7 +158,7 @@ const tocSections: TOCSection[] = [
         <!-- STEP 5: KODE YANG RAPI (TRANSISI KE GIT) -->
 
         <Step id="p1-5" diagram="/diagrams/01/step5.webp">
-            <StepHeader kicker="Pertemuan 1 · Project Management" title="Kode yang rapi" tone="warning" />
+            <StepHeader title="Kode yang rapi" tone="warning" />
             <p class="text-foreground-secondary leading-relaxed">
                 Bayangkan sebuah aplikasi tidak hanya dibuat oleh satu orang,
                 melainkan oleh tim berisi puluhan <em>developer</em> yang bekerja secara bersamaan.
@@ -182,7 +180,7 @@ const tocSections: TOCSection[] = [
 
         <Step id="p2-1" diagram="/diagrams/01/step6.webp">
             <SectionDivider label="Git & Version Control" />
-            <StepHeader kicker="Pertemuan 1 · Version Control" title="Git & GitHub" tone="primary" />
+            <StepHeader title="Git & GitHub" tone="primary" />
             <p class="text-foreground-secondary leading-relaxed">
                 Untuk mengatasi masalah kolaborasi tersebut, kita menggunakan
                 <strong> Git</strong> dan<strong> GitHub</strong>.
@@ -222,7 +220,7 @@ const tocSections: TOCSection[] = [
         <!-- STEP 7a: LOCAL WORKFLOW — KONSEP -->
 
         <Step id="p2-2a" diagram="/diagrams/01/step7.webp">
-            <StepHeader kicker="Pertemuan 1 · Local Workflow" title="3 Tahap Penyimpanan" tone="success" />
+            <StepHeader title="3 Tahap Penyimpanan" tone="success" />
             <p class="text-foreground-secondary leading-relaxed">
                 Ada tiga tahap penyimpanan dalam <em>workflow</em> Git:
             </p>
@@ -277,7 +275,7 @@ const tocSections: TOCSection[] = [
         <!-- STEP 7b: PERINTAH DASAR GIT -->
 
         <Step id="p2-2b" diagram="/diagrams/01/step7.webp">
-            <StepHeader kicker="Pertemuan 1 · Local Workflow" title="Perintah Dasar Git" tone="success" />
+            <StepHeader title="Perintah Dasar Git" tone="success" />
             <p class="text-foreground-secondary leading-relaxed">
                 Selain workflow di atas, berikut beberapa perintah dasar lain yang perlu diketahui:
             </p>
@@ -306,7 +304,7 @@ const tocSections: TOCSection[] = [
         <!-- STEP 7c: GIT STATUS -->
 
         <Step id="p2-2c" diagram="/diagrams/01/step7.webp">
-            <StepHeader kicker="Pertemuan 1 · Local Workflow" title="Memeriksa Status Repository" tone="success" />
+            <StepHeader title="Memeriksa Status Repository" tone="success" />
             <div class="p-3 rounded-lg bg-success/5 dark:bg-success/10 border-l-4 border-success">
                 <code class="font-mono text-base font-bold text-success">git status</code>
                 <p class="text-sm md:text-base text-muted-foreground mt-1">
@@ -334,7 +332,7 @@ const tocSections: TOCSection[] = [
         <!-- STEP 8: GIT RESET -->
 
         <Step id="p2-3" diagram="/diagrams/01/step8.webp">
-            <StepHeader kicker="Pertemuan 1 · Reset" title="Membatalkan Commit Terakhir" tone="warning" />
+            <StepHeader title="Membatalkan Commit Terakhir" tone="warning" />
             <p class="text-foreground-secondary leading-relaxed">
                 Bagaimana jika kita ingin membatalkan <em>commit</em> yang sudah terlanjur dibuat
                 di <em>Local Repository</em>? Git menyediakan perintah
@@ -367,7 +365,7 @@ const tocSections: TOCSection[] = [
         <!-- STEP 9: REMOTE REPOSITORY — KONSEP -->
 
         <Step id="p2-4" diagram="/diagrams/01/step9.webp">
-            <StepHeader kicker="Pertemuan 1 · Remote" title="Remote Repository" tone="success" />
+            <StepHeader title="Remote Repository" tone="success" />
             <p class="text-foreground-secondary leading-relaxed">
                 Ketika seluruh perubahan di komputer lokal sudah rapi dan teruji,
                 saatnya menghubungkannya dengan tim melalui <strong>Remote Repository</strong> (GitHub):
@@ -403,7 +401,7 @@ const tocSections: TOCSection[] = [
         <!-- STEP 10: BRANCHING -->
 
         <Step id="p2-5" diagram="/diagrams/01/step10.webp">
-            <StepHeader kicker="Pertemuan 1 · Branching" title="Branch: Ruang aman untuk eksperimen" tone="accent" />
+            <StepHeader title="Branch: Ruang aman untuk eksperimen" tone="accent" />
             <p class="text-foreground-secondary leading-relaxed">
                 Dalam proyek nyata, kita tidak boleh langsung mengubah kode utama (<code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">main</code>)
                 yang sedang dipakai pengguna. Disinilah kita perlu melakukan <strong>branching</strong>.
@@ -420,7 +418,7 @@ const tocSections: TOCSection[] = [
         <!-- STEP 11: BRANCH COMMANDS -->
 
         <Step id="p2-6" diagram="/diagrams/01/step11.webp">
-            <StepHeader kicker="Pertemuan 1 · Branch Commands" title="Command-command dasar manipulasi branch" tone="accent" />
+            <StepHeader title="Command-command dasar manipulasi branch" tone="accent" />
             <p class="mt-3 text-foreground-secondary leading-relaxed">
                 Untuk mengetahui posisi <em>branch</em> dan <em>commit</em> yang sedang Anda kerjakan saat ini,
                 Git menggunakan penanda bernama <strong><code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">HEAD</code></strong>.
@@ -451,7 +449,7 @@ const tocSections: TOCSection[] = [
         <!-- STEP 12a: MERGE STRATEGIES -->
 
         <Step id="p2-7a" diagram="/diagrams/01/step12.webp">
-            <StepHeader kicker="Pertemuan 1 · Merge" title="Merge Strategies" tone="success" />
+            <StepHeader title="Merge Strategies" tone="success" />
             <p class="text-foreground-secondary leading-relaxed">
                 Ketika fitur di <em>branch</em> lokal sudah selesai,
                 ada tiga metode umum untuk menggabungkannya kembali ke <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">main</code>:
@@ -492,7 +490,7 @@ const tocSections: TOCSection[] = [
         <!-- STEP 12b: MERGE & REBASE CONTOH -->
 
         <Step id="p2-7b" diagram="/diagrams/01/step12.webp">
-            <StepHeader kicker="Pertemuan 1 · Merge" title="Contoh Merge" tone="success" />
+            <StepHeader title="Contoh Merge" tone="success" />
             <p class="text-foreground-secondary leading-relaxed">
                 Misalkan kita punya branch <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">feature/login</code> yang sudah selesai dikerjakan.
                 Berikut cara menggabungkannya ke <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">main</code> menggunakan ketiga metode:
@@ -508,7 +506,7 @@ const tocSections: TOCSection[] = [
         <!-- STEP 13: PR -->
 
         <Step id="p2-8" diagram="/diagrams/01/step13.webp">
-            <StepHeader kicker="Pertemuan 1 · Pull Request" title="Pull Request" tone="primary" />
+            <StepHeader title="Pull Request" tone="primary" />
             <p class="text-foreground-secondary leading-relaxed">
                 Di dalam tim profesional, seorang <em>developer</em> tidak langsung menggabungkan
                 kodenya sendiri ke repository utama. Ada alur kerja standar yang disebut
@@ -548,7 +546,7 @@ const tocSections: TOCSection[] = [
         <!-- STEP 14a: MERGE CONFLICT -->
 
         <Step id="p2-9a" diagram="/diagrams/01/step14.webp">
-            <StepHeader kicker="Pertemuan 1 · Merge Conflict" title="Ketika kode bertabrakan" tone="error" />
+            <StepHeader title="Ketika kode bertabrakan" tone="error" />
             <p class="text-foreground-secondary leading-relaxed">
                 Apa yang terjadi jika dua orang <em>developer</em> mengubah
                 <strong> baris kode yang sama di file yang sama</strong>?
@@ -576,7 +574,7 @@ const tocSections: TOCSection[] = [
         <!-- STEP 14b: RESOLVE CONFLICT -->
 
         <Step id="p2-9b" diagram="/diagrams/01/step14.webp">
-            <StepHeader kicker="Pertemuan 1 · Merge Conflict" title="Memahami marker conflict" tone="error" />
+            <StepHeader title="Memahami marker conflict" tone="error" />
             <div class="mt-4 space-y-2">
                 <div class="p-3 rounded-lg bg-error/5 dark:bg-error/10 border-l-4 border-error">
                     <code class="font-mono text-base font-bold text-error">&lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD</code>

@@ -12,6 +12,23 @@ export function initScrolly() {
     const placeholder = document.getElementById('scrolly-placeholder');
     const firstStep = steps[0];
 
+    // Step numbering (e.g. "03 / 14")
+    const totalSteps = String(steps.length).padStart(2, '0');
+    steps.forEach((step, index) => {
+        const counter = step.querySelector<HTMLElement>('[data-step-counter]');
+        if (counter) counter.textContent = `${String(index + 1).padStart(2, '0')} / ${totalSteps}`;
+    });
+
+    // Reveal steps as they enter the viewport (natural scroll)
+    const revealObserver = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+            if (!entry.isIntersecting) return;
+            entry.target.classList.add('is-visible');
+            revealObserver.unobserve(entry.target);
+        });
+    }, { threshold: 0.15 });
+    steps.forEach(step => revealObserver.observe(step));
+
     // TOC: toggle (header), backdrop, click-outside, close button, jump
     const toggle = document.querySelector<HTMLElement>('[data-toc-toggle]');
     const tocPanel = document.querySelector<HTMLElement>('[data-toc-panel]');
@@ -21,12 +38,34 @@ export function initScrolly() {
 
     const isTocOpen = () => tocPanel?.classList.contains('translate-x-0') ?? false;
 
+    const getFocusable = (container: HTMLElement) =>
+        Array.from(
+            container.querySelectorAll<HTMLElement>('a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])')
+        ).filter((el) => el.offsetParent !== null);
+
     const setTocOpen = (open: boolean) => {
         tocPanel?.classList.toggle('translate-x-0', open);
         tocPanel?.classList.toggle('translate-x-full', !open);
         backdrop?.classList.toggle('hidden', !open);
         toggle?.setAttribute('aria-expanded', String(open));
+        if (open && tocPanel) getFocusable(tocPanel)[0]?.focus();
     };
+
+    // Focus trap while TOC is open
+    document.addEventListener('keydown', (e) => {
+        if (e.key !== 'Tab' || !isTocOpen() || !tocPanel) return;
+        const focusable = getFocusable(tocPanel);
+        if (focusable.length === 0) return;
+        const first = focusable[0];
+        const last = focusable[focusable.length - 1];
+        if (e.shiftKey && document.activeElement === first) {
+            e.preventDefault();
+            last.focus();
+        } else if (!e.shiftKey && document.activeElement === last) {
+            e.preventDefault();
+            first.focus();
+        }
+    });
 
     toggle?.addEventListener('click', (e) => {
         e.stopPropagation();
@@ -66,7 +105,10 @@ export function initScrolly() {
 
     const setActiveToc = (id: string) => {
         tocItems.forEach(item => {
-            item.classList.toggle('toc-item-active', item.getAttribute('data-toc-target') === id);
+            const isActive = item.getAttribute('data-toc-target') === id;
+            item.classList.toggle('toc-item-active', isActive);
+            if (isActive) item.setAttribute('aria-current', 'step');
+            else item.removeAttribute('aria-current');
         });
     };
 
@@ -74,6 +116,9 @@ export function initScrolly() {
         const id = step.id;
         setActiveToc(id);
         const diagramSrc = diagramMap[id];
+
+        const stepTitle = step.querySelector('h2, h3')?.textContent?.trim() ?? '';
+        if (diagram) diagram.alt = stepTitle ? `Diagram: ${stepTitle}` : 'Diagram';
 
         if (placeholder) {
             if (diagramSrc) {
@@ -124,6 +169,68 @@ export function initScrolly() {
     updateActiveStep(activeStep);
     window.addEventListener('scroll', onScroll, { passive: true });
     window.addEventListener('resize', onScroll);
+
+    // Keyboard step navigation (ArrowUp/ArrowDown or k/j)
+    document.addEventListener('keydown', (e) => {
+        if (e.metaKey || e.ctrlKey || e.altKey) return;
+        const target = e.target as HTMLElement | null;
+        if (target && (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA' || target.isContentEditable)) return;
+        let direction = 0;
+        if (e.key === 'ArrowDown' || e.key === 'j') direction = 1;
+        else if (e.key === 'ArrowUp' || e.key === 'k') direction = -1;
+        if (!direction) return;
+        e.preventDefault();
+        // Base the index on the actual scroll position; -1 means above the first step.
+        const line = window.scrollY + 56 + 32;
+        let currentIndex = -1;
+        for (let i = 0; i < steps.length; i++) {
+            if (steps[i].offsetTop <= line) currentIndex = i;
+            else break;
+        }
+        const nextIndex = currentIndex + direction;
+        if (nextIndex < 0) {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        } else {
+            steps[Math.min(steps.length - 1, nextIndex)]?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+    });
+
+    // One-time keyboard hint (shown once, persisted in localStorage)
+    const kbdHint = document.getElementById('kbd-hint');
+    const kbdHintClose = document.getElementById('kbd-hint-close');
+    const kbdHintProgress = document.getElementById('kbd-hint-progress');
+    const kbdHintKey = 'rsi.kbdHintSeen';
+    const kbdHintDuration = 8000;
+    if (kbdHint) {
+        let kbdHintSeen = false;
+        try {
+            kbdHintSeen = localStorage.getItem(kbdHintKey) === 'true';
+        } catch {
+            // Storage unavailable; still show the hint once per session.
+        }
+        if (!kbdHintSeen) {
+            const hideHint = () => {
+                kbdHint.classList.add('opacity-0', 'pointer-events-none');
+                kbdHint.classList.remove('opacity-100');
+                if (kbdHintProgress) kbdHintProgress.style.animation = 'none';
+                try {
+                    localStorage.setItem(kbdHintKey, 'true');
+                } catch {
+                    // Ignore storage failures.
+                }
+            };
+            const kbdHintTimer = setTimeout(hideHint, kbdHintDuration);
+            kbdHint.classList.remove('opacity-0', 'pointer-events-none');
+            kbdHint.classList.add('opacity-100');
+            if (kbdHintProgress) {
+                kbdHintProgress.style.animation = `kbd-hint-countdown ${kbdHintDuration}ms linear forwards`;
+            }
+            kbdHintClose?.addEventListener('click', () => {
+                clearTimeout(kbdHintTimer);
+                hideHint();
+            });
+        }
+    }
 
     // Desktop-only resizable text/diagram split. The setting survives reloads.
     const split = document.getElementById('scrolly-split');

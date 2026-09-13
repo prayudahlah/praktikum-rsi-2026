@@ -6,14 +6,28 @@ interface Props {
     title: string;
     description?: string;
     hasToc?: boolean;
+    showTitle?: boolean;
     prev?: { slug: string; title: string };
     next?: { slug: string; title: string };
 }
 
-const { title, description, hasToc = false, prev, next } = Astro.props;
+const { title, description, hasToc = false, showTitle = false, prev, next } = Astro.props;
 ---
 
 <BaseLayout title={title} description={description} hasToc={hasToc}>
+    {showTitle && (
+        <header class="max-w-[1400px] mx-auto px-6 lg:px-8 pt-20 lg:pt-28 mb-10 lg:mb-16">
+            <h1 class="font-display text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight leading-tight">
+                {title}
+            </h1>
+            {description && (
+                <p class="mt-3 max-w-2xl text-base md:text-lg text-foreground-secondary leading-relaxed">
+                    {description}
+                </p>
+            )}
+        </header>
+    )}
+
     <!-- Scrollytelling Content -->
     <div class="text-base md:text-lg lg:text-xl leading-relaxed">
         <slot />

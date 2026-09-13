@@ -70,7 +70,7 @@ const tocSections: TOCSection[] = [
 
         <Step id="p1-1" diagram="/diagrams/02/step1.webp">
             <SectionDivider label="REST API" />
-            <StepHeader kicker="Pertemuan 2 · Backend" title="Apa itu Backend?" tone="success" />
+            <StepHeader title="Apa itu Backend?" tone="success" />
             <p class="text-foreground-secondary leading-relaxed">
                 <strong class="text-success">Backend</strong> adalah bagian server yang bertanggung jawab atas
                 logika bisnis, validasi, pengolahan data, dan <strong>komunikasi dengan Database</strong>.
@@ -89,7 +89,7 @@ const tocSections: TOCSection[] = [
         </Step>
 
         <Step id="p1-2" diagram="/diagrams/02/step1.webp">
-            <StepHeader kicker="Pertemuan 2 · Backend" title="Kenapa Backend Wajib?" tone="success" />
+            <StepHeader title="Kenapa Backend Wajib?" tone="success" />
             <p class="text-foreground-secondary leading-relaxed">
                 Bayangkan frontend langsung terhubung ke database tanpa backend di tengah.
                 Tiga masalah fatal muncul:
@@ -123,7 +123,7 @@ const tocSections: TOCSection[] = [
         </Step>
 
         <Step id="p1-3" diagram="/diagrams/02/step3.webp">
-            <StepHeader kicker="Pertemuan 2 · REST API" title="Apa itu REST API dan HTTP Methods?" tone="primary" />
+            <StepHeader title="Apa itu REST API dan HTTP Methods?" tone="primary" />
             <p class="text-foreground-secondary leading-relaxed">
                 REST adalah <strong>arsitektur</strong> yang mengatur bagaimana frontend
                 dan backend saling berkomunikasi. Di dalam arsitektur REST ini, HTTP Methods
@@ -179,7 +179,7 @@ const tocSections: TOCSection[] = [
         </Step>
 
         <Step id="p1-4" diagram="/diagrams/02/step4.webp">
-            <StepHeader kicker="Pertemuan 2 · REST API" title="Endpoint & URL" tone="primary" />
+            <StepHeader title="Endpoint & URL" tone="primary" />
             <p class="text-foreground-secondary leading-relaxed">
                 Jika HTTP Method bertindak sebagai <strong>kata kerja</strong> (apa yang ingin dilakukan:
                 mengambil, membuat, menghapus), maka <strong>Endpoint & URL</strong> bertindak sebagai
@@ -217,7 +217,7 @@ const tocSections: TOCSection[] = [
         </Step>
 
         <Step id="p1-5" diagram="/diagrams/02/step4.webp">
-            <StepHeader kicker="Pertemuan 2 · REST API" title="Cara Kirim Data dari Client" tone="accent" />
+            <StepHeader title="Cara Kirim Data dari Client" tone="accent" />
             <p class="text-foreground-secondary leading-relaxed">
                 Setelah menentukan alamat URL dan metode HTTP, bagaimana cara client
                 <strong> membungkus data</strong> yang ingin dikirim ke server? Data dikirim
@@ -272,7 +272,7 @@ const tocSections: TOCSection[] = [
 
 
         <Step id="p1-6" diagram="/diagrams/02/step5.webp">
-            <StepHeader kicker="Pertemuan 2 · REST API" title="Server Menjawab Dengan Format JSON" tone="success" />
+            <StepHeader title="Server Menjawab Dengan Format JSON" tone="success" />
             <p class="text-foreground-secondary leading-relaxed">
                 Setelah backend selesai memproses request, saatnya backend memberikan
                 <strong> Response</strong>. Agar bisa dipahami platform apa pun, data dibungkus dengan format universal yaitu <strong>JSON </strong>
@@ -293,7 +293,7 @@ const tocSections: TOCSection[] = [
         </Step>
 
         <Step id="p1-7" diagram="/diagrams/02/step6.webp">
-            <StepHeader kicker="Pertemuan 2 · REST API" title="Membaca Jawaban Server: HTTP Status Code" tone="warning" />
+            <StepHeader title="Membaca Jawaban Server: HTTP Status Code" tone="warning" />
             <p class="text-foreground-secondary leading-relaxed">
                 Bersamaan dengan data JSON, server selalu menyelipkan <strong>HTTP Status Code</strong>.
                 Fungsinya untuk memberi tahu client secara instan apakah permintaan berhasil, ditolak, atau gagal total,
@@ -358,7 +358,7 @@ const tocSections: TOCSection[] = [
 
         <Step id="h1-1" diagram="/diagrams/02/step8.webp">
             <SectionDivider label="Hands-on 1" />
-            <StepHeader kicker="Pertemuan 2 · Hands-on" title="Setup Project & Instalasi Express" tone="success" />
+            <StepHeader title="Setup Project & Instalasi Express" tone="success" />
             <p class="text-foreground-secondary leading-relaxed">
                 Sebelum menulis kode backend, kita perlu membuat folder khusus dan
                 menyiapkan proyek <strong>Node.js</strong> terlebih dahulu.
@@ -405,7 +405,7 @@ const tocSections: TOCSection[] = [
         </Step>
 
         <Step id="h1-2" diagram="/diagrams/02/step8.webp">
-            <StepHeader kicker="Pertemuan 2 · Hands-on" title="Mengaktifkan ES Modules (type: module)" tone="success" />
+            <StepHeader title="Mengaktifkan ES Modules (type: module)" tone="success" />
             <p class="text-foreground-secondary leading-relaxed">
                 Buka file <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">package.json</code>
                 hasil <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">npm init -y</code>.
@@ -430,7 +430,7 @@ const tocSections: TOCSection[] = [
         </Step>
 
         <Step id="h1-3" diagram="/diagrams/02/step8.webp">
-            <StepHeader kicker="Pertemuan 2 · Hands-on" title="Membuat Endpoint Pertama (GET /health)" tone="success" />
+            <StepHeader title="Membuat Endpoint Pertama (GET /health)" tone="success" />
             <p class="text-foreground-secondary leading-relaxed">
                 Buat file baru bernama
                 &nbsp;<code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">src/index.ts</code>&nbsp;
@@ -443,7 +443,7 @@ const tocSections: TOCSection[] = [
         </Step>
 
         <Step id="h1-4" diagram="/diagrams/02/step8.webp">
-            <StepHeader kicker="Pertemuan 2 · Hands-on" title="Menyalakan Server & Pengujian di Browser" tone="success" />
+            <StepHeader title="Menyalakan Server & Pengujian di Browser" tone="success" />
             <p class="text-foreground-secondary leading-relaxed">
                 Setelah kode di file
                 &nbsp;<code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">src/index.ts</code>&nbsp;
@@ -477,7 +477,7 @@ const tocSections: TOCSection[] = [
         </Step>
 
         <Step id="h1-5" diagram="/diagrams/02/step8.webp">
-            <StepHeader kicker="Pertemuan 2 · Hands-on" title="Mengotomatiskan Server dengan node --watch" tone="success" />
+            <StepHeader title="Mengotomatiskan Server dengan node --watch" tone="success" />
             <p class="text-foreground-secondary leading-relaxed">
                 Menekan <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">Ctrl + C</code>
                 dan mengetik <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">node src/index.ts</code>
@@ -516,7 +516,7 @@ const tocSections: TOCSection[] = [
 
         <Step id="p4-1" diagram="/diagrams/02/step7.webp">
             <SectionDivider label="Arsitektur Layered" />
-            <StepHeader kicker="Pertemuan 2 · Arsitektur" title="Mengapa Butuh Layer?" tone="success" />
+            <StepHeader title="Mengapa Butuh Layer?" tone="success" />
             <p class="text-foreground-secondary leading-relaxed">
                 Kita telah menulis endpoint
                 <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">/health</code>
@@ -537,7 +537,7 @@ const tocSections: TOCSection[] = [
         </Step>
 
         <Step id="p4-2" diagram="/diagrams/02/step7.webp">
-            <StepHeader kicker="Pertemuan 2 · Arsitektur" title="Solusi: Layered Architecture" tone="success" />
+            <StepHeader title="Solusi: Layered Architecture" tone="success" />
             <p class="text-foreground-secondary leading-relaxed">
                 Kita membagi kode ke dalam beberapa lapisan. Setiap layer hanya fokus
                 pada satu tugas spesifik (<em>Separation of Concerns</em>):
@@ -574,7 +574,7 @@ const tocSections: TOCSection[] = [
 
         <Step id="h2-1" diagram="/diagrams/02/step8.webp">
             <SectionDivider label="Hands-on 2" />
-            <StepHeader kicker="Pertemuan 2 · Hands-on" title="Repository" tone="success" />
+            <StepHeader title="Repository" tone="success" />
             <p class="text-foreground-secondary leading-relaxed">
                 Karena ini contoh dasar, kita gunakan <em>mock data</em> yaitu interface &amp; data didefinisikan
                 langsung di file ini.
@@ -593,7 +593,7 @@ const tocSections: TOCSection[] = [
         </Step>
 
         <Step id="h2-2" diagram="/diagrams/02/step8.webp">
-            <StepHeader kicker="Pertemuan 2 · Hands-on" title="DTO (Data Transfer Object)" tone="success" />
+            <StepHeader title="DTO (Data Transfer Object)" tone="success" />
             <p class="text-foreground-secondary leading-relaxed">
                 DTO berfungsi sebagai <strong>"kontrak data"</strong> untuk
                 menentukan struktur pasti data yang akan diterima atau dikembalikan oleh server.
@@ -613,7 +613,7 @@ const tocSections: TOCSection[] = [
         </Step>
 
         <Step id="h2-3" diagram="/diagrams/02/step8.webp">
-            <StepHeader kicker="Pertemuan 2 · Hands-on" title="Service" tone="success" />
+            <StepHeader title="Service" tone="success" />
             <p class="text-foreground-secondary leading-relaxed">
                 Setelah kontrak DTO siap, kita buat <strong>Service Layer</strong> yang memanggil Repository
                 untuk mengambil data mentah, lalu menerapkan logika bisnis 
@@ -624,7 +624,7 @@ const tocSections: TOCSection[] = [
         </Step>
 
         <Step id="h2-4" diagram="/diagrams/02/step8.webp">
-            <StepHeader kicker="Pertemuan 2 · Hands-on" title="Controller" tone="success" />
+            <StepHeader title="Controller" tone="success" />
             <p class="text-foreground-secondary leading-relaxed">
                 Controller membungkus logika bisnis di balik HTTP: menerima
                 <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">req</code>,
@@ -636,7 +636,7 @@ const tocSections: TOCSection[] = [
         </Step>
 
         <Step id="h2-5" diagram="/diagrams/02/step8.webp">
-            <StepHeader kicker="Pertemuan 2 · Hands-on" title="Router" tone="success" />
+            <StepHeader title="Router" tone="success" />
             <p class="text-foreground-secondary leading-relaxed">
                 Layer ini bertugas <strong>memetakan</strong> pasangan HTTP Method (mis. GET) dan URL Path
                 (mis. <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">/</code>
@@ -647,7 +647,7 @@ const tocSections: TOCSection[] = [
         </Step>
 
         <Step id="h2-6" diagram="/diagrams/02/step8.webp">
-            <StepHeader kicker="Pertemuan 2 · Hands-on" title="Integrasi ke Entry Point" tone="success" />
+            <StepHeader title="Integrasi ke Entry Point" tone="success" />
             <p class="text-foreground-secondary leading-relaxed">
                 Seluruh lapisan (Repository → Service → Controller → Router) kini digabungkan
                 ke file entry point utama server, <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">src/index.ts</code>.
@@ -656,7 +656,7 @@ const tocSections: TOCSection[] = [
         </Step>
 
         <Step id="h2-7" diagram="/diagrams/02/step8.webp">
-            <StepHeader kicker="Pertemuan 2 · Hands-on" title="Pengujian Endpoint" tone="success" />
+            <StepHeader title="Pengujian Endpoint" tone="success" />
             <p class="text-foreground-secondary leading-relaxed">
                 Jalankan server dengan
                 <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">npm run dev</code>,

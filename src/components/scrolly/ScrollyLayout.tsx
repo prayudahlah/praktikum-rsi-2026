@@ -10,7 +10,7 @@ interface ScrollyLayoutProps {
 export function ScrollyLayout({ children, defaultSrc, placeholder }: ScrollyLayoutProps) {
     return (
         <>
-            <div id="scrolly-split" className="flex flex-col lg:flex-row">
+            <div id="scrolly-split" className="flex flex-col lg:flex-row max-w-[1400px] mx-auto w-full">
                 <div id="scrolly-text-col" className="order-2 lg:order-1 lg:flex-none lg:w-3/5">
                     {children}
                 </div>
@@ -49,13 +49,50 @@ export function ScrollyLayout({ children, defaultSrc, placeholder }: ScrollyLayo
                                     id="scrolly-diagram"
                                     src={defaultSrc}
                                     alt="Diagram"
+                                    decoding="async"
                                     className="w-full h-full min-h-0 min-w-0 object-contain opacity-0 transition-opacity duration-300 select-none cursor-pointer hover:opacity-90"
                                     draggable="false"
                                 />
                             </div>
                         ) : null}
                     </div>
+                    <div className="pointer-events-none absolute bottom-3 left-1/2 z-10 hidden -translate-x-1/2 font-mono text-[10px] uppercase tracking-widest text-muted-foreground/70 lg:block">
+                        ↑↓ · J K
+                    </div>
                 </div>
+            </div>
+
+            {/* One-time keyboard hint */}
+            <div
+                id="kbd-hint"
+                role="status"
+                className="fixed top-16 right-6 z-50 flex max-w-[calc(100vw-3rem)] items-center gap-3 overflow-hidden rounded-xl border border-border bg-surface-raised px-4 py-2.5 text-sm text-foreground shadow-lg opacity-0 pointer-events-none transition-opacity duration-300"
+            >
+                <span className="flex flex-wrap items-center gap-1.5">
+                    <span>Gunakan</span>
+                    <kbd className="rounded border border-border bg-muted px-1.5 py-0.5 font-mono text-xs">↑</kbd>
+                    <kbd className="rounded border border-border bg-muted px-1.5 py-0.5 font-mono text-xs">↓</kbd>
+                    <span>atau</span>
+                    <kbd className="rounded border border-border bg-muted px-1.5 py-0.5 font-mono text-xs">J</kbd>
+                    <kbd className="rounded border border-border bg-muted px-1.5 py-0.5 font-mono text-xs">K</kbd>
+                    <span>untuk pindah langkah</span>
+                </span>
+                <button
+                    id="kbd-hint-close"
+                    type="button"
+                    aria-label="Tutup petunjuk"
+                    className="p-1 rounded hover:bg-hover transition-colors"
+                >
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <line x1="18" y1="6" x2="6" y2="18" />
+                        <line x1="6" y1="6" x2="18" y2="18" />
+                    </svg>
+                </button>
+                <span
+                    id="kbd-hint-progress"
+                    aria-hidden="true"
+                    className="absolute bottom-0 left-0 h-0.5 w-full origin-left bg-primary"
+                />
             </div>
 
             {/* Modal overlay — expand diagram */}
