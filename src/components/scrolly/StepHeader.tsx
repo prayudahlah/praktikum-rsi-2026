@@ -25,7 +25,7 @@ export function StepHeader({ kicker, title, tone, level = 3 }: StepHeaderProps) 
 
     return (
         <>
-            <span className="inline-block font-mono text-sm tracking-widest text-gray-400 dark:text-gray-600 uppercase mb-2">
+            <span className="inline-block font-mono text-sm tracking-widest text-muted-foreground uppercase mb-2">
                 {kicker}
             </span>
             <Heading className={`${headingClass} ${tone ? toneClasses[tone] : ''}`}>

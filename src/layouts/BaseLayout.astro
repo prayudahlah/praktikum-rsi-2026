@@ -40,9 +40,9 @@ const currentPath = Astro.url.pathname;
         setTheme();
     </script>
 </head>
-<body class="relative bg-white dark:bg-surface-body dark:text-text-primary min-h-screen">
+    <body class="relative bg-background text-foreground min-h-screen">
     <!-- Sidebar -->
-    <aside id="sidebar" class="fixed left-0 top-0 flex flex-col justify-between h-screen w-72 bg-gray-50 dark:bg-surface-raised border-r border-gray-200 dark:border-gray-700 overflow-y-auto transform -translate-x-full transition-transform z-[60]">
+    <aside id="sidebar" class="fixed left-0 top-0 flex flex-col justify-between h-screen w-72 bg-surface-raised border-r border-border overflow-y-auto transform -translate-x-full transition-transform z-[60]">
         <div>
 
             <!-- Header -->
@@ -64,7 +64,7 @@ const currentPath = Astro.url.pathname;
                     class={`flex items-center gap-2 px-4 py-2 transition-colors
                     ${meeting.published
                         ? 'hover:bg-gray-200 dark:hover:bg-gray-700'
-                        : 'text-gray-400 dark:text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-700/50'
+                        : 'text-muted-foreground hover:bg-muted'
                     }
                     ${
                         currentPath === `/meetings/${meeting.slug}`
@@ -81,8 +81,8 @@ const currentPath = Astro.url.pathname;
         </div>
 
         <div>
-            <div class="p-4 border-t border-gray-200 dark:border-gray-700">
-                <button id="dark-mode-toggle" class="flex items-center gap-2 w-full px-4 py-2 rounded hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors">
+            <div class="p-4 border-t border-border">
+                <button id="dark-mode-toggle" class="flex items-center gap-2 w-full px-4 py-2 rounded hover:bg-muted transition-colors">
                     <Sun class="w-5 h-5 hidden dark:block" />
                     <Moon class="w-5 h-5 block dark:hidden" />
                     <span>Toggle Dark Mode</span>
@@ -93,7 +93,7 @@ const currentPath = Astro.url.pathname;
 
 
     <!-- Fixed header -->
-    <header class="fixed top-0 left-0 right-0 h-14 bg-gray-50 dark:bg-surface-raised border-b border-gray-200 dark:border-gray-700 z-40 flex items-center px-4">
+    <header class="fixed top-0 left-0 right-0 h-14 bg-surface-raised border-b border-border z-40 flex items-center px-4">
         <button id="sidebar-toggle" class="p-2">
             <Menu class="w-6 h-6" />
         </button>
@@ -117,14 +117,14 @@ const currentPath = Astro.url.pathname;
     </main>
 
     <!-- Footer -->
-    <footer class="mt-16 py-12 px-8 border-t border-gray-200 dark:border-gray-700">
+    <footer class="mt-16 py-12 px-8 border-t border-border">
         <div class="max-w-7xl mx-auto flex flex-col sm:flex-row sm:items-center sm:justify-between gap-6">
             <div>
                 <p class="font-medium">© 2026 Praktikum RSI</p>
-                <p class="text-sm text-gray-500 dark:text-gray-500 mt-1">Website pembelajaran untuk praktikum mata kuliah Rekayasa Sistem Informasi FATISDA UNS</p>
+                <p class="text-sm text-muted-foreground mt-1">Website pembelajaran untuk praktikum mata kuliah Rekayasa Sistem Informasi FATISDA UNS</p>
             </div>
             <div class="flex gap-4">
-                <a href="https://github.com/prayudahlah/praktikum-rsi-2026" target="_blank" rel="noopener noreferrer" class="flex items-center gap-1 text-sm text-gray-500 hover:text-gray-900 dark:hover:text-gray-300 transition-colors">
+                <a href="https://github.com/prayudahlah/praktikum-rsi-2026" target="_blank" rel="noopener noreferrer" class="flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground transition-colors">
                     <img src="/icons/github.svg" alt="Github Logo" class="w-4 h-4 invert-0 dark:invert transition-all" loading="lazy"/>
                     <span>GitHub</span>
                 </a>

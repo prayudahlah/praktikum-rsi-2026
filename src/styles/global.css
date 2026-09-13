@@ -6,31 +6,87 @@ html, body {
   overscroll-behavior: none;
 }
 
-@theme {
-  /* Accent colors (light mode) */
-  --color-primary: #3B82F6;
-  --color-success: #10B981;
-  --color-accent: #8B5CF6;
-  --color-warning: #F59E0B;
-  --color-error: #EF4444;
-
-  /* Accent colors (dark mode) */
-  --color-primary-dark: #60A5FA;
-  --color-success-dark: #34D399;
-  --color-accent-dark: #A78BFA;
-  --color-warning-dark: #FBBF24;
-  --color-error-dark: #F87171;
-
-  /* Dark mode surfaces */
-  --color-surface-body: #0F172A;
-  --color-surface-raised: #1E293B;
-  --color-surface-overlay: #0B1120;
-
-  /* Dark mode text */
-  --color-text-primary: #E2E8F0;
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-surface: var(--surface);
+  --color-surface-body: var(--surface-body);
+  --color-surface-raised: var(--surface-raised);
+  --color-surface-overlay: var(--surface-overlay);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-border: var(--border);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-success: var(--success);
+  --color-success-foreground: var(--success-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-warning: var(--warning);
+  --color-warning-foreground: var(--warning-foreground);
+  --color-error: var(--error);
+  --color-error-foreground: var(--error-foreground);
+  --color-terminal-prompt: var(--terminal-prompt);
+  --color-terminal-command: var(--terminal-command);
+  --color-terminal-quote: var(--terminal-quote);
+  --color-terminal-muted: var(--terminal-muted);
+  --color-terminal-header: var(--terminal-header);
 
   --font-display: "Space Grotesk", sans-serif;
   --font-mono: "JetBrains Mono", monospace;
+}
+
+:root {
+  --background: #ffffff;
+  --foreground: #18181b;
+  --surface: #fafafa;
+  --surface-body: #ffffff;
+  --surface-raised: #fafafa;
+  --surface-overlay: #09090b;
+  --muted: #f4f4f5;
+  --muted-foreground: #71717a;
+  --border: #e4e4e7;
+
+  --primary: #2563eb;
+  --primary-foreground: #ffffff;
+  --success: #059669;
+  --success-foreground: #ffffff;
+  --accent: #7c3aed;
+  --accent-foreground: #ffffff;
+  --warning: #d97706;
+  --warning-foreground: #ffffff;
+  --error: #dc2626;
+  --error-foreground: #ffffff;
+
+  /* Terminal blocks remain dark in both themes. */
+  --terminal-prompt: #34d399;
+  --terminal-command: #f4f4f5;
+  --terminal-quote: #fbbf24;
+  --terminal-muted: #71717a;
+  --terminal-header: #18181b;
+}
+
+.dark {
+  --background: #09090b;
+  --foreground: #f4f4f5;
+  --surface: #18181b;
+  --surface-body: #09090b;
+  --surface-raised: #18181b;
+  --surface-overlay: #09090b;
+  --muted: #18181b;
+  --muted-foreground: #a1a1aa;
+  --border: #27272a;
+
+  --primary: #60a5fa;
+  --primary-foreground: #09090b;
+  --success: #34d399;
+  --success-foreground: #09090b;
+  --accent: #a78bfa;
+  --accent-foreground: #09090b;
+  --warning: #fbbf24;
+  --warning-foreground: #18181b;
+  --error: #f87171;
+  --error-foreground: #09090b;
 }
 
 /* Active item in ScrollyTOC */
@@ -40,9 +96,9 @@ html, body {
     font-weight: 500;
 }
 
-:root.dark [data-toc-item].toc-item-active {
+.dark [data-toc-item].toc-item-active {
     background-color: rgb(96 165 250 / 0.15);
-    color: var(--color-primary-dark);
+    color: var(--color-primary);
 }
 
 /* Step enter animation */
@@ -82,13 +138,13 @@ html, body {
 @layer base {
     .astro-code {
         color: var(--shiki-light);
-        background-color: #F1F5F9 !important;
+        background-color: var(--muted) !important;
     }
     html.dark .astro-code {
         color: var(--shiki-dark);
-        background-color: var(--color-surface-overlay) !important;
+        background-color: var(--surface-overlay) !important;
     }
     html.dark .astro-code span {
-        color: var(--shiki-dark);
+        color: var(--shiki-dark) !important;
     }
 }

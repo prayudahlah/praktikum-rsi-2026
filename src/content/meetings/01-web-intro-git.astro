@@ -95,21 +95,21 @@ const tocSections: TOCSection[] = [
             </p>
             <div class="mt-4 space-y-3">
                 <div class="flex items-start gap-3 p-3 rounded-lg bg-primary/5 dark:bg-primary/10">
-                    <span class="mt-0.5 w-6 h-6 rounded-full bg-primary text-white text-xs font-bold flex items-center justify-center shrink-0">1</span>
+                    <span class="mt-0.5 w-6 h-6 rounded-full bg-primary text-primary-foreground text-xs font-bold flex items-center justify-center shrink-0">1</span>
                     <div>
                         <span class="font-bold text-primary">Presentation Tier (Client)</span>
                         <p class="text-base text-gray-500 dark:text-gray-400 mt-1">Apa yang Anda lihat dan interaksikan di layar.</p>
                     </div>
                 </div>
                 <div class="flex items-start gap-3 p-3 rounded-lg bg-success/5 dark:bg-success/10">
-                    <span class="mt-0.5 w-6 h-6 rounded-full bg-success text-white text-xs font-bold flex items-center justify-center shrink-0">2</span>
+                    <span class="mt-0.5 w-6 h-6 rounded-full bg-success text-success-foreground text-xs font-bold flex items-center justify-center shrink-0">2</span>
                     <div>
                         <span class="font-bold text-success">Logic Tier (Server)</span>
                         <p class="text-base text-gray-500 dark:text-gray-400 mt-1">Otak dari aplikasi yang memproses aturan bisnis, komputasi perhitungan, dan mengambil keputusan.</p>
                     </div>
                 </div>
                 <div class="flex items-start gap-3 p-3 rounded-lg bg-accent/5 dark:bg-accent/10">
-                    <span class="mt-0.5 w-6 h-6 rounded-full bg-accent text-white text-xs font-bold flex items-center justify-center shrink-0">3</span>
+                    <span class="mt-0.5 w-6 h-6 rounded-full bg-accent text-accent-foreground text-xs font-bold flex items-center justify-center shrink-0">3</span>
                     <div>
                         <span class="font-bold text-accent">Data Tier (Database)</span>
                         <p class="text-base text-gray-500 dark:text-gray-400 mt-1">Tempat penyimpanan data secara permanen, seperti daftar produk, harga, hingga akun pengguna.</p>
@@ -152,7 +152,7 @@ const tocSections: TOCSection[] = [
                     <span><strong class="text-error">Delete (DELETE):</strong> Menghapus data (misal: menghapus barang dari keranjang).</span>
                 </li>
             </ul>
-            <p class="mt-4 text-gray-500 dark:text-gray-500 text-sm italic">
+            <p class="mt-4 text-muted-foreground text-sm italic">
                 *Sebenarnya metode HTTP ada banyak yang lain, namun hanya beberapa yang umum digunakan seperti 4 di atas.
             </p>
         </Step>
@@ -350,7 +350,7 @@ const tocSections: TOCSection[] = [
                 </div>
                 <div class="p-3 rounded-lg bg-primary/5 dark:bg-primary/10 border-l-4 border-primary">
                     <code class="font-mono text-base font-bold text-primary">--mixed</code>
-                    <span class="text-xs text-gray-400 dark:text-gray-500 ml-2">(default)</span>
+                    <span class="text-xs text-muted-foreground ml-2">(default)</span>
                     <p class="text-base text-gray-500 dark:text-gray-400 mt-1">
                         Membatalkan <em>commit</em> dan <em>staging</em>, perubahan balik ke <em>Working Directory</em>.
                     </p>
@@ -524,7 +524,7 @@ const tocSections: TOCSection[] = [
             </p>
             <div class="mt-4 space-y-3">
                 <div class="flex items-start gap-3 p-3 rounded-lg bg-primary/5 dark:bg-primary/10 border-l-4 border-primary">
-                    <span class="mt-0.5 w-6 h-6 rounded-full bg-primary text-white text-base font-bold flex items-center justify-center shrink-0">1</span>
+                    <span class="mt-0.5 w-6 h-6 rounded-full bg-primary text-primary-foreground text-base font-bold flex items-center justify-center shrink-0">1</span>
                     <div>
                         <span class="font-bold text-primary">Developer</span>
                         <p class="text-base text-gray-500 dark:text-gray-400 mt-1">
@@ -533,7 +533,7 @@ const tocSections: TOCSection[] = [
                     </div>
                 </div>
                 <div class="flex items-start gap-3 p-3 rounded-lg bg-success/5 dark:bg-success/10 border-l-4 border-success">
-                    <span class="mt-0.5 w-6 h-6 rounded-full bg-success text-white text-base font-bold flex items-center justify-center shrink-0">2</span>
+                    <span class="mt-0.5 w-6 h-6 rounded-full bg-success text-success-foreground text-base font-bold flex items-center justify-center shrink-0">2</span>
                     <div>
                         <span class="font-bold text-success">Reviewer</span>
                         <p class="text-base text-gray-500 dark:text-gray-400 mt-1">
@@ -558,16 +558,16 @@ const tocSections: TOCSection[] = [
                 Git bingung memilih perubahan mana yang benar sehingga proses <em>merge</em> terhenti.
                 Di sinilah <em>developer</em> harus turun tangan secara manual untuk menentukan kode mana yang akan dipertahankan.
             </p>
-            <div class="mt-4 p-4 rounded-lg bg-gray-900 dark:bg-gray-950 font-mono text-sm leading-relaxed whitespace-pre">
+            <div class="mt-4 p-4 rounded-lg bg-surface-overlay font-mono text-sm leading-relaxed whitespace-pre">
                 <div class="text-gray-400">// app.js</div>
                 <div class="text-white">export default function App() {`{`}</div>
                 <div class="text-white">  return (</div>
                 <div class="text-white">    &lt;h1&gt;Hello,&lt;/h1&gt;</div>
-                <div class="text-error">  &lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD</div>
-                <div class="text-success">    &lt;h2&gt;Kelas A&lt;/h2&gt;</div>
-                <div class="text-error">  =======</div>
-                <div class="text-warning">    &lt;h2&gt;Kelas B&lt;/h2&gt;</div>
-                <div class="text-error">  &gt;&gt;&gt;&gt;&gt;&gt;&gt; feature/kelas</div>
+                <div class="text-red-400">  &lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD</div>
+                <div class="text-emerald-400">    &lt;h2&gt;Kelas A&lt;/h2&gt;</div>
+                <div class="text-red-400">  =======</div>
+                <div class="text-amber-400">    &lt;h2&gt;Kelas B&lt;/h2&gt;</div>
+                <div class="text-red-400">  &gt;&gt;&gt;&gt;&gt;&gt;&gt; feature/kelas</div>
                 <div class="text-white">  );</div>
                 <div class="text-white">{`}`}</div>
             </div>
