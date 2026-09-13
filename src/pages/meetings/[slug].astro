@@ -19,9 +19,9 @@ const meetingModule = meetingsModules[modulePath];
 
 const isLocked = !meetingModule;
 
-let Content: (() => Promise<{ default: any }>) | null = null;
+let Content: any = null;
 if (!isLocked) {
-    Content = (await meetingModule!()).default;
+    Content = (await meetingModule!() as { default: any }).default;
 }
 
 // Prev/next navigation
@@ -34,10 +34,12 @@ const next = currentIndex < meetings.length - 1 ? meetings[currentIndex + 1] : n
     title={meeting.title}
     description={meeting.description}
     hasToc={!isLocked}
+    showTitle={!isLocked}
     prev={prev ? { slug: prev.slug, title: prev.title } : undefined}
     next={next ? { slug: next.slug, title: next.title } : undefined}
 >
     {isLocked ? (
+        <div class="pt-20 lg:pt-28">
         <div class="min-h-[60vh] flex flex-col items-center justify-center text-center px-6">
             <span class="font-mono text-7xl font-bold text-zinc-200 dark:text-zinc-700 select-none">
                 {String(meeting.order).padStart(2, '0')}
@@ -59,6 +61,7 @@ const next = currentIndex < meetings.length - 1 ? meetings[currentIndex + 1] : n
                 </svg>
                 Kembali ke Beranda
             </a>
+        </div>
         </div>
     ) : (
         <Content />

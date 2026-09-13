@@ -11,13 +11,12 @@ const toneClasses: Record<StepTone, string> = {
 };
 
 interface StepHeaderProps {
-    kicker: string;
     title: ReactNode;
     tone?: StepTone;
     level?: 2 | 3;
 }
 
-export function StepHeader({ kicker, title, tone, level = 3 }: StepHeaderProps) {
+export function StepHeader({ title, tone, level = 3 }: StepHeaderProps) {
     const Heading = level === 2 ? 'h2' : 'h3';
     const headingClass = level === 2
         ? 'text-2xl md:text-3xl font-bold mb-4 tracking-tight'
@@ -25,9 +24,10 @@ export function StepHeader({ kicker, title, tone, level = 3 }: StepHeaderProps) 
 
     return (
         <>
-            <span className="inline-block font-mono text-xs md:text-sm tracking-widest text-muted-foreground uppercase mb-2">
-                {kicker}
-            </span>
+            <span
+                data-step-counter
+                className="block font-mono text-xs md:text-sm tracking-widest text-muted-foreground/70 tabular-nums mb-2"
+            />
             <Heading className={`${headingClass} ${tone ? toneClasses[tone] : ''}`}>
                 {title}
             </Heading>

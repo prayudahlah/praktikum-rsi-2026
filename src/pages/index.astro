@@ -6,7 +6,7 @@ import { HeroBrowserSlideshow } from '../components/ui/HeroBrowserSlideshow';
 import { Lock } from '@lucide/astro';
 ---
 
-<BaseLayout title="Home">
+<BaseLayout title="Beranda" description="Belajar bikin web dari nol — Praktikum Rekayasa Sistem Informasi FATISDA UNS. Materi Git, backend, REST API, dan full-stack.">
     <!-- Hero Section -->
     <section class="relative min-h-screen flex items-center overflow-x-hidden">
         <FloatingBubbles client:only="react" />
@@ -37,7 +37,7 @@ import { Lock } from '@lucide/astro';
                 </div>
 
                 <!-- KOLOM KANAN: Slideshow -->
-                <div class="hidden lg:block w-full fade-up-slow delay-500">
+                <div class="w-full fade-up-slow delay-500">
                     <HeroBrowserSlideshow client:only="react" />
                 </div>
 

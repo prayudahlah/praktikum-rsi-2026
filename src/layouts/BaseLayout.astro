@@ -1,7 +1,6 @@
 ---
 import '../styles/global.css'
 import { Sun, Moon, Menu, X, ChevronRight, House, Lock, ListOrdered } from '@lucide/astro';
-import { ScrollProgress } from '../components/ui/ScrollProgress';
 import { meetings } from '../data/meetings';
 
 interface Props {
@@ -10,9 +9,13 @@ interface Props {
   hasToc?: boolean;
 }
 
-const { description, hasToc = false } = Astro.props;
+const { title, description, hasToc = false } = Astro.props;
 
-const currentPath = Astro.url.pathname;
+const pageDescription = description || "Interactive learning website untuk praktikum Rekayasa Sistem Informasi FATISDA UNS";
+const canonical = Astro.site ? new URL(Astro.url.pathname, Astro.site) : null;
+const ogImage = "/diagrams/01/step1.webp";
+
+const currentPath = Astro.url.pathname.replace(/\/$/, '') || '/';
 ---
 
 <!DOCTYPE html>
@@ -20,14 +23,25 @@ const currentPath = Astro.url.pathname;
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="icon" type="image/jpeg" href="/favicon.webp">
-    <title>Praktikum RSI 2026</title>
-    <meta name="description" content={description || "Interactive learning website untuk praktikum Rekayasa Sistem Informasi FATISDA UNS"} />
+    <link rel="icon" type="image/webp" href="/favicon.webp">
+    <title>{title} · Praktikum RSI</title>
+    <meta name="description" content={pageDescription} />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Praktikum RSI" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={pageDescription} />
+    <meta property="og:image" content={ogImage} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={pageDescription} />
+    <meta name="twitter:image" content={ogImage} />
+    {canonical && <link rel="canonical" href={canonical.href} />}
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=JetBrains+Mono:wght@400;500&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 
     <script is:inline>
+        document.documentElement.classList.add('js');
         const setTheme = () => {
             const darkModeStored = localStorage.getItem('darkMode');
             const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
@@ -42,15 +56,16 @@ const currentPath = Astro.url.pathname;
     </script>
 </head>
 <body class="relative bg-background text-foreground min-h-screen">
+    <a href="#main" class="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 focus:z-[100] focus:rounded focus:bg-primary focus:px-4 focus:py-2 focus:text-primary-foreground focus:font-medium">Lewati ke konten</a>
     <!-- Sidebar -->
-    <aside id="sidebar" class="fixed left-0 top-0 flex flex-col justify-between h-screen w-72 bg-surface-raised border-r border-border overflow-y-auto transform -translate-x-full transition-transform z-[60]" aria-label="Menu navigasi">
+    <aside id="sidebar" class="fixed left-0 top-0 flex flex-col justify-between h-screen w-[85vw] max-w-xs bg-surface-raised border-r border-border overflow-y-auto transform -translate-x-full transition-transform z-[60]" aria-label="Menu navigasi">
         <div>
 
             <!-- Header -->
             <div class="p-3 flex items-center justify-between">
                 <a href="/" class="flex items-center gap-2">
                     <House class="w-5 h-5" />
-                    <h2 class="text-xl font-bold">PRAKTIKUM RSI</h2>
+                    <h2 class="text-lg sm:text-xl font-bold whitespace-nowrap">PRAKTIKUM RSI</h2>
                 </a>
                 <button id="sidebar-close" aria-label="Tutup menu" class="p-1 rounded hover:bg-hover transition-colors">
                     <X class='w-5 h-5' />
@@ -62,6 +77,7 @@ const currentPath = Astro.url.pathname;
                 {meetings.map((meeting) => (
                 <a
                     href={`/meetings/${meeting.slug}`}
+                    aria-current={currentPath === `/meetings/${meeting.slug}` ? 'page' : undefined}
                     class={`flex items-center gap-2 px-4 py-2 border-l-2 border-transparent transition-colors
                     ${meeting.published
                         ? 'hover:bg-hover'
@@ -90,7 +106,7 @@ const currentPath = Astro.url.pathname;
         </button>
 
         <a href="/" class="flex items-center gap-2">
-            <h2 class="text-xl font-bold">PRAKTIKUM RSI</h2>
+            <h2 class="text-lg sm:text-xl font-bold whitespace-nowrap">PRAKTIKUM RSI</h2>
         </a>
 
         <div class="ml-auto flex items-center gap-1">
@@ -114,18 +130,27 @@ const currentPath = Astro.url.pathname;
         </div>
     </header>
 
-    <!-- Scroll Progress Bar -->
-    <ScrollProgress client:load />
-
 
     <!-- Overlay (Mobile) -->
     <div id="sidebar-overlay" class="fixed inset-0 bg-black/50 z-40 hidden" />
 
 
     <!-- Main Content -->
-    <main>
+    <main id="main" tabindex="-1">
         <slot/>
     </main>
+
+    <!-- Back to top -->
+    <button
+        id="back-to-top"
+        type="button"
+        aria-label="Kembali ke atas"
+        class="fixed bottom-6 right-6 z-40 p-3 rounded-full border border-border bg-surface-raised text-muted-foreground shadow-lg opacity-0 pointer-events-none transition-opacity hover:bg-hover hover:text-foreground"
+    >
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="m18 15-6-6-6 6" />
+        </svg>
+    </button>
 
     <!-- Footer -->
     <footer class="mt-16 py-12 px-8 border-t border-border">
@@ -168,9 +193,17 @@ const currentPath = Astro.url.pathname;
         const sidebarOverlay = document.getElementById('sidebar-overlay');
         const sidebar = document.getElementById('sidebar');
 
+        const getFocusable = (container: HTMLElement) =>
+            Array.from(
+                container.querySelectorAll<HTMLElement>(
+                    'a[href], button:not([disabled]), input:not([disabled]), [tabindex]:not([tabindex="-1"])'
+                )
+            ).filter((el) => el.offsetParent !== null);
+
         const openSidebar = () => {
             sidebar?.classList.remove('-translate-x-full');
             sidebarOverlay?.classList.remove('hidden');
+            if (sidebar) getFocusable(sidebar)[0]?.focus();
         };
         const closeSidebar = () => {
             sidebar?.classList.add('-translate-x-full');
@@ -181,6 +214,22 @@ const currentPath = Astro.url.pathname;
         sidebarClose?.addEventListener('click', closeSidebar);
         sidebarOverlay?.addEventListener('click', closeSidebar);
 
+        // Focus trap while sidebar is open
+        document.addEventListener('keydown', (e) => {
+            if (e.key !== 'Tab' || !sidebar || sidebar.classList.contains('-translate-x-full')) return;
+            const focusable = getFocusable(sidebar);
+            if (focusable.length === 0) return;
+            const first = focusable[0];
+            const last = focusable[focusable.length - 1];
+            if (e.shiftKey && document.activeElement === first) {
+                e.preventDefault();
+                last.focus();
+            } else if (!e.shiftKey && document.activeElement === last) {
+                e.preventDefault();
+                first.focus();
+            }
+        });
+
         // Escape closes sidebar
         document.addEventListener('keydown', (e) => {
             if (e.key === 'Escape' && sidebar && !sidebar.classList.contains('-translate-x-full')) {
@@ -188,6 +237,18 @@ const currentPath = Astro.url.pathname;
                 sidebarToggle?.focus();
             }
         });
+
+        // Back to top
+        const backToTop = document.getElementById('back-to-top');
+        const toggleBackToTop = () => {
+            if (!backToTop) return;
+            const show = window.scrollY > 500;
+            backToTop.classList.toggle('opacity-0', !show);
+            backToTop.classList.toggle('pointer-events-none', !show);
+        };
+        backToTop?.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+        window.addEventListener('scroll', toggleBackToTop, { passive: true });
+        toggleBackToTop();
     </script>
 </body>
 </html>

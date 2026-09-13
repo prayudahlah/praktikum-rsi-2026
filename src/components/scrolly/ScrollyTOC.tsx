@@ -18,7 +18,7 @@ export function ScrollyTOC({ sections }: ScrollyTOCProps) {
                 role="dialog"
                 aria-modal="true"
                 aria-label="Daftar isi"
-                className="fixed top-0 right-0 h-full w-72 bg-surface-raised border-l border-border z-50 transform transition-transform duration-300 ease-in-out overflow-y-auto translate-x-full"
+                className="fixed top-0 right-0 h-full w-[85vw] max-w-xs bg-surface-raised border-l border-border z-50 transform transition-transform duration-300 ease-in-out overflow-y-auto translate-x-full"
             >
                 <div className="p-4 pt-4">
                     <div className="flex items-center justify-between mb-4">
