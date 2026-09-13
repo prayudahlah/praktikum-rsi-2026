@@ -58,14 +58,14 @@ const currentPath = Astro.url.pathname.replace(/\/$/, '') || '/';
 <body class="relative bg-background text-foreground min-h-screen">
     <a href="#main" class="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 focus:z-[100] focus:rounded focus:bg-primary focus:px-4 focus:py-2 focus:text-primary-foreground focus:font-medium">Lewati ke konten</a>
     <!-- Sidebar -->
-    <aside id="sidebar" class="fixed left-0 top-0 flex flex-col justify-between h-screen w-72 bg-surface-raised border-r border-border overflow-y-auto transform -translate-x-full transition-transform z-[60]" aria-label="Menu navigasi">
+    <aside id="sidebar" class="fixed left-0 top-0 flex flex-col justify-between h-screen w-[85vw] max-w-xs bg-surface-raised border-r border-border overflow-y-auto transform -translate-x-full transition-transform z-[60]" aria-label="Menu navigasi">
         <div>
 
             <!-- Header -->
             <div class="p-3 flex items-center justify-between">
                 <a href="/" class="flex items-center gap-2">
                     <House class="w-5 h-5" />
-                    <h2 class="text-xl font-bold">PRAKTIKUM RSI</h2>
+                    <h2 class="text-lg sm:text-xl font-bold whitespace-nowrap">PRAKTIKUM RSI</h2>
                 </a>
                 <button id="sidebar-close" aria-label="Tutup menu" class="p-1 rounded hover:bg-hover transition-colors">
                     <X class='w-5 h-5' />
@@ -106,7 +106,7 @@ const currentPath = Astro.url.pathname.replace(/\/$/, '') || '/';
         </button>
 
         <a href="/" class="flex items-center gap-2">
-            <h2 class="text-xl font-bold">PRAKTIKUM RSI</h2>
+            <h2 class="text-lg sm:text-xl font-bold whitespace-nowrap">PRAKTIKUM RSI</h2>
         </a>
 
         <div class="ml-auto flex items-center gap-1">
@@ -145,7 +145,7 @@ const currentPath = Astro.url.pathname.replace(/\/$/, '') || '/';
         id="back-to-top"
         type="button"
         aria-label="Kembali ke atas"
-        class="fixed bottom-6 right-6 z-40 p-3 rounded-full bg-primary text-primary-foreground shadow-lg opacity-0 pointer-events-none transition-opacity hover:bg-primary/90"
+        class="fixed bottom-6 right-6 z-40 p-3 rounded-full border border-border bg-surface-raised text-muted-foreground shadow-lg opacity-0 pointer-events-none transition-opacity hover:bg-hover hover:text-foreground"
     >
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <path d="m18 15-6-6-6 6" />

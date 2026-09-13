@@ -35,7 +35,7 @@ const { title, description, hasToc = false, showTitle = false, prev, next } = As
 
     <!-- Navigation -->
     <nav class="my-25 pt-8 flex justify-center">
-        <div class="flex justify-between w-[90%] text-base lg:text-lg">
+        <div class="flex flex-col gap-3 sm:flex-row sm:justify-between w-[90%] text-base lg:text-lg">
             {prev ? (
             <a href={`/meetings/${prev.slug}`} class="flex items-center px-4 py-1 gap-2 hover:text-primary transition-colors">
                     <ArrowLeft class="w-5 h-5" />

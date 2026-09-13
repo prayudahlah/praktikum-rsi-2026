@@ -14,7 +14,7 @@ export function ScrollyLayout({ children, defaultSrc, placeholder }: ScrollyLayo
                 <div id="scrolly-text-col" className="order-2 lg:order-1 lg:flex-none lg:w-3/5">
                     {children}
                 </div>
-                <div id="scrolly-diagram-col" className="relative h-[40vh] sticky top-14 lg:h-[calc(100vh-3.5rem)] order-1 lg:order-2 lg:flex-1 lg:min-w-0 z-10">
+                <div id="scrolly-diagram-col" className="relative h-[32vh] sticky top-14 lg:h-[calc(100vh-3.5rem)] order-1 lg:order-2 lg:flex-1 lg:min-w-0 z-10">
                     <div
                         id="scrolly-divider"
                         role="separator"
@@ -35,7 +35,7 @@ export function ScrollyLayout({ children, defaultSrc, placeholder }: ScrollyLayo
                     </div>
                     <div
                         id="scrolly-diagram-content"
-                        className="relative h-full min-h-0 flex items-center justify-center bg-muted backdrop-blur-sm border-b lg:border-b-0 lg:border-r border-border overflow-hidden rounded-lg lg:rounded-none"
+                        className="relative h-full min-h-0 flex items-center justify-center bg-muted backdrop-blur-sm border-b lg:border-b-0 lg:border-r border-border overflow-hidden rounded-none"
                     >
                         <div
                             id="scrolly-placeholder"
@@ -56,6 +56,19 @@ export function ScrollyLayout({ children, defaultSrc, placeholder }: ScrollyLayo
                             </div>
                         ) : null}
                     </div>
+                    <div
+                        id="scrolly-height-divider"
+                        role="separator"
+                        aria-label="Atur tinggi diagram"
+                        aria-orientation="horizontal"
+                        aria-valuemin={20}
+                        aria-valuemax={55}
+                        aria-valuenow={32}
+                        tabIndex={0}
+                        className="absolute bottom-0 left-0 right-0 z-20 flex h-4 translate-y-1/2 cursor-row-resize items-center justify-center group lg:hidden"
+                    >
+                        <span className="h-1 w-10 rounded-full bg-border transition-colors group-hover:bg-primary group-active:bg-primary" />
+                    </div>
                     <div className="pointer-events-none absolute bottom-3 left-1/2 z-10 hidden -translate-x-1/2 font-mono text-[10px] uppercase tracking-widest text-muted-foreground/70 lg:block">
                         ↑↓ · J K
                     </div>
@@ -66,7 +79,7 @@ export function ScrollyLayout({ children, defaultSrc, placeholder }: ScrollyLayo
             <div
                 id="kbd-hint"
                 role="status"
-                className="fixed top-16 right-6 z-50 flex max-w-[calc(100vw-3rem)] items-center gap-3 overflow-hidden rounded-xl border border-border bg-surface-raised px-4 py-2.5 text-sm text-foreground shadow-lg opacity-0 pointer-events-none transition-opacity duration-300"
+                className="fixed top-16 right-6 z-50 hidden lg:flex max-w-[calc(100vw-3rem)] items-center gap-3 overflow-hidden rounded-xl border border-border bg-surface-raised px-4 py-2.5 text-sm text-foreground shadow-lg opacity-0 pointer-events-none transition-opacity duration-300"
             >
                 <span className="flex flex-wrap items-center gap-1.5">
                     <span>Gunakan</span>

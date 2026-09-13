@@ -201,7 +201,7 @@ export function initScrolly() {
     const kbdHintProgress = document.getElementById('kbd-hint-progress');
     const kbdHintKey = 'rsi.kbdHintSeen';
     const kbdHintDuration = 8000;
-    if (kbdHint) {
+    if (kbdHint && window.innerWidth >= 1024) {
         let kbdHintSeen = false;
         try {
             kbdHintSeen = localStorage.getItem(kbdHintKey) === 'true';
@@ -300,6 +300,74 @@ export function initScrolly() {
             textColumn.style.flexBasis = '';
         } else {
             applyTextPct(textPct);
+        }
+    });
+
+    // Mobile-only resizable diagram height (persisted).
+    const diagramCol = document.getElementById('scrolly-diagram-col');
+    const heightDivider = document.getElementById('scrolly-height-divider');
+    const diagramHeightKey = 'rsi.diagramHeightVh';
+    const minDiagramVh = 20;
+    const maxDiagramVh = 55;
+    let diagramVh = 32;
+    let isResizingHeight = false;
+
+    const clampDiagramVh = (value: number) => Math.min(maxDiagramVh, Math.max(minDiagramVh, value));
+    const applyDiagramVh = (value: number) => {
+        diagramVh = clampDiagramVh(value);
+        if (window.innerWidth < 1024 && diagramCol) {
+            diagramCol.style.height = `${diagramVh}vh`;
+        }
+        heightDivider?.setAttribute('aria-valuenow', String(Math.round(diagramVh)));
+    };
+
+    try {
+        const stored = localStorage.getItem(diagramHeightKey);
+        if (stored !== null) {
+            const savedVh = Number(stored);
+            if (Number.isFinite(savedVh)) diagramVh = clampDiagramVh(savedVh);
+        }
+    } catch {
+        // Storage can be unavailable in privacy-restricted browsers.
+    }
+
+    applyDiagramVh(diagramVh);
+
+    const stopResizingHeight = () => {
+        if (!isResizingHeight) return;
+        isResizingHeight = false;
+        document.body.classList.remove('select-none');
+        document.body.style.cursor = '';
+        try {
+            localStorage.setItem(diagramHeightKey, String(diagramVh));
+        } catch {
+            // Ignore storage failures.
+        }
+    };
+
+    heightDivider?.addEventListener('pointerdown', (event) => {
+        if (window.innerWidth >= 1024 || !diagramCol) return;
+        isResizingHeight = true;
+        heightDivider.setPointerCapture(event.pointerId);
+        document.body.classList.add('select-none');
+        document.body.style.cursor = 'row-resize';
+        event.preventDefault();
+    });
+
+    heightDivider?.addEventListener('pointermove', (event) => {
+        if (!isResizingHeight || !diagramCol) return;
+        const rect = diagramCol.getBoundingClientRect();
+        const nextVh = ((event.clientY - rect.top) / window.innerHeight) * 100;
+        applyDiagramVh(nextVh);
+    });
+
+    heightDivider?.addEventListener('pointerup', stopResizingHeight);
+    heightDivider?.addEventListener('pointercancel', stopResizingHeight);
+    window.addEventListener('resize', () => {
+        if (window.innerWidth >= 1024 && diagramCol) {
+            diagramCol.style.height = '';
+        } else {
+            applyDiagramVh(diagramVh);
         }
     });
 
