@@ -33,16 +33,17 @@ const next = currentIndex < meetings.length - 1 ? meetings[currentIndex + 1] : n
 <MeetingLayout
     title={meeting.title}
     description={meeting.description}
+    hasToc={!isLocked}
     prev={prev ? { slug: prev.slug, title: prev.title } : undefined}
     next={next ? { slug: next.slug, title: next.title } : undefined}
 >
     {isLocked ? (
         <div class="min-h-[60vh] flex flex-col items-center justify-center text-center px-6">
-            <span class="font-mono text-7xl font-bold text-gray-200 dark:text-gray-700 select-none">
+            <span class="font-mono text-7xl font-bold text-zinc-200 dark:text-zinc-700 select-none">
                 {String(meeting.order).padStart(2, '0')}
             </span>
             <h1 class="font-display text-3xl font-bold mt-4 mb-3">{meeting.title}</h1>
-            <p class="text-gray-600 dark:text-gray-400 mb-6 max-w-md">{meeting.description}</p>
+            <p class="text-foreground-secondary mb-6 max-w-md">{meeting.description}</p>
             <div class="flex items-center gap-2 text-muted-foreground mb-8">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />

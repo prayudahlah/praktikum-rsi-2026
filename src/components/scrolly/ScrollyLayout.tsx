@@ -23,18 +23,19 @@ export function ScrollyLayout({ children, defaultSrc, placeholder }: ScrollyLayo
                         aria-valuemin={30}
                         aria-valuemax={70}
                         aria-valuenow={50}
+                        tabIndex={0}
                         className="hidden lg:block absolute left-0 top-0 z-20 h-full w-3 -translate-x-1/2 cursor-col-resize group"
                     >
-                        <span className="absolute left-1/2 top-0 h-full w-px -translate-x-1/2 bg-gray-300/70 dark:bg-gray-600/70 transition-colors group-hover:bg-primary group-active:bg-primary" />
-                        <span className="absolute left-1/2 top-1/2 flex -translate-x-1/2 -translate-y-1/2 scale-75 flex-col items-center gap-[3px] rounded-full bg-gray-200 px-[3px] py-2 opacity-0 transition-all duration-150 group-hover:scale-100 group-hover:bg-primary group-hover:opacity-100 group-active:scale-100 group-active:bg-primary group-active:opacity-100 dark:bg-gray-600">
-                            <span className="h-1 w-1 rounded-full bg-gray-500 dark:bg-gray-300 group-hover:bg-white" />
-                            <span className="h-1 w-1 rounded-full bg-gray-500 dark:bg-gray-300 group-hover:bg-white" />
-                            <span className="h-1 w-1 rounded-full bg-gray-500 dark:bg-gray-300 group-hover:bg-white" />
+                        <span className="absolute left-1/2 top-0 h-full w-px -translate-x-1/2 bg-border transition-colors group-hover:bg-primary group-active:bg-primary" />
+                        <span className="absolute left-1/2 top-1/2 flex -translate-x-1/2 -translate-y-1/2 scale-75 flex-col items-center gap-[3px] rounded-full bg-zinc-200 px-[3px] py-2 opacity-0 transition-all duration-150 group-hover:scale-100 group-hover:bg-primary group-hover:opacity-100 group-active:scale-100 group-active:bg-primary group-active:opacity-100 dark:bg-zinc-600">
+                            <span className="h-1 w-1 rounded-full bg-zinc-500 dark:bg-zinc-300 group-hover:bg-white" />
+                            <span className="h-1 w-1 rounded-full bg-zinc-500 dark:bg-zinc-300 group-hover:bg-white" />
+                            <span className="h-1 w-1 rounded-full bg-zinc-500 dark:bg-zinc-300 group-hover:bg-white" />
                         </span>
                     </div>
                     <div
                         id="scrolly-diagram-content"
-                        className="relative h-full min-h-0 flex items-center justify-center bg-gray-100/80 dark:bg-gray-700/20 backdrop-blur-sm border-b lg:border-b-0 lg:border-r border-gray-200 dark:border-gray-700 overflow-hidden rounded-lg lg:rounded-none"
+                        className="relative h-full min-h-0 flex items-center justify-center bg-muted backdrop-blur-sm border-b lg:border-b-0 lg:border-r border-border overflow-hidden rounded-lg lg:rounded-none"
                     >
                         <div
                             id="scrolly-placeholder"

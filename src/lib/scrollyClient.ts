@@ -12,17 +12,18 @@ export function initScrolly() {
     const placeholder = document.getElementById('scrolly-placeholder');
     const firstStep = steps[0];
 
-    // TOC: toggle, backdrop, click-outside, jump
+    // TOC: toggle (header), backdrop, click-outside, close button, jump
     const toggle = document.querySelector<HTMLElement>('[data-toc-toggle]');
     const tocPanel = document.querySelector<HTMLElement>('[data-toc-panel]');
     const backdrop = document.querySelector<HTMLElement>('[data-toc-backdrop]');
+    const tocCloseBtn = document.querySelector<HTMLElement>('[data-toc-close]');
     const tocItems = Array.from(document.querySelectorAll<HTMLElement>('[data-toc-item]'));
 
     const isTocOpen = () => tocPanel?.classList.contains('translate-x-0') ?? false;
 
     const setTocOpen = (open: boolean) => {
         tocPanel?.classList.toggle('translate-x-0', open);
-        tocPanel?.classList.toggle('-translate-x-full', !open);
+        tocPanel?.classList.toggle('translate-x-full', !open);
         backdrop?.classList.toggle('hidden', !open);
         toggle?.setAttribute('aria-expanded', String(open));
     };
@@ -31,6 +32,8 @@ export function initScrolly() {
         e.stopPropagation();
         setTocOpen(!isTocOpen());
     });
+
+    tocCloseBtn?.addEventListener('click', () => setTocOpen(false));
 
     backdrop?.addEventListener('click', () => setTocOpen(false));
 
@@ -227,7 +230,15 @@ export function initScrolly() {
         if (e.target === modalWrapper) closeModal();
     });
     document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape' && modal?.classList.contains('opacity-100')) closeModal();
+        if (e.key !== 'Escape') return;
+        if (modal?.classList.contains('opacity-100')) {
+            closeModal();
+            return;
+        }
+        if (isTocOpen()) {
+            setTocOpen(false);
+            (toggle as HTMLElement | null)?.focus();
+        }
     });
 
     // Image zoom (modal only)

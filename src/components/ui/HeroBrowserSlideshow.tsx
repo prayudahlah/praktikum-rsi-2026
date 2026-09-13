@@ -69,7 +69,7 @@ export function HeroBrowserSlideshow() {
     return (
         <div className="w-full max-w-xl mx-auto pt-10">
             <motion.div
-                className="relative shadow-2xl shadow-blue-900/10 dark:shadow-blue-900/35 overflow-visible border border-gray-200 dark:border-gray-700 bg-white/70 dark:bg-gray-900/70 backdrop-blur-md"
+                className="relative shadow-2xl shadow-blue-900/10 dark:shadow-blue-900/35 overflow-visible border border-border bg-white/70 dark:bg-zinc-900/70 backdrop-blur-md"
                 animate={{ y: [-8, 8, -8] }}
                 transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut' }}
             >
@@ -82,7 +82,7 @@ export function HeroBrowserSlideshow() {
                                 initial={{ opacity: 0, y: 10, scale: 0.9 }}
                                 animate={{ opacity: 1, y: 0, scale: 1 }}
                                 exit={{ opacity: 0, scale: 0.9 }}
-                                className="absolute -top-16 right-0 w-48 bg-white dark:bg-gray-800 p-3 rounded-2xl shadow-xl border border-gray-100 dark:border-gray-700 text-xs text-gray-700 dark:text-gray-300 text-center font-medium pointer-events-auto z-50 cat-chat-bubble"
+                                className="absolute -top-16 right-0 w-48 bg-white dark:bg-zinc-800 p-3 rounded-2xl shadow-xl border border-border text-xs text-foreground-secondary text-center font-medium pointer-events-auto z-50 cat-chat-bubble"
                             >
                                 {currentQuote}
                             </motion.div>
@@ -123,7 +123,7 @@ export function HeroBrowserSlideshow() {
                 </div>
 
                 {/* Browser Top Bar */}
-                <div className="flex items-center px-4 py-3 bg-gray-100 dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700">
+                <div className="flex items-center px-4 py-3 bg-muted border-b border-border">
                     <div className="flex space-x-2">
                         <div className="w-3 h-3 rounded-full bg-red-400"></div>
                         <div className="w-3 h-3 rounded-full bg-yellow-400"></div>
@@ -132,7 +132,7 @@ export function HeroBrowserSlideshow() {
                 </div>
 
                 {/* Slideshow */}
-                <div className="relative aspect-video bg-gray-50 dark:bg-gray-950 overflow-hidden flex items-center justify-center p-4">
+                <div className="relative aspect-video bg-surface dark:bg-zinc-950 overflow-hidden flex items-center justify-center p-4">
                     <AnimatePresence mode="wait">
                         <motion.img
                             key={currentIndex}

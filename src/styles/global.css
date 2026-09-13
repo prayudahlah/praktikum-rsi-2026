@@ -31,6 +31,9 @@ html, body {
   --color-terminal-quote: var(--terminal-quote);
   --color-terminal-muted: var(--terminal-muted);
   --color-terminal-header: var(--terminal-header);
+  --color-ring: var(--ring);
+  --color-foreground-secondary: var(--foreground-secondary);
+  --color-hover: var(--hover);
 
   --font-sans: "Plus Jakarta Sans", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
   --font-display: "Space Grotesk", sans-serif;
@@ -40,6 +43,7 @@ html, body {
 :root {
   --background: #ffffff;
   --foreground: #18181b;
+  --foreground-secondary: #52525b;
   --surface: #fafafa;
   --surface-body: #ffffff;
   --surface-raised: #fafafa;
@@ -47,6 +51,8 @@ html, body {
   --muted: #f4f4f5;
   --muted-foreground: #71717a;
   --border: #e4e4e7;
+  --ring: #2563eb;
+  --hover: #f4f4f5;
 
   --primary: #2563eb;
   --primary-foreground: #ffffff;
@@ -70,6 +76,7 @@ html, body {
 .dark {
   --background: #09090b;
   --foreground: #f4f4f5;
+  --foreground-secondary: #a1a1aa;
   --surface: #18181b;
   --surface-body: #09090b;
   --surface-raised: #18181b;
@@ -77,6 +84,8 @@ html, body {
   --muted: #18181b;
   --muted-foreground: #a1a1aa;
   --border: #27272a;
+  --ring: #60a5fa;
+  --hover: #27272a;
 
   --primary: #60a5fa;
   --primary-foreground: #09090b;
@@ -92,14 +101,13 @@ html, body {
 
 /* Active item in ScrollyTOC */
 [data-toc-item].toc-item-active {
-    background-color: rgb(59 130 246 / 0.1);
+    background-color: rgb(37 99 235 / 0.1);
     color: var(--color-primary);
     font-weight: 500;
 }
 
 .dark [data-toc-item].toc-item-active {
     background-color: rgb(96 165 250 / 0.15);
-    color: var(--color-primary);
 }
 
 /* Step enter animation */
@@ -133,6 +141,65 @@ html, body {
 
 :root.dark .cat-chat-bubble::after {
   border-top-color: var(--color-surface-raised);
+}
+
+/* Focus-visible: visible keyboard focus on interactive elements */
+@layer base {
+  :focus-visible {
+    outline: 2px solid var(--color-ring);
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
+}
+
+/* Selection */
+::selection {
+  background-color: rgb(59 130 246 / 0.25);
+  color: var(--color-foreground);
+}
+
+.dark ::selection {
+  background-color: rgb(96 165 250 / 0.3);
+}
+
+/* Custom scrollbar (subtle, theme-aware) */
+html {
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-border) transparent;
+}
+
+html::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+html::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+html::-webkit-scrollbar-thumb {
+  background: var(--color-border);
+  border-radius: 8px;
+  border: 2px solid transparent;
+  background-clip: padding-box;
+}
+
+html::-webkit-scrollbar-thumb:hover {
+  background: var(--color-muted-foreground);
+  background-clip: padding-box;
+  border: 2px solid transparent;
+}
+
+/* Respect users who prefer reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
 }
 
 /* Shiki dual theme */

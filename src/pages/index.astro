@@ -23,7 +23,7 @@ import { Lock } from '@lucide/astro';
                         <span class="block text-primary">RSI</span>
                     </h1>
 
-                    <p class="fade-up delay-300 text-lg md:text-xl text-gray-600 dark:text-gray-400 mb-10 max-w-md leading-relaxed">
+                    <p class="fade-up delay-300 text-lg md:text-xl text-foreground-secondary mb-10 max-w-md leading-relaxed">
                         Belajar bikin web dari nol ദ്ദി ˉ꒳ˉ )✧
                     </p>
 
@@ -65,7 +65,7 @@ import { Lock } from '@lucide/astro';
             <div class="space-y-0">
                 {meetings.map((meeting) => (
                     <a href={`/meetings/${meeting.slug}`}
-                        class={`fade-up stagger-item flex items-center gap-6 py-5 px-2 border-b border-border transition group ${meeting.published ? 'hover:bg-muted' : 'text-muted-foreground'}`}
+                        class={`fade-up stagger-item flex items-center gap-6 py-5 px-2 border-b border-border transition group ${meeting.published ? 'hover:bg-hover' : 'text-muted-foreground'}`}
                     >
                         <span class={`font-mono text-2xl font-bold w-12 shrink-0 ${meeting.published ? 'text-muted-foreground/40 group-hover:text-primary' : 'text-muted-foreground/40'}`}>
                             {String(meeting.order).padStart(2, '0')}
@@ -76,7 +76,7 @@ import { Lock } from '@lucide/astro';
                             </h3>
                         </div>
                         {!meeting.published && <Lock class="w-5 h-5 ml-auto shrink-0" />}
-                        {meeting.published && <svg class="w-5 h-5 text-gray-400 group-hover:text-primary group-hover:translate-x-1 transition ml-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        {meeting.published && <svg class="w-5 h-5 text-muted-foreground group-hover:text-primary group-hover:translate-x-1 transition ml-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
                         </svg>}
                     </a>
