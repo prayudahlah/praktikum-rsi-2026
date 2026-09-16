@@ -18,6 +18,7 @@ import dbSchema from '../snippets/03/db-02-schema.sql?raw';
 import dbSeed from '../snippets/03/db-03-seed.sql?raw';
 
 import h1Package from '../snippets/03/h1-package.json?raw';
+import h1Tsconfig from '../snippets/03/h1-tsconfig.json?raw';
 import h1Env from '../snippets/03/h1-env.txt?raw';
 import h1Database from '../snippets/03/h1-database.ts?raw';
 import h1Index from '../snippets/03/h1-index.ts?raw';
@@ -325,6 +326,13 @@ const strukturHandsOn2 = `praktikum-pert-3/
             </p>
             <CodeBlock code={h1Package} language="json" filename="package.json" compact />
             <p class="mt-4 text-foreground-secondary leading-relaxed">
+                Lalu buat <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">tsconfig.json</code>
+                agar TypeScript mengenali lingkungan Node (seperti <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">process</code>
+                dan modul bawaan) serta <em>import</em> bergaya <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">./file.ts</code>,
+                sehingga editor/LSP tidak menandai error:
+            </p>
+            <CodeBlock code={h1Tsconfig} language="json" filename="tsconfig.json" compact />
+            <p class="mt-4 text-foreground-secondary leading-relaxed">
                 Buat file <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">.env</code>
                  berisi kredensial database:
             </p>
@@ -432,6 +440,12 @@ const strukturHandsOn2 = `praktikum-pert-3/
                 Buat <strong>file baru</strong> <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">drizzle.config.ts</code> berisi:
             </p>
             <CodeBlock code={h2DrizzleConfig} language="ts" filename="drizzle.config.ts" compact />
+            <p class="mt-4 text-foreground-secondary leading-relaxed">
+                Tambahkan <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">drizzle.config.ts</code>
+                ke bagian <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">include</code> di
+                <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">tsconfig.json</code>
+                agar file konfigurasi ini ikut dikenali TypeScript:
+            </p>
             <div class="mt-4 p-4 rounded-lg bg-warning/5 dark:bg-warning/10 border-l-4 border-warning">
                 <span class="font-bold text-warning">Versi dipatok (RC)</span>
                 <p class="text-sm md:text-base text-foreground-secondary mt-1">

@@ -13,6 +13,7 @@ import CodeBlock from '../../components/ui/CodeBlock.astro';
 import { BookOpen } from '@lucide/astro';
 import expressHealth from '../snippets/02/express-health.ts?raw';
 import packageJson from '../snippets/02/package-json.json?raw';
+import tsconfig from '../snippets/02/tsconfig.json?raw';
 import stallRepository from '../snippets/02/stall-repository.ts?raw';
 import stallDto from '../snippets/02/stall-dto.ts?raw';
 import stallService from '../snippets/02/stall-service.ts?raw';
@@ -452,6 +453,13 @@ const strukturHandsOn2 = `my-api/
                 <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">package.json</code>:
             </p>
             <CodeBlock code={packageJson} language="json" filename="package.json" compact />
+            <p class="mt-4 text-foreground-secondary leading-relaxed">
+                Buat juga <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">tsconfig.json</code>
+                agar TypeScript mengenali lingkungan Node (seperti <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">process</code>
+                dan modul bawaan) serta <em>import</em> bergaya <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">./file.ts</code>,
+                sehingga editor/LSP tidak menandai error:
+            </p>
+            <CodeBlock code={tsconfig} language="json" filename="tsconfig.json" compact />
             <ul class="space-y-2 text-foreground-secondary leading-relaxed list-disc list-inside">
                 <li>
                     <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">"main": "src/index.ts"</code>
