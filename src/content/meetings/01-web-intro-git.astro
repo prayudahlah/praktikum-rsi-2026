@@ -18,7 +18,7 @@ const tocSections: TOCSection[] = [
     {
         label: 'Overview',
         items: [
-            { id: 'p1-1', title: 'Apa yang Terjadi di Balik Tombol?' },
+            { id: 'p1-1', title: 'Di Balik Tombol' },
             { id: 'p1-2', title: 'Client & Server' },
             { id: 'p1-3', title: '3-Tier Architecture' },
             { id: 'p1-4', title: 'HTTP Request/Response' },
@@ -30,8 +30,8 @@ const tocSections: TOCSection[] = [
         items: [
             { id: 'p2-1', title: 'Git & GitHub' },
             { id: 'p2-2a', title: '3 Tahap Penyimpanan' },
-            { id: 'p2-2b', title: 'Praktik: Git Init, Add, Commit' },
-            { id: 'p2-2c', title: 'Praktik: git status' },
+            { id: 'p2-2b', title: 'Git Init, Add, Commit' },
+            { id: 'p2-2c', title: 'git status' },
             { id: 'p2-3', title: 'git reset & HEAD~n' },
             { id: 'p2-4', title: 'Remote Repository' },
             { id: 'p2-5', title: 'Branching' },
@@ -39,8 +39,8 @@ const tocSections: TOCSection[] = [
             { id: 'p2-7a', title: 'Merge Strategies' },
             { id: 'p2-7b', title: 'Contoh Merge' },
             { id: 'p2-8', title: 'Pull Request' },
-            { id: 'p2-9a', title: 'Ketika Kode Bertabrakan' },
-            { id: 'p2-9b', title: 'Memahami Marker Conflict' },
+            { id: 'p2-9a', title: 'Merge Conflict' },
+            { id: 'p2-9b', title: 'Marker Conflict' },
         ]
     }
 ];
@@ -217,7 +217,7 @@ const tocSections: TOCSection[] = [
             </p>
         </Step>
 
-        <!-- STEP 7a: LOCAL WORKFLOW — KONSEP -->
+        <!-- STEP 7a: LOCAL WORKFLOW - KONSEP -->
 
         <Step id="p2-2a" diagram="/diagrams/01/step7.webp">
             <StepHeader title="3 Tahap Penyimpanan" tone="success" />
@@ -289,7 +289,7 @@ const tocSections: TOCSection[] = [
                 <div class="p-3 rounded-lg bg-accent/5 dark:bg-accent/10 border-l-4 border-accent">
                     <code class="font-mono text-base font-bold text-accent">git log --oneline</code>
                     <p class="text-sm md:text-base text-muted-foreground mt-1">
-                        Melihat riwayat commit dalam format ringkas — satu baris per commit.
+                        Melihat riwayat commit dalam format ringkas, satu baris per commit.
                     </p>
                 </div>
                 <div class="p-3 rounded-lg bg-warning/5 dark:bg-warning/10 border-l-4 border-warning">
@@ -362,7 +362,7 @@ const tocSections: TOCSection[] = [
             </div>
         </Step>
 
-        <!-- STEP 9: REMOTE REPOSITORY — KONSEP -->
+        <!-- STEP 9: REMOTE REPOSITORY - KONSEP -->
 
         <Step id="p2-4" diagram="/diagrams/01/step9.webp">
             <StepHeader title="Remote Repository" tone="success" />
@@ -480,10 +480,10 @@ const tocSections: TOCSection[] = [
             <p class="mt-4 text-foreground-secondary leading-relaxed">
                 <strong>Kapan pakai mana?</strong>
             </p>
-            <ul class="mt-2 space-y-1 text-sm md:text-base text-muted-foreground">
-                <li>• <strong class="text-success">Merge</strong>: default paling aman. Gunakan untuk fitur besar yang perlu riwayat percabangan terlihat.</li>
-                <li>• <strong class="text-primary">Rebase</strong>: saat ingin riwayat commit di branch fitur tetap rapi sebelum merge.</li>
-                <li>• <strong class="text-accent">Squash</strong>: saat branch punya banyak commit kecil ("wip", "fix typo", dll) yang tidak perlu terlihat di riwayat utama.</li>
+            <ul class="mt-2 space-y-1 text-sm md:text-base text-muted-foreground list-disc list-inside">
+                <li><strong class="text-success">Merge</strong>: default paling aman. Gunakan untuk fitur besar yang perlu riwayat percabangan terlihat.</li>
+                <li><strong class="text-primary">Rebase</strong>: saat ingin riwayat commit di branch fitur tetap rapi sebelum merge.</li>
+                <li><strong class="text-accent">Squash</strong>: saat branch punya banyak commit kecil ("wip", "fix typo", dll) yang tidak perlu terlihat di riwayat utama.</li>
             </ul>
         </Step>
 

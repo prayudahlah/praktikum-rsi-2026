@@ -1,6 +1,6 @@
 ---
 import '../styles/global.css'
-import { Sun, Moon, Menu, X, ChevronRight, House, Lock, ListOrdered } from '@lucide/astro';
+import { Sun, Moon, Menu, ChevronRight, Lock, ListOrdered } from '@lucide/astro';
 import { meetings } from '../data/meetings';
 
 interface Props {
@@ -55,55 +55,52 @@ const currentPath = Astro.url.pathname.replace(/\/$/, '') || '/';
         setTheme();
     </script>
 </head>
-<body class="relative bg-background text-foreground min-h-screen">
+<body class={`relative bg-background text-foreground min-h-screen ${hasToc ? 'lg:pl-60' : ''}`}>
     <a href="#main" class="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 focus:z-[100] focus:rounded focus:bg-primary focus:px-4 focus:py-2 focus:text-primary-foreground focus:font-medium">Lewati ke konten</a>
-    <!-- Sidebar -->
-    <aside id="sidebar" class="fixed left-0 top-0 flex flex-col justify-between h-screen w-[85vw] max-w-xs bg-surface-raised border-r border-border overflow-y-auto transform -translate-x-full transition-transform z-[60]" aria-label="Menu navigasi">
-        <div>
-
-            <!-- Header -->
-            <div class="p-3 flex items-center justify-between">
-                <a href="/" class="flex items-center gap-2">
-                    <House class="w-5 h-5" />
-                    <h2 class="text-lg sm:text-xl font-bold whitespace-nowrap">PRAKTIKUM RSI</h2>
-                </a>
-                <button id="sidebar-close" aria-label="Tutup menu" class="p-1 rounded hover:bg-hover transition-colors">
-                    <X class='w-5 h-5' />
-                </button>
-            </div>
-
-            <!-- Meeting List -->
-            <nav aria-label="Daftar pertemuan">
-                {meetings.map((meeting) => (
-                <a
-                    href={`/meetings/${meeting.slug}`}
-                    aria-current={currentPath === `/meetings/${meeting.slug}` ? 'page' : undefined}
-                    class={`flex items-center gap-2 px-4 py-2 border-l-2 border-transparent transition-colors
-                    ${meeting.published
-                        ? 'hover:bg-hover'
-                        : 'text-muted-foreground hover:bg-hover'
-                    }
-                    ${
-                        currentPath === `/meetings/${meeting.slug}`
-                        ? 'bg-primary/10 text-primary border-primary'
-                        : ''
-                    }`}
-                >
-                    <span>{meeting.order}. {meeting.title}</span>
-                    {!meeting.published && <Lock class="w-4 h-4 ml-auto shrink-0" />}
-                    {meeting.published && currentPath === `/meetings/${meeting.slug}` && <ChevronRight class="w-4 h-4 ml-auto" />}
-                </a>
-                ))}
-            </nav>
-        </div>
-    </aside>
-
 
     <!-- Fixed header -->
     <header class="fixed top-0 left-0 right-0 h-14 bg-surface-raised border-b border-border z-40 flex items-center px-4 gap-1">
-        <button id="sidebar-toggle" aria-label="Buka menu" class="p-2 rounded hover:bg-hover transition-colors">
-            <Menu class="w-6 h-6" />
-        </button>
+        <div id="meetings-menu" class="relative">
+            <button
+                id="meetings-toggle"
+                type="button"
+                aria-label="Daftar pertemuan"
+                aria-haspopup="true"
+                aria-expanded="false"
+                aria-controls="meetings-panel"
+                class="p-2 rounded hover:bg-hover transition-colors"
+            >
+                <Menu class="w-6 h-6" />
+            </button>
+
+            <div
+                id="meetings-panel"
+                class="hidden absolute left-0 top-full mt-2 w-72 max-w-[calc(100vw-2rem)] overflow-hidden rounded-xl border border-border bg-surface-raised shadow-xl z-50"
+            >
+                <nav aria-label="Daftar pertemuan" class="max-h-[70vh] overflow-y-auto py-1">
+                    {meetings.map((meeting) => (
+                    <a
+                        href={`/meetings/${meeting.slug}`}
+                        aria-current={currentPath === `/meetings/${meeting.slug}` ? 'page' : undefined}
+                        class={`flex items-center gap-2 px-4 py-2 border-l-2 border-transparent transition-colors
+                        ${meeting.published
+                            ? 'hover:bg-hover'
+                            : 'text-muted-foreground hover:bg-hover'
+                        }
+                        ${
+                            currentPath === `/meetings/${meeting.slug}`
+                            ? 'bg-primary/10 text-primary border-primary'
+                            : ''
+                        }`}
+                    >
+                        <span>{meeting.order}. {meeting.title}</span>
+                        {!meeting.published && <Lock class="w-4 h-4 ml-auto shrink-0" />}
+                        {meeting.published && currentPath === `/meetings/${meeting.slug}` && <ChevronRight class="w-4 h-4 ml-auto" />}
+                    </a>
+                    ))}
+                </nav>
+            </div>
+        </div>
 
         <a href="/" class="flex items-center gap-2">
             <h2 class="text-lg sm:text-xl font-bold whitespace-nowrap">PRAKTIKUM RSI</h2>
@@ -118,7 +115,7 @@ const currentPath = Astro.url.pathname.replace(/\/$/, '') || '/';
                     aria-label="Daftar isi"
                     aria-expanded="false"
                     aria-controls="toc-panel"
-                    class="p-2 rounded hover:bg-hover transition-colors"
+                    class="p-2 rounded hover:bg-hover transition-colors lg:hidden"
                 >
                     <ListOrdered class="w-6 h-6" />
                 </button>
@@ -129,10 +126,6 @@ const currentPath = Astro.url.pathname.replace(/\/$/, '') || '/';
             </button>
         </div>
     </header>
-
-
-    <!-- Overlay (Mobile) -->
-    <div id="sidebar-overlay" class="fixed inset-0 bg-black/50 z-40 hidden" />
 
 
     <!-- Main Content -->
@@ -171,70 +164,41 @@ const currentPath = Astro.url.pathname.replace(/\/$/, '') || '/';
 
     <!-- Scripts -->
     <script>
-        // Dark Mode Toggle (shared by header + sidebar)
+        // Dark Mode Toggle
         const html = document.documentElement;
-        const updateDarkModeLabel = () => {
-            document.querySelectorAll('[data-dark-mode-label]').forEach((el) => {
-                el.textContent = html.classList.contains('dark') ? 'Mode Terang' : 'Mode Gelap';
-            });
-        };
-        updateDarkModeLabel();
         document.querySelectorAll('[data-dark-mode-toggle]').forEach((btn) => {
             btn.addEventListener('click', () => {
                 html.classList.toggle('dark');
                 localStorage.setItem('darkMode', html.classList.contains('dark').toString());
-                updateDarkModeLabel();
             });
         });
 
-        // Sidebar Toggle
-        const sidebarToggle = document.getElementById('sidebar-toggle');
-        const sidebarClose = document.getElementById('sidebar-close');
-        const sidebarOverlay = document.getElementById('sidebar-overlay');
-        const sidebar = document.getElementById('sidebar');
+        // Meetings dropdown
+        const meetingsMenu = document.getElementById('meetings-menu');
+        const meetingsToggle = document.getElementById('meetings-toggle');
+        const meetingsPanel = document.getElementById('meetings-panel');
 
-        const getFocusable = (container: HTMLElement) =>
-            Array.from(
-                container.querySelectorAll<HTMLElement>(
-                    'a[href], button:not([disabled]), input:not([disabled]), [tabindex]:not([tabindex="-1"])'
-                )
-            ).filter((el) => el.offsetParent !== null);
-
-        const openSidebar = () => {
-            sidebar?.classList.remove('-translate-x-full');
-            sidebarOverlay?.classList.remove('hidden');
-            if (sidebar) getFocusable(sidebar)[0]?.focus();
-        };
-        const closeSidebar = () => {
-            sidebar?.classList.add('-translate-x-full');
-            sidebarOverlay?.classList.add('hidden');
+        const setMeetingsOpen = (open: boolean) => {
+            meetingsPanel?.classList.toggle('hidden', !open);
+            meetingsToggle?.setAttribute('aria-expanded', String(open));
         };
 
-        sidebarToggle?.addEventListener('click', openSidebar);
-        sidebarClose?.addEventListener('click', closeSidebar);
-        sidebarOverlay?.addEventListener('click', closeSidebar);
-
-        // Focus trap while sidebar is open
-        document.addEventListener('keydown', (e) => {
-            if (e.key !== 'Tab' || !sidebar || sidebar.classList.contains('-translate-x-full')) return;
-            const focusable = getFocusable(sidebar);
-            if (focusable.length === 0) return;
-            const first = focusable[0];
-            const last = focusable[focusable.length - 1];
-            if (e.shiftKey && document.activeElement === first) {
-                e.preventDefault();
-                last.focus();
-            } else if (!e.shiftKey && document.activeElement === last) {
-                e.preventDefault();
-                first.focus();
-            }
+        meetingsToggle?.addEventListener('click', (e) => {
+            e.stopPropagation();
+            setMeetingsOpen(meetingsPanel?.classList.contains('hidden') ?? false);
         });
 
-        // Escape closes sidebar
+        document.addEventListener('mousedown', (e) => {
+            if (!meetingsMenu || meetingsPanel?.classList.contains('hidden')) return;
+            if (meetingsMenu.contains(e.target as Node)) return;
+            setMeetingsOpen(false);
+        });
+
         document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape' && sidebar && !sidebar.classList.contains('-translate-x-full')) {
-                closeSidebar();
-                sidebarToggle?.focus();
+            if (e.key !== 'Escape') return;
+            if (meetingsPanel && !meetingsPanel.classList.contains('hidden')) {
+                setMeetingsOpen(false);
+                meetingsToggle?.focus();
             }
         });
 

@@ -28,25 +28,25 @@ const tocSections: TOCSection[] = [
             { id: 'p1-2', title: 'Kenapa Backend Wajib?' },
             { id: 'p1-3', title: 'REST API & HTTP Methods' },
             { id: 'p1-4', title: 'Endpoint & URL' },
-            { id: 'p1-5', title: 'Cara Kirim Data dari Client' },
-            { id: 'p1-6', title: 'Server Menjawab: Format JSON' },
-            { id: 'p1-7', title: 'Membaca Jawaban Server: Status Code' },
+            { id: 'p1-5', title: 'Kirim Data dari Client' },
+            { id: 'p1-6', title: 'Format JSON' },
+            { id: 'p1-7', title: 'Status Code' },
         ]
     },
     {
         label: 'Hands-on 1',
         items: [
-            { id: 'h1-1', title: 'Setup: Project & Instalasi Express' },
-            { id: 'h1-2', title: 'Menjalankan TypeScript dengan tsx' },
-            { id: 'h1-3', title: 'Membuat Endpoint Pertama (GET /health)' },
-            { id: 'h1-4', title: 'Menyalakan Server & Pengujian' },
+            { id: 'h1-1', title: 'Setup Project' },
+            { id: 'h1-2', title: 'Menjalankan TS (tsx)' },
+            { id: 'h1-3', title: 'Endpoint /health' },
+            { id: 'h1-4', title: 'Menjalankan Server' },
         ]
     },
     {
         label: 'Arsitektur Layered',
         items: [
             { id: 'p4-1', title: 'Mengapa Butuh Layer?' },
-            { id: 'p4-2', title: 'Solusi: Layered Architecture' },
+            { id: 'p4-2', title: 'Layered Architecture' },
         ]
     },
     {
@@ -57,11 +57,33 @@ const tocSections: TOCSection[] = [
             { id: 'h2-3', title: 'Service' },
             { id: 'h2-4', title: 'Controller' },
             { id: 'h2-5', title: 'Router' },
-            { id: 'h2-6', title: 'Integrasi ke Entry Point' },
-            { id: 'h2-7', title: 'Pengujian Endpoint' },
+            { id: 'h2-6', title: 'Integrasi Entry Point' },
+            { id: 'h2-7', title: 'Uji Endpoint' },
         ]
     },
 ];
+
+const strukturHandsOn1 = `my-api/
+├─ package.json
+├─ tsconfig.json
+└─ src/
+   └─ index.ts`;
+
+const strukturHandsOn2 = `my-api/
+├─ package.json
+├─ tsconfig.json
+└─ src/
+   ├─ index.ts                # diubah: daftarkan router
+   ├─ routes/
+   │  └─ stallRouter.ts       # baru
+   ├─ controllers/
+   │  └─ stallController.ts   # baru
+   ├─ services/
+   │  └─ stallService.ts      # baru
+   ├─ repositories/
+   │  └─ stallRepository.ts   # baru
+   └─ dtos/
+      └─ stallDto.ts          # baru`;
 ---
 
 <ScrollySection>
@@ -368,7 +390,11 @@ const tocSections: TOCSection[] = [
                 <img src="/icons/github.svg" alt="" aria-hidden="true" class="w-4 h-4 invert-0 dark:invert" />
                 Kode Hands-on di GitHub
             </a>
-            <TerminalBlock code={`mkdir my-api && cd my-api # Buat folder my-api dan pergi ke sana\nmkdir src # Folder khusus kode sumber\nnpm init -y\nnpm install express\nnpm install -D typescript tsx @types/express @types/node\nnpx tsc --init`} title="Terminal — Setup project" />
+            <TerminalBlock code={`mkdir my-api && cd my-api # Buat folder my-api dan pergi ke sana\nmkdir src # Folder khusus kode sumber\nnpm init -y\nnpm install express\nnpm install -D typescript tsx @types/express @types/node\nnpx tsc --init`} title="Terminal: Setup project" />
+            <p class="mt-4 text-foreground-secondary leading-relaxed">
+                Setelah setup selesai, struktur folder proyek kita:
+            </p>
+            <CodeBlock code={strukturHandsOn1} language="bash" />
             <div class="mt-4 p-3 rounded-lg bg-primary/5 dark:bg-primary/10 border-l-4 border-primary">
                 <span class="font-bold text-primary">Apa itu package.json?</span>
                 <p class="text-sm md:text-base text-muted-foreground mt-1">
@@ -395,13 +421,13 @@ const tocSections: TOCSection[] = [
                     </li>
                     <li>
                         <a href="https://expressjs.com/en/starter/installing.html" target="_blank" rel="noopener noreferrer" class="text-primary hover:underline">
-                            Express — Installing
+                            Express: Installing
                         </a>
                         : panduan resmi tahapan setup awal proyek Express.
                     </li>
                     <li>
                         <a href="https://docs.npmjs.com/about-npm" target="_blank" rel="noopener noreferrer" class="text-primary hover:underline">
-                            npmjs.com — About npm
+                            npmjs.com: About npm
                         </a>
                         : dokumentasi singkat fungsi NPM dalam ekosistem Node.js.
                     </li>
@@ -415,6 +441,9 @@ const tocSections: TOCSection[] = [
                 Dengan <strong>tsx</strong>, kita bisa menjalankan file
                 <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">.ts</code>
                 langsung <strong>tanpa langkah kompilasi terpisah</strong>.
+                <strong>Dependencies terisi otomatis</strong> oleh <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">npm install</code>;
+                yang perlu <strong>ditambahkan manual</strong> adalah bagian <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">scripts</code>
+                (dan <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">"type"</code>/<code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">"main"</code>).
                 Agar mudah, kita daftarkan dua script,
                 <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">start</code>
                 dan
@@ -466,7 +495,7 @@ const tocSections: TOCSection[] = [
                 <ol class="list-decimal pl-6 space-y-6 text-foreground-secondary leading-relaxed">
                     <li>
                         <span class="font-bold text-primary">Jalankan Server di Terminal</span>
-                        <TerminalBlock code={`npx tsx src/index.ts`} title="Terminal — Jalankan server" />
+                        <TerminalBlock code={`npx tsx src/index.ts`} title="Terminal: Jalankan server" />
                         <p>
                             Jika berhasil, terminal akan menampilkan pesan:
                             <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">Server berjalan di http://localhost:3000</code>
@@ -561,15 +590,17 @@ const tocSections: TOCSection[] = [
                 <img src="/icons/github.svg" alt="" aria-hidden="true" class="w-4 h-4 invert-0 dark:invert" />
                 Kode Hands-on di GitHub
             </a>
+            <p class="mt-2 text-foreground-secondary leading-relaxed">
+                Hands-on 2 melanjutkan project yang sama (<code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">my-api</code>). Kita menambahkan folder untuk arsitektur berlapis:
+            </p>
+            <CodeBlock code={strukturHandsOn2} language="bash" />
             <CodeBlock code={stallRepository} language="ts" filename="src/repositories/stallRepository.ts" />
             <ul class="space-y-1 text-sm md:text-base text-foreground-secondary list-disc list-inside">
                 <li>
-                    <a href="https://developer.mozilla.org/en-US/docs/Learn/JavaScript/Asynchronous" target="_blank" rel="noopener noreferrer" class="text-primary hover:underline">MDN: Asynchronous JavaScript</a>
-                    — panduan konsep non-blocking &amp; async/await.
+                    <a href="https://developer.mozilla.org/en-US/docs/Learn/JavaScript/Asynchronous" target="_blank" rel="noopener noreferrer" class="text-primary hover:underline">MDN: Asynchronous JavaScript</a>: panduan konsep non-blocking &amp; async/await.
                 </li>
                 <li>
-                    <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Using_promises" target="_blank" rel="noopener noreferrer" class="text-primary hover:underline">MDN: Using Promises</a>
-                    — penulisan tipe <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">Promise&lt;T&gt;</code>.
+                    <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Using_promises" target="_blank" rel="noopener noreferrer" class="text-primary hover:underline">MDN: Using Promises</a>: penulisan tipe <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">Promise&lt;T&gt;</code>.
                 </li>
             </ul>
         </Step>
