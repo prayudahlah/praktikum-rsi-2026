@@ -182,15 +182,74 @@ const strukturHandsOn2 = `praktikum-pert-3/
                 <em> Primary Key</em> (<code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">id</code>)
                 dan relasi lewat <em>Foreign Key</em>:
             </p>
-            <ul class="mt-4 space-y-2 text-foreground-secondary leading-relaxed list-disc list-inside">
-                <li><code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">USERS</code>: data pengguna (<code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">role</code> dibatasi <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">admin/owner/customer</code>).</li>
-                <li><code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">STALLS</code>: warung, punya <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">owner_id</code> → <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">USERS.id</code>.</li>
-                <li><code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">MENU_ITEMS</code>: menu, punya <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">stall_id</code> → <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">STALLS.id</code>.</li>
-                <li><code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">REVIEWS</code>: ulasan (<code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">stall_id</code> + <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">user_id</code>), rating 1-5.</li>
-                <li><code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">LIKES</code>: <em>like</em> pada review (unik per user).</li>
-                <li><code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">FLAGS</code>: laporan/report sebuah review.</li>
-                <li><code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">AUDIT_LOGS</code>: catatan aktivitas sistem.</li>
-            </ul>
+            <div class="mt-4 overflow-x-auto rounded-lg border border-border">
+                <table class="w-full border-collapse text-left text-sm md:text-base">
+                    <thead>
+                        <tr class="bg-muted text-foreground">
+                            <th class="px-3 py-2 font-semibold whitespace-nowrap">Tabel</th>
+                            <th class="px-3 py-2 font-semibold">Penjelasan</th>
+                        </tr>
+                    </thead>
+                    <tbody class="text-foreground-secondary">
+                        <tr class="border-t border-border align-top">
+                            <td class="px-3 py-2 whitespace-nowrap">
+                                <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">USERS</code>
+                            </td>
+                            <td class="px-3 py-2">
+                                Menyimpan akun pengguna aplikasi. Kolom <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">role</code> membedakan hak akses: <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">admin</code>, <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">owner</code> (pemilik warung), dan <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">customer</code> (pengulas).
+                            </td>
+                        </tr>
+                        <tr class="border-t border-border align-top">
+                            <td class="px-3 py-2 whitespace-nowrap">
+                                <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">STALLS</code>
+                            </td>
+                            <td class="px-3 py-2">
+                                Data warung/kedai kantin, terhubung ke pemiliknya lewat <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">owner_id</code> → <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">USERS.id</code>. Menyimpan nama, kategori, lokasi, deskripsi, serta ringkasan <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">avg_rating</code> dan <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">review_count</code>.
+                            </td>
+                        </tr>
+                        <tr class="border-t border-border align-top">
+                            <td class="px-3 py-2 whitespace-nowrap">
+                                <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">MENU_ITEMS</code>
+                            </td>
+                            <td class="px-3 py-2">
+                                Daftar menu milik satu warung (<code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">stall_id</code> → <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">STALLS.id</code>). Tiap menu punya nama, harga, dan status ketersediaan (<code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">is_available</code>).
+                            </td>
+                        </tr>
+                        <tr class="border-t border-border align-top">
+                            <td class="px-3 py-2 whitespace-nowrap">
+                                <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">REVIEWS</code>
+                            </td>
+                            <td class="px-3 py-2">
+                                Ulasan seorang customer terhadap sebuah warung (<code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">stall_id</code> → <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">STALLS.id</code>, <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">user_id</code> → <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">USERS.id</code>), berisi rating 1-5 dan komentar. Satu customer hanya bisa mengulas satu warung sekali (dijaga lewat <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">UNIQUE (user_id, stall_id)</code>).
+                            </td>
+                        </tr>
+                        <tr class="border-t border-border align-top">
+                            <td class="px-3 py-2 whitespace-nowrap">
+                                <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">LIKES</code>
+                            </td>
+                            <td class="px-3 py-2">
+                                Mencatat <em>like</em> pada sebuah review (<code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">review_id</code> → <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">REVIEWS.id</code>, <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">user_id</code> → <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">USERS.id</code>); satu user hanya bisa <em>like</em> satu review sekali (<code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">UNIQUE (review_id, user_id)</code>).
+                            </td>
+                        </tr>
+                        <tr class="border-t border-border align-top">
+                            <td class="px-3 py-2 whitespace-nowrap">
+                                <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">FLAGS</code>
+                            </td>
+                            <td class="px-3 py-2">
+                                Laporan/report terhadap sebuah review (<code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">review_id</code> → <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">REVIEWS.id</code>, <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">reported_by</code> → <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">USERS.id</code>), berisi alasan dan status tindak lanjut (<code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">pending</code>, <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">resolved</code>, <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">dismissed</code>).
+                            </td>
+                        </tr>
+                        <tr class="border-t border-border align-top">
+                            <td class="px-3 py-2 whitespace-nowrap">
+                                <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">AUDIT_LOGS</code>
+                            </td>
+                            <td class="px-3 py-2">
+                                Jejak aktivitas sistem (siapa melakukan apa terhadap data mana; <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">user_id</code> → <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">USERS.id</code>).
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
             <div class="mt-4 p-4 rounded-lg bg-success/5 dark:bg-success/10 border-2 border-dashed border-success">
                 <span class="flex items-center gap-2 font-bold text-success">
                     <BookOpen class="w-4 h-4" />
