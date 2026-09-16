@@ -108,7 +108,7 @@ export function ScrollyLayout({ children, defaultSrc, placeholder }: ScrollyLayo
                 />
             </div>
 
-            {/* Modal overlay — expand diagram */}
+            {/* Modal overlay: expand diagram */}
             <div
                 id="scrolly-modal"
                 className="fixed inset-0 z-[100] bg-black/90 backdrop-blur-[6px] opacity-0 pointer-events-none transition-opacity duration-300 overflow-hidden"

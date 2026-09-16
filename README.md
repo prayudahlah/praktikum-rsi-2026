@@ -71,7 +71,7 @@ const tocSections: TOCSection[] = [
   <ScrollyLayout defaultSrc="/diagrams/01/step1.webp">
     <Step id="step-1" diagram="/diagrams/01/step1.webp">
       <StepHeader title="Judul Langkah" tone="primary" />
-      <p class="text-foreground-secondary leading-relaxed">Isi materi…</p>
+      <p class="text-foreground-secondary leading-relaxed">Isi materi...</p>
     </Step>
   </ScrollyLayout>
 

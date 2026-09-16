@@ -1,0 +1,605 @@
+---
+import {
+    ScrollySection,
+    Step,
+    StepHeader,
+    SectionDivider,
+    ScrollyLayout,
+    ScrollyTOC,
+} from '../../components/scrolly';
+import type { TOCSection } from '../../components/scrolly';
+import TerminalBlock from '../../components/ui/TerminalBlock.astro';
+import CodeBlock from '../../components/ui/CodeBlock.astro';
+import { BookOpen } from '@lucide/astro';
+
+import dbMixedMode from '../snippets/03/db-00-setup-mixed-mode.sql?raw';
+import dbCreateDatabase from '../snippets/03/db-01-create-database-and-user.sql?raw';
+import dbSchema from '../snippets/03/db-02-schema.sql?raw';
+import dbSeed from '../snippets/03/db-03-seed.sql?raw';
+
+import h1Package from '../snippets/03/h1-package.json?raw';
+import h1Env from '../snippets/03/h1-env.txt?raw';
+import h1Database from '../snippets/03/h1-database.ts?raw';
+import h1Index from '../snippets/03/h1-index.ts?raw';
+
+import h2Package from '../snippets/03/h2-package.json?raw';
+import h2DrizzleConfig from '../snippets/03/h2-drizzle-config.ts?raw';
+import h2Schema from '../snippets/03/h2-schema.ts?raw';
+import h2DbIndex from '../snippets/03/h2-db-index.ts?raw';
+import h2Swagger from '../snippets/03/h2-swagger.ts?raw';
+import h2StallDto from '../snippets/03/h2-stall-dto.ts?raw';
+import h2StallRepository from '../snippets/03/h2-stall-repository.ts?raw';
+import h2MenuItemRepository from '../snippets/03/h2-menu-item-repository.ts?raw';
+import h2StallService from '../snippets/03/h2-stall-service.ts?raw';
+import h2StallController from '../snippets/03/h2-stall-controller.ts?raw';
+import h2StallRouter from '../snippets/03/h2-stall-router.ts?raw';
+import h2Index from '../snippets/03/h2-index.ts?raw';
+
+const repoUrl = 'https://github.com/rrrambatsigma/praktikum-rsi-2026/tree/main/pertemuan-03-database-backend-crud';
+
+const tocSections: TOCSection[] = [
+    {
+        label: 'Database & ERD',
+        items: [
+            { id: 'd1', title: 'Mengapa Database?' },
+            { id: 'd2', title: 'ERD & Relasi' },
+            { id: 'd3', title: 'Skema Tabel' },
+        ],
+    },
+    {
+        label: 'Hands-on 1',
+        items: [
+            { id: 'h1-1', title: 'Prasyarat & Mixed Mode' },
+            { id: 'h1-2', title: 'Database & User Aplikasi' },
+            { id: 'h1-3', title: 'Membuat Skema Tabel' },
+            { id: 'h1-4', title: 'Mengisi Data Awal (Seed)' },
+            { id: 'h1-5', title: 'Setup Project & .env' },
+            { id: 'h1-6', title: 'Connection Pool & /health' },
+        ],
+    },
+    {
+        label: 'Hands-on 2',
+        items: [
+            { id: 'h2-1', title: 'Dari Query ke ORM' },
+            { id: 'h2-2', title: 'Instalasi Drizzle' },
+            { id: 'h2-3', title: 'Schema Drizzle' },
+            { id: 'h2-4', title: 'Koneksi Drizzle' },
+            { id: 'h2-5', title: 'Repository: Query & CRUD' },
+            { id: 'h2-6', title: 'Repository: Join Menu' },
+            { id: 'h2-7', title: 'Service: DTO & Bisnis' },
+            { id: 'h2-8', title: 'Controller & Router' },
+            { id: 'h2-9', title: 'Dokumentasi Swagger' },
+        ],
+    },
+];
+
+const strukturHandsOn1 = `praktikum-pert-3/
+├─ db/                               # script SQL (dijalankan di SSMS)
+│  ├─ 00-setup-mixed-mode.sql
+│  ├─ 01-create-database-and-user.sql
+│  ├─ 02-schema.sql
+│  └─ 03-seed.sql
+├─ package.json
+├─ tsconfig.json
+├─ .env.example
+└─ src/
+   ├─ index.ts
+   └─ config/
+      └─ database.ts`;
+
+const strukturHandsOn2 = `praktikum-pert-3/
+├─ package.json
+├─ tsconfig.json
+├─ .env.example
+├─ drizzle.config.ts                 # baru
+└─ src/
+   ├─ index.ts                       # diubah: daftarkan router + Swagger
+   ├─ db/                            # baru
+   │  ├─ schema.ts
+   │  └─ index.ts
+   ├─ docs/                          # baru
+   │  ├─ swagger.ts
+   │  └─ swagger-output.json         # hasil generate
+   ├─ dtos/
+   │  └─ stallDto.ts                 # baru
+   ├─ repositories/
+   │  ├─ stallRepository.ts          # baru
+   │  └─ menuItemRepository.ts       # baru
+   ├─ services/
+   │  └─ stallService.ts             # baru
+   ├─ controllers/
+   │  └─ stallController.ts          # baru
+   └─ routes/
+      └─ stallRouter.ts              # baru`;
+---
+
+<ScrollySection>
+    <ScrollyLayout defaultSrc="/diagrams/03/step1.webp">
+
+        <!-- ===== SECTION 1: DATABASE & ERD ===== -->
+
+        <Step id="d1" diagram="/diagrams/03/step1.webp">
+            <SectionDivider label="Database & ERD" />
+            <StepHeader title="Mengapa Database?" tone="primary" />
+            <p class="text-foreground-secondary leading-relaxed">
+                Di pertemuan pertama kita mengenal <strong>3-Tier Architecture</strong>, di mana
+                <strong class="text-accent"> Database</strong> menempati <em>Data Tier</em>. Di pertemuan kedua,
+                data warung masih kita simpan sebagai <em>mock data</em> di dalam sebuah array.
+            </p>
+            <p class="mt-3 text-foreground-secondary leading-relaxed">
+                Cara itu cukup untuk belajar, tetapi tidak cukup untuk aplikasi nyata. Saat data bertambah
+                banyak, diakses banyak pengguna sekaligus, dan saling berhubungan, kita membutuhkan
+                <strong> database</strong>.
+            </p>
+            <ul class="mt-4 space-y-2 text-foreground-secondary leading-relaxed list-disc list-inside">
+                <li><strong>Persisten</strong>: data tetap ada walau server dimatikan atau di-restart.</li>
+                <li><strong>Terstruktur</strong>: data disimpan dalam tabel dengan tipe dan aturan yang jelas.</li>
+                <li><strong>Query</strong>: pengambilan/filter data yang efisien tanpa membaca semuanya.</li>
+                <li><strong>Konsisten</strong>: aturan relasi menjaga data tetap valid (mis. menu tanpa warung).</li>
+                <li><strong>Akses bersamaan</strong>: banyak request dapat dilayani dengan aman.</li>
+            </ul>
+            <p class="mt-4 text-foreground-secondary leading-relaxed">
+                Database yang kita pakai: <strong>SQL Server</strong>, sebuah <em>Relational Database
+                Management System</em> (RDBMS) yang menyimpan data dalam tabel-tabel yang saling berelasi.
+            </p>
+        </Step>
+
+        <Step id="d2" diagram="/diagrams/03/step2.webp">
+            <StepHeader title="ERD & Relasi" tone="primary" />
+            <p class="text-foreground-secondary leading-relaxed">
+                Sebelum membuat tabel, kita merancang <strong>ERD</strong> (<em>Entity Relationship
+                Diagram</em>), yaitu blueprint yang menggambarkan entitas dan hubungan antar entitas.
+            </p>
+            <p class="mt-3 text-foreground-secondary leading-relaxed">
+                Pada studi kasus <strong>"Review Kantin Kampus"</strong>, ada beberapa entitas utama:
+            </p>
+            <ul class="mt-4 space-y-2 text-foreground-secondary leading-relaxed list-disc list-inside">
+                <li><strong>Users</strong>: pengguna aplikasi: <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">admin</code>, <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">owner</code>, <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">customer</code>.</li>
+                <li><strong>Stalls</strong>: warung/kedai yang dimiliki seorang <em>owner</em>.</li>
+                <li><strong>Menu Items</strong>: daftar menu milik satu warung.</li>
+                <li><strong>Reviews</strong>: ulasan seorang <em>customer</em> terhadap sebuah warung.</li>
+                <li><strong>Likes, Flags, Audit Logs</strong>: dukungan interaksi & pelacakan aktivitas.</li>
+            </ul>
+            <div class="mt-4 p-4 rounded-lg bg-primary/5 dark:bg-primary/10 border-l-4 border-primary">
+                <span class="font-bold text-primary">Kardinalitas (relasi)</span>
+                <ul class="text-base text-foreground-secondary mt-2 space-y-1 list-disc list-inside">
+                    <li>Satu <em>user</em> (owner) memiliki <strong>banyak</strong> warung → <strong>1&nbsp;:&nbsp;N</strong>.</li>
+                    <li>Satu warung memiliki <strong>banyak</strong> menu → <strong>1&nbsp;:&nbsp;N</strong>.</li>
+                    <li>Sebuah review menghubungkan <strong>satu</strong> customer dengan <strong>satu</strong> warung.</li>
+                </ul>
+            </div>
+            <p class="mt-4 text-foreground-secondary leading-relaxed">
+                Relasi diwujudkan lewat <strong>Foreign Key</strong> (kunci asing), yaitu sebuah kolom yang menunjuk
+                ke <em>Primary Key</em> tabel lain.
+            </p>
+        </Step>
+
+        <Step id="d3" diagram="/diagrams/03/step2.webp">
+            <StepHeader title="Skema Tabel Review Kantin" tone="primary" />
+            <p class="text-foreground-secondary leading-relaxed">
+                Dari ERD tersebut, kita menerjemahkannya menjadi <strong>7 tabel</strong>. Masing-masing punya
+                <em> Primary Key</em> (<code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">id</code>)
+                dan relasi lewat <em>Foreign Key</em>:
+            </p>
+            <ul class="mt-4 space-y-2 text-foreground-secondary leading-relaxed list-disc list-inside">
+                <li><code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">USERS</code>: data pengguna (<code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">role</code> dibatasi <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">admin/owner/customer</code>).</li>
+                <li><code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">STALLS</code>: warung, punya <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">owner_id</code> → <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">USERS.id</code>.</li>
+                <li><code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">MENU_ITEMS</code>: menu, punya <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">stall_id</code> → <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">STALLS.id</code>.</li>
+                <li><code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">REVIEWS</code>: ulasan (<code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">stall_id</code> + <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">user_id</code>), rating 1-5.</li>
+                <li><code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">LIKES</code>: <em>like</em> pada review (unik per user).</li>
+                <li><code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">FLAGS</code>: laporan/report sebuah review.</li>
+                <li><code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">AUDIT_LOGS</code>: catatan aktivitas sistem.</li>
+            </ul>
+            <div class="mt-4 p-4 rounded-lg bg-success/5 dark:bg-success/10 border-2 border-dashed border-success">
+                <span class="flex items-center gap-2 font-bold text-success">
+                    <BookOpen class="w-4 h-4" />
+                    Integritas Data
+                </span>
+                <p class="text-sm md:text-base text-foreground-secondary mt-1">
+                    Selain PK/FK, tabel memakai <strong>constraint</strong> untuk menjaga validitas:
+                    <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">UNIQUE</code> (email & pasangan unik),
+                    <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">CHECK</code> (rentang nilai),
+                    dan <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">DEFAULT</code> (nilai bawaan).
+                </p>
+            </div>
+        </Step>
+
+        <!-- ===== SECTION 2: HANDS-ON 1 ===== -->
+
+        <Step id="h1-1" diagram="/diagrams/03/hands-on.webp">
+            <SectionDivider label="Hands-on 1" />
+            <StepHeader title="Prasyarat & Mengaktifkan Mixed Mode" tone="success" />
+            <p class="text-foreground-secondary leading-relaxed">
+                Hands-on pertama menyiapkan database SQL Server untuk aplikasi <strong>Review Kantin
+                Kampus</strong>, lalu menghubungkannya dari backend.
+            </p>
+            <a href={repoUrl}
+               target="_blank" rel="noopener noreferrer"
+               class="my-3 inline-flex items-center gap-2 text-sm font-medium text-primary hover:underline">
+                <img src="/icons/github.svg" alt="" aria-hidden="true" class="w-4 h-4 invert-0 dark:invert" />
+                Kode Hands-on di GitHub
+            </a>
+            <p class="mt-4 text-foreground-secondary leading-relaxed">
+                Struktur folder yang akan kita buat:
+            </p>
+            <CodeBlock code={strukturHandsOn1} language="bash" />
+            <p class="text-foreground-secondary leading-relaxed">
+                Secara default, SQL Server hanya menerima login Windows. Driver <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">mssql</code>
+                di aplikasi nanti akan masuk memakai <strong>SQL Authentication</strong> (username + password),
+                jadi kita perlu mengaktifkan <strong>mixed mode</strong>:
+            </p>
+            <div class="mt-3 p-4 rounded-lg bg-primary/5 dark:bg-primary/10 border-l-4 border-primary">
+                <span class="font-bold text-primary">Cara menjalankan (SSMS)</span>
+                <ol class="text-sm md:text-base text-foreground-secondary mt-2 space-y-1 list-decimal list-inside">
+                    <li>Buka file <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">db/00-setup-mixed-mode.sql</code> di <strong>SSMS</strong> (File → Open → File...), atau editor SQL lain (mis. Azure Data Studio).</li>
+                    <li>Terhubung sebagai <strong>Windows Authentication</strong>, lalu klik <strong>Execute</strong> (F5).</li>
+                </ol>
+            </div>
+            <CodeBlock code={dbMixedMode} language="sql" filename="db/00-setup-mixed-mode.sql" compact />
+            <p class="text-foreground-secondary leading-relaxed">
+                Script mengubah <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">LoginMode</code>
+                di registry. Agar berlaku, <strong>restart service</strong> SQL Server. Di SSMS, klik kanan nama server
+                di <em>Object Explorer</em> → <strong>Restart</strong> (atau lewat SQL Server Configuration Manager).
+            </p>
+            <div class="mt-4 p-4 rounded-lg bg-warning/5 dark:bg-warning/10 border-l-4 border-warning">
+                <span class="font-bold text-warning">Pastikan TCP/IP aktif</span>
+                <p class="text-sm md:text-base text-foreground-secondary mt-1">
+                    Driver <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">mssql</code>
+                    terhubung lewat <strong>TCP port 1433</strong>. Aktifkan lewat SQL Server Configuration Manager →
+                    <em> Protocols → TCP/IP → Enabled</em>, lalu restart service. Untuk named instance, cara paling aman
+                    mengaktifkan mixed mode adalah lewat SSMS: <em>Server Properties → Security</em>.
+                </p>
+            </div>
+        </Step>
+
+        <Step id="h1-2" diagram="/diagrams/03/hands-on.webp">
+            <StepHeader title="Membuat Database & User Aplikasi" tone="success" />
+            <p class="text-foreground-secondary leading-relaxed">
+                Selanjutnya kita membuat database <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">review_kantin</code>
+                dan login aplikasi <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">praktikum_user</code>
+                beserta hak baca-tulis. Jalankan sebagai sysadmin:
+            </p>
+            <p class="text-foreground-secondary leading-relaxed">
+                Buka <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">db/01-create-database-and-user.sql</code>
+                di SSMS, lalu klik <strong>Execute</strong> (F5).
+            </p>
+            <CodeBlock code={dbCreateDatabase} language="sql" filename="db/01-create-database-and-user.sql" compact />
+            <p class="text-foreground-secondary leading-relaxed">
+                Aplikasi kita <strong>tidak</strong> memakai akun sysadmin, melainkan user khusus dengan hak
+                terbatas (<code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">db_datareader</code> +
+                <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">db_datawriter</code>), yaitu
+                prinsip <em>least privilege</em>.
+            </p>
+            <p class="text-foreground-secondary leading-relaxed">
+                Untuk membuktikan login aplikasi bekerja, di SSMS buat koneksi baru memakai
+                <strong> SQL Server Authentication</strong>: Login <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">praktikum_user</code>,
+                Password <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">Praktikum2026!</code>,
+                Database <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">review_kantin</code>.
+                Jika berhasil terhubung, berarti mixed mode &amp; user sudah benar.
+            </p>
+        </Step>
+
+        <Step id="h1-3" diagram="/diagrams/03/hands-on.webp">
+            <StepHeader title="Membuat Skema Tabel" tone="success" />
+            <p class="text-foreground-secondary leading-relaxed">
+                Sekarang kita buat ketujuh tabel dari ERD tadi ke dalam database:
+            </p>
+            <p class="text-foreground-secondary leading-relaxed">
+                Buka <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">db/02-schema.sql</code>
+                di SSMS, lalu klik <strong>Execute</strong> (F5).
+            </p>
+            <CodeBlock code={dbSchema} language="sql" filename="db/02-schema.sql" compact />
+        </Step>
+
+        <Step id="h1-4" diagram="/diagrams/03/hands-on.webp">
+            <StepHeader title="Mengisi Data Awal (Seeding)" tone="success" />
+            <p class="text-foreground-secondary leading-relaxed">
+                Agar ada data untuk diuji, kita isi tabel dengan data contoh (15 user, 10 warung, 20 menu, 16 review):
+            </p>
+            <p class="text-foreground-secondary leading-relaxed">
+                Buka <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">db/03-seed.sql</code>
+                di SSMS, lalu klik <strong>Execute</strong> (F5).
+            </p>
+            <CodeBlock code={dbSeed} language="sql" filename="db/03-seed.sql" compact />
+        </Step>
+
+        <Step id="h1-5" diagram="/diagrams/03/hands-on.webp">
+            <StepHeader title="Setup Project & Konfigurasi .env" tone="success" />
+            <p class="text-foreground-secondary leading-relaxed">
+                Buat folder project backend (kita beri nama
+                <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">praktikum-pert-3</code>)
+                lalu install dependensinya:
+            </p>
+            <TerminalBlock code={`npm init -y\nnpm install express mssql dotenv\nnpm install -D typescript @types/express @types/node @types/mssql tsx`} title="Terminal: Setup project" />
+            <ul class="mt-4 space-y-2 text-foreground-secondary leading-relaxed list-disc list-inside">
+                <li><strong>express</strong>: web framework (sudah dikenal dari pertemuan 2).</li>
+                <li><strong>mssql</strong>: driver SQL Server untuk Node.js.</li>
+                <li><strong>dotenv</strong>: membaca konfigurasi dari file <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">.env</code>.</li>
+            </ul>
+            <p class="mt-4 text-foreground-secondary leading-relaxed">
+                Kita menjalankan TypeScript lewat <strong>tsx</strong>. <strong>Dependencies terisi otomatis</strong> oleh
+                <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">npm install</code> di atas;
+                yang perlu <strong>ditambahkan manual</strong> adalah bagian
+                <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">scripts</code> di
+                <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">package.json</code>:
+            </p>
+            <CodeBlock code={h1Package} language="json" filename="package.json" compact />
+            <p class="mt-4 text-foreground-secondary leading-relaxed">
+                Buat file <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">.env</code>
+                 berisi kredensial database:
+            </p>
+            <CodeBlock code={h1Env} language="ini" filename=".env" compact />
+            <div class="mt-4 p-4 rounded-lg bg-error/5 dark:bg-error/10 border-l-4 border-error">
+                <span class="font-bold text-error">Jangan commit .env</span>
+                <p class="text-sm md:text-base text-foreground-secondary mt-1">
+                    File <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">.env</code>
+                    berisi kredensial, masukkan ke <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">.gitignore</code>.
+                </p>
+            </div>
+        </Step>
+
+        <Step id="h1-6" diagram="/diagrams/03/hands-on.webp">
+            <StepHeader title="Connection Pool & Endpoint /health" tone="success" />
+            <p class="text-foreground-secondary leading-relaxed">
+                Kita membuat <strong>connection pool</strong> sekali, lalu memakainya kembali untuk setiap request,
+                alih-alih membuka koneksi baru dari nol:
+            </p>
+            <CodeBlock code={h1Database} language="ts" filename="src/config/database.ts" />
+            <p class="mt-4 text-foreground-secondary leading-relaxed">
+                Lalu tambahkan endpoint <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">/health</code>
+                yang sekaligus mengecek koneksi ke database (<code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">SELECT 1</code>):
+            </p>
+            <CodeBlock code={h1Index} language="ts" filename="src/index.ts" />
+            <p class="mt-4 text-foreground-secondary leading-relaxed">Jalankan servernya:</p>
+            <TerminalBlock code={`npm run dev`} title="Terminal: Jalankan server" />
+            <p class="text-foreground-secondary leading-relaxed">
+                Buka <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">http://localhost:3000/health</code>.
+                Jika berhasil:
+            </p>
+            <CodeBlock code={`{
+  "status": "success",
+  "message": "Server dan database terhubung",
+  "database": { "ok": 1 },
+  "timestamp": "2026-09-14T00:00:00.000Z"
+}`} language="json" filename="response.json" />
+            <div class="mt-4 p-4 rounded-lg bg-accent/5 dark:bg-accent/10 border-2 border-dashed border-accent">
+                <span class="flex items-center gap-2 font-bold text-accent">
+                    <BookOpen class="w-4 h-4" />
+                    Bacaan Lanjutan
+                </span>
+                <ul class="text-base text-foreground-secondary mt-2 space-y-1 list-disc list-inside">
+                    <li>
+                        <a href="https://www.npmjs.com/package/mssql" target="_blank" rel="noopener noreferrer" class="text-primary hover:underline">npm: mssql</a>
+                        : dokumentasi driver <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">mssql</code>
+                        (connection pool, query, dan transaction).
+                    </li>
+                </ul>
+            </div>
+        </Step>
+
+        <!-- ===== SECTION 3: HANDS-ON 2 ===== -->
+
+        <Step id="h2-1" diagram="/diagrams/03/hands-on.webp">
+            <SectionDivider label="Hands-on 2" />
+            <StepHeader title="Dari Query Manual ke ORM" tone="success" />
+            <p class="text-foreground-secondary leading-relaxed">
+                Kita bisa menulis query SQL sebagai string mentah (<code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">SELECT * FROM ...</code>).
+                Namun cara itu rentan salah ketik, sulit di-<em>refactor</em>, dan berisiko <strong>SQL Injection</strong>
+                bila nilai disisipkan langsung.
+            </p>
+            <p class="mt-3 text-foreground-secondary leading-relaxed">
+                <strong>ORM</strong> (<em>Object-Relational Mapping</em>) membuat kita menulis query lewat kode
+                bertipe (TypeScript). Kita memakai <strong>Drizzle ORM</strong>:
+            </p>
+            <ul class="mt-4 space-y-2 text-foreground-secondary leading-relaxed list-disc list-inside">
+                <li><strong>Type-safe</strong>: kolom & hasil query diketahui TypeScript saat menulis kode.</li>
+                <li><strong>Parameterized</strong>: nilai otomatis di-<em>escape</em>, aman dari injection.</li>
+                <li><strong>Composable</strong>: filter/pagination disusun dari potongan yang bisa digabung.</li>
+            </ul>
+            <a href={repoUrl}
+               target="_blank" rel="noopener noreferrer"
+               class="my-3 inline-flex items-center gap-2 text-sm font-medium text-primary hover:underline">
+                <img src="/icons/github.svg" alt="" aria-hidden="true" class="w-4 h-4 invert-0 dark:invert" />
+                Kode Hands-on di GitHub
+            </a>
+            <p class="mt-4 text-foreground-secondary leading-relaxed">
+                Hands-on 2 melanjutkan project yang sama (<code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">praktikum-pert-3</code>). Kita menambahkan ORM Drizzle dan arsitektur berlapis:
+            </p>
+            <CodeBlock code={strukturHandsOn2} language="bash" />
+            <div class="mt-4 p-3 rounded-lg bg-primary/5 dark:bg-primary/10 border-l-4 border-primary">
+                <span class="font-bold text-primary">Arsitektur tetap berlapis</span>
+                <p class="text-sm md:text-base text-foreground-secondary mt-1">
+                    Struktur <strong>Repository → Service → Controller → Router</strong> dari pertemuan 2 tetap dipakai;
+                    yang berubah hanya isi <em>Repository</em> (dari <em>mock data</em> menjadi query Drizzle).
+                </p>
+            </div>
+        </Step>
+
+        <Step id="h2-2" diagram="/diagrams/03/hands-on.webp">
+            <StepHeader title="Instalasi Drizzle" tone="success" />
+            <p class="text-foreground-secondary leading-relaxed">
+                Lanjutkan project <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">praktikum-pert-3</code>.
+                Install dependensi tambahan untuk <strong>Drizzle ORM</strong> dan <strong>dokumentasi API</strong>:
+            </p>
+            <TerminalBlock code={`npm install drizzle-orm@1.0.0-rc.5-5935859 swagger-ui-express swagger-autogen\nnpm install -D drizzle-kit@1.0.0-rc.5-5935859 @types/swagger-ui-express`} title="Terminal: Install Drizzle & Swagger" />
+            <p class="mt-4 text-foreground-secondary leading-relaxed">
+                Isi akhir <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">package.json</code> kamu kurang lebih seperti ini.
+                <strong>Dependencies terisi otomatis</strong> oleh <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">npm install</code> di atas;
+                yang perlu <strong>ditambahkan manual</strong> adalah bagian <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">scripts</code>:
+            </p>
+            <CodeBlock code={h2Package} language="json" filename="package.json" compact />
+            <p class="mt-4 text-foreground-secondary leading-relaxed">
+                Buat <strong>file baru</strong> <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">drizzle.config.ts</code> berisi:
+            </p>
+            <CodeBlock code={h2DrizzleConfig} language="ts" filename="drizzle.config.ts" compact />
+            <div class="mt-4 p-4 rounded-lg bg-warning/5 dark:bg-warning/10 border-l-4 border-warning">
+                <span class="font-bold text-warning">Versi dipatok (RC)</span>
+                <p class="text-sm md:text-base text-foreground-secondary mt-1">
+                    Dukungan Drizzle untuk MSSQL masih <em>preview</em> (RC), jadi versi <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">drizzle-orm</code>
+                    & <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">drizzle-kit</code> dipatok agar API tidak berubah sewaktu-waktu.
+                </p>
+            </div>
+        </Step>
+
+        <Step id="h2-3" diagram="/diagrams/03/hands-on.webp">
+            <StepHeader title="Memetakan Schema ke Drizzle" tone="success" />
+            <p class="text-foreground-secondary leading-relaxed">
+                Kita petakan tabel SQL Server ke objek TypeScript memakai <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">mssqlTable</code>
+                dan <em>builder</em> kolom (<code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">int</code>, <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">nvarchar</code>, <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">decimal</code>, dst):
+            </p>
+            <CodeBlock code={h2Schema} language="ts" filename="src/db/schema.ts" compact />
+            <div class="mt-4 p-3 rounded-lg bg-primary/5 dark:bg-primary/10 border-l-4 border-primary">
+                <span class="font-bold text-primary">Kenapa ditulis manual?</span>
+                <p class="text-sm md:text-base text-foreground-secondary mt-1">
+                    Introspeksi otomatis (<code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">drizzle-kit pull</code>)
+                    untuk MSSQL masih RC dan belum stabil, sehingga <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">schema.ts</code>
+                    ditulis manual mengikuti <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">db/*.sql</code>.
+                </p>
+            </div>
+        </Step>
+
+        <Step id="h2-4" diagram="/diagrams/03/hands-on.webp">
+            <StepHeader title="Koneksi Drizzle" tone="success" />
+            <p class="text-foreground-secondary leading-relaxed">
+                Kita membungkus koneksi <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">mssql</code>
+                menjadi instance Drizzle, dibuat sekali lalu dipakai ulang:
+            </p>
+            <CodeBlock code={h2DbIndex} language="ts" filename="src/db/index.ts" />
+        </Step>
+
+        <Step id="h2-5" diagram="/diagrams/03/hands-on.webp">
+            <StepHeader title="Repository: Query Builder & CRUD" tone="success" />
+            <p class="text-foreground-secondary leading-relaxed">
+                Repository menyusun query bertipe: <strong>filter</strong> (<em>search</em> & <em>category</em>),
+                <strong> pagination</strong>, dan <strong>CRUD</strong>. Perhatikan pagination MSSQL memakai
+                <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">orderBy().offset().fetch()</code>:
+            </p>
+            <CodeBlock code={h2StallRepository} language="ts" filename="src/repositories/stallRepository.ts" compact />
+            <div class="mt-4 p-3 rounded-lg bg-primary/5 dark:bg-primary/10 border-l-4 border-primary">
+                <span class="font-bold text-primary">Query bertipe, bukan string</span>
+                <p class="text-sm md:text-base text-foreground-secondary mt-1">
+                    Nilai filter (mis. pencarian nama) di-<em>bind</em> sebagai parameter, bukan ditempel
+                    langsung ke string SQL, aman dari injeksi.
+                </p>
+            </div>
+        </Step>
+
+        <Step id="h2-6" diagram="/diagrams/03/hands-on.webp">
+            <StepHeader title="Repository: Join Menu" tone="success" />
+            <p class="text-foreground-secondary leading-relaxed">
+                Repository kedua mengambil menu milik sebuah warung. Ini contoh query relasi sederhana
+                (filter berdasarkan <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">stall_id</code>):
+            </p>
+            <CodeBlock code={h2MenuItemRepository} language="ts" filename="src/repositories/menuItemRepository.ts" />
+        </Step>
+
+        <Step id="h2-7" diagram="/diagrams/03/hands-on.webp">
+            <StepHeader title="Service: DTO & Logika Bisnis" tone="success" />
+            <p class="text-foreground-secondary leading-relaxed">
+                Service memetakan <em>row</em> database menjadi DTO API dan menghitung logika bisnis
+                (<code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">isPopular</code>).
+                DTO menjaga bentuk data yang keluar tetap konsisten:
+            </p>
+            <CodeBlock code={h2StallDto} language="ts" filename="src/dtos/stallDto.ts" />
+            <CodeBlock code={h2StallService} language="ts" filename="src/services/stallService.ts" compact />
+            <div class="mt-4 p-4 rounded-lg bg-warning/5 dark:bg-warning/10 border-l-4 border-warning">
+                <span class="font-bold text-warning">Decimal berupa string</span>
+                <p class="text-sm md:text-base text-foreground-secondary mt-1">
+                    Driver mengembalikan kolom <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">DECIMAL</code>
+                    sebagai <strong>string</strong> (untuk presisi). Karena itu <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">avgRating</code>
+                    dikonversi dengan <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">Number(...)</code>.
+                </p>
+            </div>
+        </Step>
+
+        <Step id="h2-8" diagram="/diagrams/03/hands-on.webp">
+            <StepHeader title="Controller, Router & Entry Point" tone="success" />
+            <p class="text-foreground-secondary leading-relaxed">
+                Controller menangani request/response HTTP dan meneruskan logika ke Service:
+            </p>
+            <CodeBlock code={h2StallController} language="ts" filename="src/controllers/stallController.ts" compact />
+            <p class="mt-4 text-foreground-secondary leading-relaxed">
+                Router memetakan endpoint ke method controller. Karena komentar <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">#swagger.*</code>
+                harus berada di dalam body handler, tiap route ditulis sebagai handler <em>inline</em> yang memanggil controller:
+            </p>
+            <CodeBlock code={h2StallRouter} language="ts" filename="src/routes/stallRouter.ts" compact />
+            <p class="mt-4 text-foreground-secondary leading-relaxed">
+                Terakhir, semua dirangkai di <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">src/index.ts</code>:
+            </p>
+            <CodeBlock code={h2Index} language="ts" filename="src/index.ts" />
+        </Step>
+
+        <Step id="h2-9" diagram="/diagrams/03/hands-on.webp">
+            <StepHeader title="Dokumentasi API (Swagger) & Uji Endpoint" tone="success" />
+            <p class="text-foreground-secondary leading-relaxed">
+                Dokumentasi dibangun dengan <strong>swagger-autogen</strong>: ia memindai file route/entry,
+                mendeteksi <strong>path + method secara otomatis</strong>, sedangkan parameter &amp; response
+                ditambahkan lewat komentar singkat <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">#swagger.*</code> di dalam handler:
+            </p>
+            <CodeBlock code={h2Swagger} language="ts" filename="src/docs/swagger.ts" compact />
+            <p class="mt-4 text-foreground-secondary leading-relaxed">
+                Hasilnya ditulis ke <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">src/docs/swagger-output.json</code>,
+                lalu disajikan <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">swagger-ui-express</code> di
+                <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">/docs</code>. Jalankan generatornya
+                (otomatis lewat <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">predev</code>/<code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">prestart</code>):
+            </p>
+            <TerminalBlock code={`npm run docs:gen`} title="Terminal: Generate spec Swagger" />
+            <div class="mt-4 p-4 rounded-lg bg-warning/5 dark:bg-warning/10 border-l-4 border-warning">
+                <span class="font-bold text-warning">File hasil generate</span>
+                <p class="text-sm md:text-base text-foreground-secondary mt-1">
+                    <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">swagger-output.json</code>
+                    adalah <strong>hasil generate</strong>, jangan diedit manual dan masukkan ke
+                    <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">.gitignore</code>.
+                    Spec yang dihasilkan berformat <strong>Swagger 2.0</strong>, sehingga schema dirujuk lewat
+                    <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">#/definitions/...</code>
+                    (bukan <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">#/components/schemas/...</code>).
+                </p>
+            </div>
+            <p class="mt-4 text-foreground-secondary leading-relaxed">Jalankan server, lalu buka dokumentasi di <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">/docs</code>:</p>
+            <TerminalBlock code={`npm run dev`} title="Terminal: Jalankan server" />
+            <ul class="mt-4 space-y-1 text-foreground-secondary leading-relaxed list-disc list-inside">
+                <li><code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">GET /health</code>: cek koneksi server &amp; database.</li>
+                <li><code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">GET /api/v1/stalls?search=&amp;category=&amp;page=&amp;limit=</code>: daftar + meta pagination.</li>
+                <li><code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">GET /api/v1/stalls/:id</code>: detail warung.</li>
+                <li><code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">GET /api/v1/stalls/:id/menus</code>: daftar menu (join).</li>
+                <li><code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">POST /api/v1/stalls</code> · <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">PUT /:id</code> · <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">DELETE /:id</code>: create/update/delete.</li>
+            </ul>
+            <p class="mt-4 text-foreground-secondary leading-relaxed">Contoh uji filter & pagination lewat terminal:</p>
+            <TerminalBlock code={`curl.exe "http://localhost:3000/api/v1/stalls?category=Minuman&limit=2&page=1"`} title="Terminal: Uji endpoint" />
+            <div class="mt-4 p-4 rounded-lg bg-accent/5 dark:bg-accent/10 border-2 border-dashed border-accent">
+                <span class="flex items-center gap-2 font-bold text-accent">
+                    <BookOpen class="w-4 h-4" />
+                    Tips
+                </span>
+                <p class="text-sm md:text-base text-foreground-secondary mt-2">
+                    Di halaman <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">/docs</code>,
+                    klik <strong>Try it out</strong> untuk mengirim request langsung dari Swagger UI tanpa perlu curl.
+                </p>
+            </div>
+            <div class="mt-4 p-4 rounded-lg bg-accent/5 dark:bg-accent/10 border-2 border-dashed border-accent">
+                <span class="flex items-center gap-2 font-bold text-accent">
+                    <BookOpen class="w-4 h-4" />
+                    Bacaan Lanjutan
+                </span>
+                <ul class="text-base text-foreground-secondary mt-2 space-y-1 list-disc list-inside">
+                    <li>
+                        <a href="https://www.npmjs.com/package/swagger-autogen" target="_blank" rel="noopener noreferrer" class="text-primary hover:underline">npm: swagger-autogen</a>
+                        : cara kerja, konfigurasi, dan opsi anotasi <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">#swagger.*</code>.
+                    </li>
+                    <li>
+                        <a href="https://www.npmjs.com/package/swagger-ui-express" target="_blank" rel="noopener noreferrer" class="text-primary hover:underline">npm: swagger-ui-express</a>
+                        : menyajikan spec OpenAPI/Swagger sebagai UI.
+                    </li>
+                </ul>
+            </div>
+        </Step>
+
+    </ScrollyLayout>
+
+    <ScrollyTOC sections={tocSections} />
+</ScrollySection>
+
+<script>
+    import { initScrolly } from '../../lib/scrollyClient';
+    initScrolly();
+</script>

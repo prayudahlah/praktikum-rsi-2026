@@ -26,7 +26,7 @@ export const meetings: Meeting[] = [
         title: 'Recall Desain Database, Integrasi dengan Backend, ORM',
         description: 'Recall desain database (ERD), koneksi backend ke SQL Server, parameterized query dengan ORM',
         order: 3,
-        published: false,
+        published: true,
     },
     {
         slug: '04-api-security-docs',

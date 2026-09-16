@@ -6,6 +6,10 @@ html, body {
   overscroll-behavior: none;
 }
 
+html {
+  scroll-behavior: smooth;
+}
+
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
@@ -108,6 +112,13 @@ html, body {
 
 .dark [data-toc-item].toc-item-active {
     background-color: rgb(96 165 250 / 0.15);
+}
+
+/* Docs-style active for the desktop TOC rail (text only, no background) */
+#toc-rail [data-toc-item].toc-item-active {
+    background-color: transparent;
+    color: var(--color-primary);
+    font-weight: 500;
 }
 
 /* Step reveal on scroll (JS-gated so content stays visible without JS) */
