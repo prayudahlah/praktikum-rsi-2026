@@ -24,6 +24,7 @@ import h1Database from '../snippets/03/h1-database.ts?raw';
 import h1Index from '../snippets/03/h1-index.ts?raw';
 
 import h2Package from '../snippets/03/h2-package.json?raw';
+import h2Tsconfig from '../snippets/03/h2-tsconfig.json?raw';
 import h2DrizzleConfig from '../snippets/03/h2-drizzle-config.ts?raw';
 import h2Schema from '../snippets/03/h2-schema.ts?raw';
 import h2DbIndex from '../snippets/03/h2-db-index.ts?raw';
@@ -62,7 +63,7 @@ const tocSections: TOCSection[] = [
         label: 'Hands-on 2',
         items: [
             { id: 'h2-1', title: 'Dari Query ke ORM' },
-            { id: 'h2-2', title: 'Instalasi Drizzle' },
+            { id: 'h2-2', title: 'Setup Project & Instalasi Drizzle' },
             { id: 'h2-3', title: 'Schema Drizzle' },
             { id: 'h2-4', title: 'Koneksi Drizzle' },
             { id: 'h2-5', title: 'Repository: Query & CRUD' },
@@ -75,43 +76,46 @@ const tocSections: TOCSection[] = [
 ];
 
 const strukturHandsOn1 = `praktikum-pert-3/
-├─ db/                               # script SQL (dijalankan di SSMS)
+├─ db/                               # script SQL (sekali saja, dijalankan di SSMS)
 │  ├─ 00-setup-mixed-mode.sql
 │  ├─ 01-create-database-and-user.sql
 │  ├─ 02-schema.sql
 │  └─ 03-seed.sql
-├─ package.json
-├─ tsconfig.json
-├─ .env.example
-└─ src/
-   ├─ index.ts
-   └─ config/
-      └─ database.ts`;
+└─ hands-on-1/
+   ├─ package.json
+   ├─ tsconfig.json
+   ├─ .env
+   └─ src/
+      ├─ index.ts
+      └─ config/
+         └─ database.ts`;
 
 const strukturHandsOn2 = `praktikum-pert-3/
-├─ package.json
-├─ tsconfig.json
-├─ .env.example
-├─ drizzle.config.ts                 # baru
-└─ src/
-   ├─ index.ts                       # diubah: daftarkan router + Swagger
-   ├─ db/                            # baru
-   │  ├─ schema.ts
-   │  └─ index.ts
-   ├─ docs/                          # baru
-   │  ├─ swagger.ts
-   │  └─ swagger-output.json         # hasil generate
-   ├─ dtos/
-   │  └─ stallDto.ts                 # baru
-   ├─ repositories/
-   │  ├─ stallRepository.ts          # baru
-   │  └─ menuItemRepository.ts       # baru
-   ├─ services/
-   │  └─ stallService.ts             # baru
-   ├─ controllers/
-   │  └─ stallController.ts          # baru
-   └─ routes/
-      └─ stallRouter.ts              # baru`;
+├─ db/                               # sudah dijalankan pada hands-on 1
+└─ hands-on-2/
+   ├─ package.json
+   ├─ tsconfig.json
+   ├─ .env
+   ├─ drizzle.config.ts
+   └─ src/
+      ├─ index.ts
+      ├─ db/
+      │  ├─ schema.ts
+      │  └─ index.ts
+      ├─ docs/
+      │  ├─ swagger.ts
+      │  └─ swagger-output.json       # hasil generate
+      ├─ dtos/
+      │  └─ stallDto.ts
+      ├─ repositories/
+      │  ├─ stallRepository.ts
+      │  └─ menuItemRepository.ts
+      ├─ services/
+      │  └─ stallService.ts
+      ├─ controllers/
+      │  └─ stallController.ts
+      └─ routes/
+         └─ stallRouter.ts`;
 ---
 
 <ScrollySection>
@@ -291,7 +295,7 @@ const strukturHandsOn2 = `praktikum-pert-3/
             <div class="mt-3 p-4 rounded-lg bg-primary/5 dark:bg-primary/10 border-l-4 border-primary">
                 <span class="font-bold text-primary">Cara menjalankan (SSMS)</span>
                 <ol class="text-sm md:text-base text-foreground-secondary mt-2 space-y-1 list-decimal list-inside">
-                    <li>Buka file <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">db/00-setup-mixed-mode.sql</code> di <strong>SSMS</strong> (File → Open → File...), atau editor SQL lain (mis. Azure Data Studio).</li>
+                    <li>Buka file <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">praktikum-pert-3/db/00-setup-mixed-mode.sql</code> di <strong>SSMS</strong> (File → Open → File...), atau editor SQL lain (mis. Azure Data Studio).</li>
                     <li>Terhubung sebagai <strong>Windows Authentication</strong>, lalu klik <strong>Execute</strong> (F5).</li>
                 </ol>
             </div>
@@ -320,7 +324,7 @@ const strukturHandsOn2 = `praktikum-pert-3/
                 beserta hak baca-tulis. Jalankan sebagai sysadmin:
             </p>
             <p class="text-foreground-secondary leading-relaxed">
-                Buka <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">db/01-create-database-and-user.sql</code>
+                Buka <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">praktikum-pert-3/db/01-create-database-and-user.sql</code>
                 di SSMS, lalu klik <strong>Execute</strong> (F5).
             </p>
             <CodeBlock code={dbCreateDatabase} language="sql" filename="db/01-create-database-and-user.sql" compact />
@@ -345,7 +349,7 @@ const strukturHandsOn2 = `praktikum-pert-3/
                 Sekarang kita buat ketujuh tabel dari ERD tadi ke dalam database:
             </p>
             <p class="text-foreground-secondary leading-relaxed">
-                Buka <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">db/02-schema.sql</code>
+                Buka <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">praktikum-pert-3/db/02-schema.sql</code>
                 di SSMS, lalu klik <strong>Execute</strong> (F5).
             </p>
             <CodeBlock code={dbSchema} language="sql" filename="db/02-schema.sql" compact />
@@ -357,7 +361,7 @@ const strukturHandsOn2 = `praktikum-pert-3/
                 Agar ada data untuk diuji, kita isi tabel dengan data contoh (15 user, 10 warung, 20 menu, 16 review):
             </p>
             <p class="text-foreground-secondary leading-relaxed">
-                Buka <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">db/03-seed.sql</code>
+                Buka <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">praktikum-pert-3/db/03-seed.sql</code>
                 di SSMS, lalu klik <strong>Execute</strong> (F5).
             </p>
             <CodeBlock code={dbSeed} language="sql" filename="db/03-seed.sql" compact />
@@ -366,7 +370,8 @@ const strukturHandsOn2 = `praktikum-pert-3/
         <Step id="h1-5" diagram="/diagrams/03/hands-on.webp">
             <StepHeader title="Setup Project & Konfigurasi .env" tone="success" />
             <p class="text-foreground-secondary leading-relaxed">
-                Buka terminal pada folder kita lalu install dependensinya:
+                Buat folder <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">praktikum-pert-3/hands-on-1</code>,
+                buka terminal di dalamnya, lalu install dependensinya:
             </p>
             <TerminalBlock code={`npm init -y\nnpm install express mssql dotenv\nnpm install -D typescript @types/express @types/node @types/mssql tsx`} title="Terminal: Setup project" />
             <ul class="mt-4 space-y-2 text-foreground-secondary leading-relaxed list-disc list-inside">
@@ -468,7 +473,9 @@ const strukturHandsOn2 = `praktikum-pert-3/
                 Kode Hands-on di GitHub
             </a>
             <p class="mt-4 text-foreground-secondary leading-relaxed">
-                Hands-on 2 melanjutkan project yang sama (<code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">praktikum-pert-3</code>). Kita menambahkan ORM Drizzle dan arsitektur berlapis:
+                Hands-on 2 kita kerjakan di <strong>project baru</strong>
+                (<code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">praktikum-pert-3/hands-on-2</code>),
+                terpisah dari project hands-on 1. Kita membangunnya ulang memakai ORM Drizzle dengan arsitektur berlapis:
             </p>
             <CodeBlock code={strukturHandsOn2} language="bash" />
             <div class="mt-4 p-3 rounded-lg bg-primary/5 dark:bg-primary/10 border-l-4 border-primary">
@@ -481,12 +488,13 @@ const strukturHandsOn2 = `praktikum-pert-3/
         </Step>
 
         <Step id="h2-2" diagram="/diagrams/03/hands-on.webp">
-            <StepHeader title="Instalasi Drizzle" tone="success" />
+            <StepHeader title="Setup Project & Instalasi Drizzle" tone="success" />
             <p class="text-foreground-secondary leading-relaxed">
-                Lanjutkan project <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">praktikum-pert-3</code>.
-                Install dependensi tambahan untuk <strong>Drizzle ORM</strong> dan <strong>dokumentasi API</strong>:
+                Kita buat project baru di <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">praktikum-pert-3/hands-on-2</code>:
+                jalankan <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">npm init -y</code>,
+                lalu install semua dependensinya (Express, <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">mssql</code>, Drizzle, dan Swagger):
             </p>
-            <TerminalBlock code={`npm install drizzle-orm@1.0.0-rc.5-5935859 swagger-ui-express swagger-autogen\nnpm install -D drizzle-kit@1.0.0-rc.5-5935859 @types/swagger-ui-express`} title="Terminal: Install Drizzle & Swagger" />
+            <TerminalBlock code={`npm init -y\nnpm install express mssql@^11.0.2 dotenv drizzle-orm@1.0.0-rc.5-5935859 swagger-ui-express swagger-autogen\nnpm install -D typescript @types/express @types/mssql@^9.1.11 @types/node tsx drizzle-kit@1.0.0-rc.5-5935859 @types/swagger-ui-express`} title="Terminal: Setup project hands-on 2" />
             <p class="mt-4 text-foreground-secondary leading-relaxed">
                 Isi akhir <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">package.json</code> kamu kurang lebih seperti ini.
                 <strong>Dependencies terisi otomatis</strong> oleh <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">npm install</code> di atas;
@@ -494,20 +502,27 @@ const strukturHandsOn2 = `praktikum-pert-3/
             </p>
             <CodeBlock code={h2Package} language="json" filename="package.json" compact />
             <p class="mt-4 text-foreground-secondary leading-relaxed">
+                Buat <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">tsconfig.json</code> seperti hands-on 1,
+                ditambah <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">drizzle.config.ts</code> pada bagian
+                <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">include</code>:
+            </p>
+            <CodeBlock code={h2Tsconfig} language="json" filename="tsconfig.json" compact />
+            <p class="mt-4 text-foreground-secondary leading-relaxed">
+                Salin file <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">.env</code> dari project hands-on 1 ke project ini:
+            </p>
+            <TerminalBlock code={`Copy-Item ..\\hands-on-1\\.env .`} title="PowerShell: Salin .env" />
+            <p class="mt-4 text-foreground-secondary leading-relaxed">
                 Buat <strong>file baru</strong> <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">drizzle.config.ts</code> berisi:
             </p>
             <CodeBlock code={h2DrizzleConfig} language="ts" filename="drizzle.config.ts" compact />
-            <p class="mt-4 text-foreground-secondary leading-relaxed">
-                Tambahkan <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">drizzle.config.ts</code>
-                ke bagian <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">include</code> di
-                <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">tsconfig.json</code>
-                agar file konfigurasi ini ikut dikenali TypeScript:
-            </p>
             <div class="mt-4 p-4 rounded-lg bg-warning/5 dark:bg-warning/10 border-l-4 border-warning">
-                <span class="font-bold text-warning">Versi dipatok (RC)</span>
+                <span class="font-bold text-warning">Kenapa project terpisah &amp; versi dipatok?</span>
                 <p class="text-sm md:text-base text-foreground-secondary mt-1">
-                    Dukungan Drizzle untuk MSSQL masih <em>preview</em> (RC), jadi versi <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">drizzle-orm</code>
-                    & <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">drizzle-kit</code> dipatok agar API tidak berubah sewaktu-waktu.
+                    Drizzle untuk MSSQL masih <em>preview</em> (RC) dan mensyaratkan <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">mssql</code> v11,
+                    sedangkan hands-on 1 memakai v12. Karena itu hands-on 2 dibuat sebagai project terpisah dengan versi
+                    <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">mssql</code>,
+                    <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">drizzle-orm</code>, dan
+                    <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">drizzle-kit</code> yang dipatok agar stabil.
                 </p>
             </div>
         </Step>
@@ -598,6 +613,17 @@ const strukturHandsOn2 = `praktikum-pert-3/
                 Terakhir, semua dirangkai di <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">src/index.ts</code>:
             </p>
             <CodeBlock code={h2Index} language="ts" filename="src/index.ts" />
+            <div class="mt-4 p-4 rounded-lg bg-primary/5 dark:bg-primary/10 border-l-4 border-primary">
+                <span class="font-bold text-primary">Generate dokumentasi sebelum menjalankan server</span>
+                <p class="text-sm md:text-base text-foreground-secondary mt-1">
+                    <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">src/index.ts</code>
+                    mengimpor <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">src/docs/swagger-output.json</code>,
+                    yang belum ada sampai <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">docs:gen</code> dijalankan.
+                    Buat <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">src/docs/swagger.ts</code> dan jalankan
+                    <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">npm run docs:gen</code> (langkah berikutnya)
+                    sebelum <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">npm run dev</code>.
+                </p>
+            </div>
         </Step>
 
         <Step id="h2-9" diagram="/diagrams/03/hands-on.webp">
