@@ -635,6 +635,12 @@ const strukturHandsOn2 = `praktikum-pert-3/
             </p>
             <CodeBlock code={h2Swagger} language="ts" filename="src/docs/swagger.ts" compact />
             <p class="mt-4 text-foreground-secondary leading-relaxed">
+                Objek <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">definitions</code>
+                berisi <strong>contoh</strong> body: swagger-autogen menebak <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">type</code>
+                dari nilai contohnya, dan tanda <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">$</code>
+                di depan nama field menandainya sebagai <strong>wajib</strong>.
+            </p>
+            <p class="mt-4 text-foreground-secondary leading-relaxed">
                 Hasilnya ditulis ke <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">src/docs/swagger-output.json</code>,
                 lalu disajikan <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">swagger-ui-express</code> di
                 <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">/docs</code>. Jalankan generatornya
