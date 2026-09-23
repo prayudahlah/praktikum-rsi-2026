@@ -111,6 +111,10 @@ registry.registerPath({
         },
       },
     },
+    500: {
+      description: "Kesalahan pada server",
+      content: { "application/json": { schema: errorSchema } },
+    },
   },
 });
 
@@ -128,6 +132,10 @@ registry.registerPath({
     },
     400: {
       description: "Query parameter tidak valid",
+      content: { "application/json": { schema: errorSchema } },
+    },
+    500: {
+      description: "Kesalahan pada server",
       content: { "application/json": { schema: errorSchema } },
     },
   },
@@ -152,6 +160,14 @@ registry.registerPath({
       description: "Body tidak valid",
       content: { "application/json": { schema: errorSchema } },
     },
+    409: {
+      description: "Data bentrok dengan data yang sudah ada",
+      content: { "application/json": { schema: errorSchema } },
+    },
+    500: {
+      description: "Kesalahan pada server",
+      content: { "application/json": { schema: errorSchema } },
+    },
   },
 });
 
@@ -171,6 +187,10 @@ registry.registerPath({
     },
     404: {
       description: "Warung tidak ditemukan",
+      content: { "application/json": { schema: errorSchema } },
+    },
+    500: {
+      description: "Kesalahan pada server",
       content: { "application/json": { schema: errorSchema } },
     },
   },
@@ -200,6 +220,14 @@ registry.registerPath({
       description: "Warung tidak ditemukan",
       content: { "application/json": { schema: errorSchema } },
     },
+    409: {
+      description: "Data bentrok dengan data yang sudah ada",
+      content: { "application/json": { schema: errorSchema } },
+    },
+    500: {
+      description: "Kesalahan pada server",
+      content: { "application/json": { schema: errorSchema } },
+    },
   },
 });
 
@@ -217,6 +245,10 @@ registry.registerPath({
       description: "Warung tidak ditemukan",
       content: { "application/json": { schema: errorSchema } },
     },
+    500: {
+      description: "Kesalahan pada server",
+      content: { "application/json": { schema: errorSchema } },
+    },
   },
 });
 
@@ -232,6 +264,10 @@ registry.registerPath({
     },
     404: {
       description: "Warung tidak ditemukan",
+      content: { "application/json": { schema: errorSchema } },
+    },
+    500: {
+      description: "Kesalahan pada server",
       content: { "application/json": { schema: errorSchema } },
     },
   },

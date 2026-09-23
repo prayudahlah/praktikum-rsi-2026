@@ -19,14 +19,17 @@ export function initScrolly() {
         if (counter) counter.textContent = `${String(index + 1).padStart(2, '0')} / ${totalSteps}`;
     });
 
-    // Reveal steps as they enter the viewport (natural scroll)
+    // Reveal steps as they enter the viewport (natural scroll).
+    // threshold WAJIB 0: step yang sangat tinggi (mis. 3 blok kode besar) tidak akan
+    // pernah mencapai rasio 15% terhadap viewport, sehingga dengan threshold 0.15
+    // step tersebut tetap `opacity: 0` (tidak pernah muncul).
     const revealObserver = new IntersectionObserver((entries) => {
         entries.forEach((entry) => {
             if (!entry.isIntersecting) return;
             entry.target.classList.add('is-visible');
             revealObserver.unobserve(entry.target);
         });
-    }, { threshold: 0.15 });
+    }, { threshold: 0 });
     steps.forEach(step => revealObserver.observe(step));
 
     // TOC: toggle (header), backdrop, click-outside, close button, jump

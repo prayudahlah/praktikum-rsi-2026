@@ -76,7 +76,7 @@ const tocSections: TOCSection[] = [
     },
 ];
 
-const strukturHandsOn1 = `praktikum-pert-4/
+const strukturHandsOn1 = `pertemuan-04-validasi-error-dokumentasi/
 └─ hands-on-1-validasi-error-handling/
    ├─ package.json  tsconfig.json  drizzle.config.ts
    ├─ .env                          # SAMA - hasil salinan, reuse database pertemuan-03
@@ -101,7 +101,7 @@ const strukturHandsOn1 = `praktikum-pert-4/
          ├─ notFound.ts
          └─ errorHandler.ts`;
 
-const strukturHandsOn2 = `praktikum-pert-4/
+const strukturHandsOn2 = `pertemuan-04-validasi-error-dokumentasi/
 ├─ hands-on-1-validasi-error-handling/   # sudah jadi (hands-on 1)
 └─ hands-on-2-dokumentasi-swagger-openapi/
    ├─ package.json  tsconfig.json  drizzle.config.ts
@@ -375,12 +375,15 @@ const sampleDocsInvalidResponse = `{
                 <img src="/icons/github.svg" alt="" aria-hidden="true" class="w-4 h-4 invert-0 dark:invert" />
                 Kode Hands-on di GitHub
             </a>
-            <TerminalBlock code={`Copy-Item -Recurse ..\\praktikum-pert-3\\hands-on-2 .\nRename-Item hands-on-2 hands-on-1-validasi-error-handling\nSet-Location hands-on-1-validasi-error-handling`} title="PowerShell: Salin project pertemuan-03" />
-            <p class="text-foreground-secondary leading-relaxed">
-                Sesuaikan path di atas bila folder pertemuan-3 kamu diberi nama lain. Folder
-                <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">.env</code> ikut terbawa, artinya koneksi database tidak perlu
-                dikonfigurasi ulang: tetap <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">review_kantin</code> dengan user
-                <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">praktikum_user</code> yang sama.
+            <p class="mt-3 text-foreground-secondary leading-relaxed">
+                Buat folder baru bernama <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">hands-on-1-validasi-error-handling</code> di dalam
+                folder <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">pertemuan-04-validasi-error-dokumentasi</code>. Lalu <strong>salin seluruh isi</strong> folder
+                <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">pertemuan-03-database-backend-crud/hands-on-2-orm-drizzle</code> ke folder baru tersebut.
+            </p>
+            <p class="mt-3 text-foreground-secondary leading-relaxed">
+                Database tidak perlu dikonfigurasi ulang: file <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">.env</code> ikut tersalin, jadi koneksinya tetap
+                <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">review_kantin</code> dengan user <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">praktikum_user</code> yang sama. Seluruh langkah
+                berikutnya dijalankan <strong>dari dalam folder</strong> <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">hands-on-1-validasi-error-handling</code>.
             </p>
             <p class="mt-4 text-foreground-secondary leading-relaxed">
                 Struktur project setelah dilengkapi:
@@ -390,7 +393,14 @@ const sampleDocsInvalidResponse = `{
                 Project salinan masih membawa dependensi Swagger pertemuan 3. Kita tambah <strong>zod</strong> dan
                 buang yang sudah tidak dipakai:
             </p>
-            <TerminalBlock code={`npm install zod\nnpm uninstall swagger-autogen swagger-ui-express @types/swagger-ui-express\nRemove-Item -Recurse src\\docs`} title="Terminal: Install zod, uninstall swagger" />
+            <TerminalBlock code={`npm install zod@^3.24.2\nnpm uninstall swagger-autogen swagger-ui-express @types/swagger-ui-express\nRemove-Item -Recurse src\\docs`} title="Terminal: Install zod, uninstall swagger" />
+            <div class="mt-4 p-4 rounded-lg bg-warning/5 dark:bg-warning/10 border-l-4 border-warning">
+                <span class="font-bold text-warning">Kenapa zod dipatok v3?</span>
+                <p class="text-sm md:text-base text-foreground-secondary mt-1">
+                    <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">npm install zod</code> tanpa patokan versi akan memasang <strong>zod v4</strong>. Padahal seluruh schema di pertemuan ini memakai API zod v3
+                    (<code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">invalid_type_error</code> dan <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">required_error</code>) yang <strong>diabaikan</strong> di v4, sehingga pesan validasi berbahasa Indonesia tidak muncul dan hanya tersisa pesan bawaan Inggris. Selain itu, <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">zod-to-openapi</code> 7.3.4 di Hands-on 2 mensyaratkan <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">zod@^3</code>, jadi instalasinya akan gagal (<code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">ERESOLVE</code>) bila zod v4 terpasang.
+                </p>
+            </div>
             <div class="mt-4 p-4 rounded-lg bg-warning/5 dark:bg-warning/10 border-l-4 border-warning">
                 <span class="font-bold text-warning">Jangan lewatkan bagian scripts</span>
                 <p class="text-sm md:text-base text-foreground-secondary mt-1">
@@ -402,7 +412,7 @@ const sampleDocsInvalidResponse = `{
                     <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">tsx src/docs/swagger.ts</code>. Kalau dibiarkan,
                     <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">npm run dev</code> akan memicu <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">predev</code>
                     lalu gagal karena file-nya sudah dihapus. Hapus ketiga script itu, sisakan
-                    <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">start</code> dan <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">dev</code> saja.
+                    <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">start</code> dan <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">dev</code> saja. Perhatikan juga <strong>koma di akhir baris</strong> <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">dev</code>: kalau baris sesudahnya dihapus, koma itu harus ikut dihapus. Bila tertinggal, npm menolak membaca <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">package.json</code> dengan error <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">EJSONPARSE</code>.
                 </p>
             </div>
             <p class="mt-4 text-foreground-secondary leading-relaxed">
@@ -416,10 +426,9 @@ const sampleDocsInvalidResponse = `{
         <Step id="h1-2" diagram="/diagrams/04/hands-on.webp">
             <StepHeader title="Konfigurasi .env" tone="success" />
             <p class="text-foreground-secondary leading-relaxed">
-                <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">.env</code> sudah terbawa saat menyalin project. Bila belum ada, buat dari
-                contohnya:
+                <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">.env</code> sudah terbawa saat menyalin project. Bila belum ada, salin file
+                <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">.env.example</code> menjadi <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">.env</code>.
             </p>
-            <TerminalBlock code={`Copy-Item .env.example .env`} title="PowerShell: Salin .env" />
             <p class="mt-3 text-foreground-secondary leading-relaxed">
                 Isinya persis sama dengan pertemuan 3, tidak perlu diubah:
             </p>
@@ -436,7 +445,7 @@ const sampleDocsInvalidResponse = `{
                 <li><code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">z.coerce.number()</code> mengubah query/path yang selalu berbentuk string menjadi <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">number</code>, jadi ini konversi, bukan sekadar validasi.</li>
                 <li><code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">.default(1)</code> dipakai bila client tidak mengirim nilai.</li>
                 <li><code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">.trim()</code> membersihkan whitespace di awal/akhir (sanitasi).</li>
-                <li><code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">.strict()</code> membuang kunci yang tidak dikenal dari body.</li>
+                <li><code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">.strict()</code> <strong>menolak</strong> kunci yang tidak dikenal dari body (dibalas <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">400</code>), bukan membuangnya.</li>
                 <li><code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">.partial()</code> membuat semua field opsional, dipakai untuk PUT.</li>
                 <li><code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">z.infer</code> menurunkan tipe TypeScript otomatis dari schema.</li>
             </ul>
@@ -580,7 +589,7 @@ const sampleDocsInvalidResponse = `{
                 Kasus uji <strong>invalid</strong> semuanya harus dibalas <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">400</code>
                 dengan daftar <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">errors</code>:
             </p>
-            <TerminalBlock code={`# query: page bukan angka & limit melebihi batas\ncurl.exe "http://localhost:3000/api/v1/stalls?page=abc"\ncurl.exe "http://localhost:3000/api/v1/stalls?limit=500"\n\n# params: id bukan angka\ncurl.exe "http://localhost:3000/api/v1/stalls/abc"\n\n# body: field wajib kosong / dua error sekaligus\ncurl.exe -X POST http://localhost:3000/api/v1/stalls -H "Content-Type: application/json" -d '{"ownerId":2}'\ncurl.exe -X POST http://localhost:3000/api/v1/stalls -H "Content-Type: application/json" -d '{"ownerId":-1,"name":"ab"}'\n\n# body: JSON rusak (express.json melempar SyntaxError)\ncurl.exe -X POST http://localhost:3000/api/v1/stalls -H "Content-Type: application/json" -d '{bad json'`} title="Terminal: Request invalid" />
+            <TerminalBlock code={`# query: page bukan angka & limit melebihi batas\ncurl.exe "http://localhost:3000/api/v1/stalls?page=abc"\ncurl.exe "http://localhost:3000/api/v1/stalls?limit=500"\n\n# params: id bukan angka\ncurl.exe "http://localhost:3000/api/v1/stalls/abc"\n\n# body: field wajib kosong / dua error sekaligus\ncurl.exe -X POST http://localhost:3000/api/v1/stalls -H "Content-Type: application/json" -d '{"ownerId":2}'\ncurl.exe -X POST http://localhost:3000/api/v1/stalls -H "Content-Type: application/json" -d '{"ownerId":-1,"name":"ab"}'\n\n# body: JSON rusak (express.json melempar SyntaxError)\ncurl.exe -X POST http://localhost:3000/api/v1/stalls -H "Content-Type: application/json" -d '{bad json'\n\n# body: kunci asing ditolak oleh .strict()\ncurl.exe -X POST http://localhost:3000/api/v1/stalls -H "Content-Type: application/json" -d '{"ownerId":2,"name":"Warung Uji","isAdmin":true}'`} title="Terminal: Request invalid" />
             <p class="mt-3 text-foreground-secondary leading-relaxed">
                 Perhatikan: dua error dilaporkan <strong>sekaligus</strong>, bukan gagal cepat di error pertama.
             </p>
@@ -588,6 +597,7 @@ const sampleDocsInvalidResponse = `{
             <p class="mt-4 text-foreground-secondary leading-relaxed">Contoh respons error lainnya:</p>
             <ul class="mt-2 text-foreground-secondary leading-relaxed space-y-1 list-disc list-inside">
                 <li><code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">400</code>: <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">{'{ "status": "fail", "message": "JSON pada body tidak valid" }'}</code></li>
+                <li><code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">400</code> kunci asing: pesan <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">Unrecognized key: isAdmin</code> pada <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">field: body</code> — inilah <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">.strict()</code> yang <strong>menolak</strong>, bukan membuang.</li>
                 <li><code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">404</code>: <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">{'{ "status": "fail", "message": "Warung tidak ditemukan" }'}</code></li>
                 <li><code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">404</code> rute asing: <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">{'{ "status": "fail", "message": "Route tidak ditemukan: GET /api/v1/xyz" }'}</code></li>
             </ul>
@@ -655,7 +665,7 @@ const sampleDocsInvalidResponse = `{
                         </tr>
                         <tr class="border-t border-border align-top">
                             <td class="px-3 py-2">Pesan validasi default berbahasa Inggris (mis. <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">Expected number, received nan</code>)</td>
-                            <td class="px-3 py-2">Itu pesan bawaan zod untuk <em>coerce</em> yang gagal. Untuk pesan custom, beri argumen pesan: <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">.number({`{ invalid_type_error: '...' }`})</code> atau <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">.min(1, '...')</code>.</td>
+                            <td class="px-3 py-2">Itu pesan bawaan zod. Pastikan kamu memakai <strong>zod v3</strong> (lihat langkah install di atas) — di zod v4 opsi <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">invalid_type_error</code> diabaikan dan penggantinya adalah <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">error</code>. Untuk pesan custom di v3: <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">.number({`{ invalid_type_error: '...' }`})</code> atau <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">.min(1, '...')</code>.</td>
                         </tr>
                         <tr class="border-t border-border align-top">
                             <td class="px-3 py-2"><code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">Cannot connect to localhost</code></td>
@@ -781,7 +791,11 @@ const sampleDocsInvalidResponse = `{
                 Hands-on 2 dibangun dari <strong>project hands-on 1</strong>, jadi semua validasi dan error handler
                 sudah utuh. Yang berubah hanya beberapa file:
             </p>
-            <TerminalBlock code={`Copy-Item -Recurse ..\\hands-on-1-validasi-error-handling .\nRename-Item hands-on-1-validasi-error-handling hands-on-2-dokumentasi-swagger-openapi\nSet-Location hands-on-2-dokumentasi-swagger-openapi`} title="PowerShell: Salin project hands-on 1" />
+            <p class="mt-3 text-foreground-secondary leading-relaxed">
+                Dari folder <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">pertemuan-04-validasi-error-dokumentasi</code>, <strong>salin seluruh isi</strong> folder
+                <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">hands-on-1-validasi-error-handling</code> ke folder baru bernama
+                <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">hands-on-2-dokumentasi-swagger-openapi</code>. Seluruh langkah berikutnya dijalankan dari dalam folder baru itu.
+            </p>
             <CodeBlock code={strukturHandsOn2} language="bash" />
             <TerminalBlock code={`npm install @asteasolutions/zod-to-openapi@7.3.4 swagger-ui-express\nnpm install -D @types/swagger-ui-express`} title="Terminal: Install zod-to-openapi & swagger-ui-express" />
             <div class="mt-4 p-4 rounded-lg bg-warning/5 dark:bg-warning/10 border-l-4 border-warning">
@@ -849,7 +863,7 @@ const sampleDocsInvalidResponse = `{
             <p class="mt-4 text-foreground-secondary leading-relaxed">
                 Bagian 2: daftarkan tiap endpoint. Setiap <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">registerPath</code> menyebut
                 method, summary, request (params/body), dan <strong>semua kemungkinan respons</strong>
-                (200/201/400/404/500), persis yang sudah kita bangun di error handler:
+                (200/201/400/404/409/500), persis yang sudah kita bangun di error handler:
             </p>
             <CodeBlock code={h2OpenapiRoutes} language="ts" filename="src/docs/openapi.ts (bagian 2)" compact />
             <p class="mt-4 text-foreground-secondary leading-relaxed">
