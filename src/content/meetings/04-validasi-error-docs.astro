@@ -1,0 +1,991 @@
+---
+import {
+    ScrollySection,
+    Step,
+    StepHeader,
+    SectionDivider,
+    ScrollyLayout,
+    ScrollyTOC,
+} from '../../components/scrolly';
+import type { TOCSection } from '../../components/scrolly';
+import TerminalBlock from '../../components/ui/TerminalBlock.astro';
+import CodeBlock from '../../components/ui/CodeBlock.astro';
+import { BookOpen } from '@lucide/astro';
+
+import h1Package from '../snippets/04/h1-package.json?raw';
+import h1Env from '../snippets/04/h1-env.txt?raw';
+import h1StallSchema from '../snippets/04/h1-stall-schema.ts?raw';
+import h1AppError from '../snippets/04/h1-app-error.ts?raw';
+import h1NotFoundError from '../snippets/04/h1-not-found-error.ts?raw';
+import h1ValidationError from '../snippets/04/h1-validation-error.ts?raw';
+import h1Validate from '../snippets/04/h1-validate.ts?raw';
+import h1ErrorHandler from '../snippets/04/h1-error-handler.ts?raw';
+import h1NotFound from '../snippets/04/h1-not-found.ts?raw';
+import h1StallController from '../snippets/04/h1-stall-controller.ts?raw';
+import h1StallRouter from '../snippets/04/h1-stall-router.ts?raw';
+import h1StallService from '../snippets/04/h1-stall-service.ts?raw';
+import h1Index from '../snippets/04/h1-index.ts?raw';
+
+import h2Package from '../snippets/04/h2-package.json?raw';
+import h2Env from '../snippets/04/h2-env.txt?raw';
+import h2StallSchema from '../snippets/04/h2-stall-schema.ts?raw';
+import h2Openapi from '../snippets/04/h2-openapi.ts?raw';
+import h2Index from '../snippets/04/h2-index.ts?raw';
+
+const repoUrl = 'https://github.com/rrrambatsigma/praktikum-rsi-2026/tree/main/pertemuan-04-validasi-error-dokumentasi';
+
+const tocSections: TOCSection[] = [
+    {
+        label: 'Validasi & Error Handling',
+        items: [
+            { id: 'p1-1', title: 'Data dari Client Tidak Dipercaya' },
+            { id: 'p1-2', title: 'Validasi & Sanitasi' },
+            { id: 'p1-3', title: 'Validasi di Middleware' },
+            { id: 'p1-4', title: 'Error Handling & Status Code' },
+        ],
+    },
+    {
+        label: 'Hands-on 1',
+        items: [
+            { id: 'h1-1', title: 'Salin Project & Bersihkan' },
+            { id: 'h1-2', title: 'Konfigurasi .env' },
+            { id: 'h1-3', title: 'Schema Validasi zod' },
+            { id: 'h1-4', title: 'Custom Error Class' },
+            { id: 'h1-5', title: 'Middleware validate' },
+            { id: 'h1-6', title: 'Error Handler Terpusat' },
+            { id: 'h1-7', title: 'Refactor Controller & Router' },
+            { id: 'h1-8', title: 'Entry Point' },
+            { id: 'h1-9', title: 'Uji Validasi & Error' },
+        ],
+    },
+    {
+        label: 'Kontrak API',
+        items: [
+            { id: 'p2-1', title: 'Kontrak API & Swagger' },
+        ],
+    },
+    {
+        label: 'Hands-on 2',
+        items: [
+            { id: 'h2-1', title: 'Instalasi Dependensi Dokumentasi' },
+            { id: 'h2-2', title: 'Schema zod + Metadata OpenAPI' },
+            { id: 'h2-3', title: 'Bangun Dokumen OpenAPI' },
+            { id: 'h2-4', title: 'Sajikan di Swagger UI' },
+            { id: 'h2-5', title: 'Uji Endpoint via /docs' },
+        ],
+    },
+];
+
+const strukturHandsOn1 = `praktikum-pert-4/
+└─ hands-on-1-validasi-error-handling/
+   ├─ package.json  tsconfig.json  drizzle.config.ts
+   ├─ .env                          # SAMA - hasil salinan, reuse database pertemuan-03
+   └─ src/
+      ├─ index.ts                   # UBAH - +404 dan error handler paling akhir
+      ├─ db/{schema.ts, index.ts}   # SAMA - tak disentuh
+      ├─ dtos/stallDto.ts           # SAMA
+      ├─ repositories/              # SAMA
+      │  ├─ stallRepository.ts
+      │  └─ menuItemRepository.ts
+      ├─ services/stallService.ts   # UBAH - throw NotFoundError (bukan string)
+      ├─ controllers/               # UBAH - tanpa try/catch
+      │  └─ stallController.ts
+      ├─ routes/stallRouter.ts      # UBAH - + middleware validate
+      ├─ schemas/stallSchema.ts     # BARU - schema zod body/query/params + z.infer
+      ├─ errors/                    # BARU - AppError, NotFoundError, ValidationError
+      │  ├─ AppError.ts
+      │  ├─ NotFoundError.ts
+      │  └─ ValidationError.ts
+      └─ middlewares/               # BARU - validate, notFound, errorHandler
+         ├─ validate.ts
+         ├─ notFound.ts
+         └─ errorHandler.ts`;
+
+const strukturHandsOn2 = `praktikum-pert-4/
+├─ hands-on-1-validasi-error-handling/   # sudah jadi (hands-on 1)
+└─ hands-on-2-dokumentasi-swagger-openapi/
+   ├─ package.json  tsconfig.json  drizzle.config.ts
+   ├─ .env                          # SAMA - ikut tersalin dari hands-on 1
+   └─ src/
+      ├─ index.ts                   # UBAH - + /docs (swagger-ui-express)
+      ├─ docs/openapi.ts            # BARU - registri & generator OpenAPI 3.0
+      ├─ schemas/stallSchema.ts     # UBAH - + extendZodWithOpenApi & .openapi()
+      ├─ errors/                    # SAMA dengan hands-on 1
+      ├─ middlewares/               # SAMA
+      ├─ db/{schema.ts, index.ts}   # SAMA
+      ├─ dtos/stallDto.ts           # SAMA
+      ├─ repositories/              # SAMA
+      ├─ services/stallService.ts   # SAMA
+      ├─ controllers/               # SAMA
+      └─ routes/stallRouter.ts      # SAMA`;
+
+// `src/docs/openapi.ts` ditampilkan dalam 3 bagian seperti README, dipotong pada
+// komentar penanda bagian agar tidak bergantung pada nomor baris.
+const [h2OpenapiSchemas, h2OpenapiRoutes, h2OpenapiGenerate] = (() => {
+    const lines = h2Openapi.split('\n');
+    const idxRoutes = lines.findIndex((line) => /^\/\/ -+ routes$/.test(line));
+    const idxGenerate = lines.findIndex((line) => /^\/\/ -+ generate$/.test(line));
+    return [
+        lines.slice(0, idxRoutes).join('\n').trimEnd(),
+        lines.slice(idxRoutes, idxGenerate).join('\n').trimEnd(),
+        lines.slice(idxGenerate).join('\n').trimEnd(),
+    ];
+})();
+
+const sampleListResponse = `{
+  "status": "success",
+  "meta": { "page": 1, "limit": 2, "total": 9 },
+  "data": [
+    { "id": 1, "ownerId": 2, "name": "Warung Bu Tini", "category": "Kwetiau", "isPopular": false },
+    { "id": 2, "ownerId": 2, "name": "Kopi Senja", "category": "Minuman", "isPopular": false }
+  ]
+}`;
+
+const sampleCreateResponse = `{
+  "status": "success",
+  "data": {
+    "id": 12,
+    "ownerId": 2,
+    "name": "Warung Baru",
+    "category": null,
+    "location": null,
+    "description": null,
+    "avgRating": 0,
+    "reviewCount": 0,
+    "isPopular": false
+  }
+}`;
+
+const sampleInvalidResponse = `{
+  "status": "fail",
+  "message": "Validasi gagal",
+  "errors": [
+    { "field": "ownerId", "message": "ownerId harus lebih dari 0" },
+    { "field": "name", "message": "name minimal 3 karakter" }
+  ]
+}`;
+
+const sampleOpenapiFragment = `{
+  "openapi": "3.0.0",
+  "info": { "title": "Review Kantin API", "version": "1.0.0" },
+  "paths": {
+    "/api/v1/stalls": {
+      "post": {
+        "summary": "Tambah warung",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/StallInput" }
+            }
+          }
+        },
+        "responses": {
+          "201": { "description": "Warung berhasil dibuat" },
+          "400": { "description": "Body tidak valid" }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "StallInput": {
+        "type": "object",
+        "properties": {
+          "ownerId": { "type": "number", "example": 2 },
+          "name": { "type": "string", "minLength": 3, "example": "Warung Baru" },
+          "category": { "type": "string", "maxLength": 50, "nullable": true }
+        },
+        "required": ["ownerId", "name"],
+        "additionalProperties": false
+      }
+    }
+  }
+}`;
+
+const sampleDocsInvalidResponse = `{
+  "status": "fail",
+  "message": "Validasi gagal",
+  "errors": [
+    { "field": "name", "message": "name wajib diisi" }
+  ]
+}`;
+
+---
+
+<ScrollySection>
+    <ScrollyLayout defaultSrc="/diagrams/04/validation-flow-diagram.webp">
+
+        <!-- ===== SECTION 1: KONSEP ===== -->
+
+        <Step id="p1-1" diagram="/diagrams/04/validation-flow-diagram.webp">
+            <SectionDivider label="Validasi & Error Handling" />
+            <StepHeader title="Data dari Client Tidak Boleh Dipercaya" tone="primary" />
+            <p class="text-foreground-secondary leading-relaxed">
+                Pernahkah Anda memasukkan data yang tidak wajar ke sebuah form? Umur diisi minus, harga diisi teks?
+            </p>
+            <p class="mt-3 text-foreground-secondary leading-relaxed">
+                Kadang aplikasi langsung menolak dengan pesan <strong>"input tidak valid"</strong>, tetapi kadang justru mengembalikan error yang tidak jelas — atau yang lebih parah: data tetap tersimpan. Padahal, server seharusnya tidak pernah mempercayai data yang dikirim dari HP atau laptop kita. Bisa saja pengirimnya bukan aplikasi resmi, melainkan orang iseng atau program jahat yang sengaja mencoba menerobos sistem.
+            </p>
+            <p class="mt-3 text-foreground-secondary leading-relaxed">
+                Maka dari itu server membutuhkan "penjaga pintu": memeriksa format dan keamanan data terlebih dahulu sebelum diproses. Tanpa itu, siapa saja bisa memasukkan apa pun ke dalam sistem kita.
+            </p>
+        </Step>
+
+        <Step id="p1-2" diagram="/diagrams/04/validation-flow-diagram.webp">
+            <StepHeader title="Validasi & Sanitasi" tone="primary" />
+            <p class="text-foreground-secondary leading-relaxed">
+                Jika server tidak boleh mempercayai input dari client, bagaimana cara memeriksanya? Terdapat dua lapisan:
+            </p>
+            <p class="mt-3 text-foreground-secondary leading-relaxed">
+                <strong>Validasi</strong> itu seperti satpam: memeriksa apakah data sesuai aturan atau tidak. Jika tidak, langsung ditolak dan server mengembalikan error. Contoh: harga diisi <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">-500</code>, ditolak karena harus bilangan positif. Sifatnya hanya dua: lolos atau tidak.
+            </p>
+            <p class="mt-3 text-foreground-secondary leading-relaxed">
+                <strong>Sanitasi</strong> itu seperti petugas kebersihan: bukan menolak, melainkan membersihkan data sebelum digunakan. Membuang karakter berbahaya, meng-escape tag HTML. Contoh: pengguna mengetik <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">{`<script>alert('xss')</script>`}</code> di kolom komentar. Validasi mungkin lolos karena formatnya berupa string, tetapi sanitasi akan mengubah skrip tersebut menjadi teks biasa, tidak dieksekusi oleh browser.
+            </p>
+            <p class="mt-3 text-foreground-secondary leading-relaxed">
+                Intinya: <strong>validasi menolak, sanitasi membersihkan.</strong> Digunakan bersamaan: validasi terlebih dahulu untuk memeriksa, sanitasi sebagai jaga-jaga jika ada karakter berbahaya yang lolos.
+            </p>
+            <div class="mt-4 p-4 rounded-lg bg-accent/5 dark:bg-accent/10 border-2 border-dashed border-accent">
+                <span class="flex items-center gap-2 font-bold text-accent">
+                    <BookOpen class="w-4 h-4" />
+                    Bacaan Lanjutan
+                </span>
+                <ul class="text-base text-foreground-secondary mt-2 space-y-1 list-disc list-inside">
+                    <li>
+                        <a href="https://cymulate.com/cybersecurity-glossary/input-validation/" target="_blank" rel="noopener noreferrer" class="text-primary hover:underline">Input Validation</a>
+                        : perbedaan validasi dan sanitasi beserta contohnya.
+                    </li>
+                </ul>
+            </div>
+        </Step>
+
+        <Step id="p1-3" diagram="/diagrams/04/middleware-pipeline.webp">
+            <StepHeader title="Validasi di Middleware" tone="primary" />
+            <p class="text-foreground-secondary leading-relaxed">
+                Jika validasi dan sanitasi penting, pertanyaan berikutnya: <strong>diletakkan di mana?</strong>
+                Bayangkan jika tidak ada middleware. Setiap controller harus memeriksa sendiri:
+                <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">POST /stalls</code> diperiksa manual,
+                <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">PUT /stalls/:id</code> diperiksa manual lagi,
+                <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">POST /reviews</code> diperiksa manual lagi. Kodenya menjadi berulang, dan
+                begitu ada aturan baru, Anda harus mengedit di banyak tempat. Rumit, dan mudah terlewat.
+            </p>
+            <p class="mt-3 text-foreground-secondary leading-relaxed">
+                Middleware itu seperti <strong>gerbang pemeriksaan sebelum masuk gedung.</strong> Semua request
+                melewati sana terlebih dahulu, diperiksa sekali, baru boleh melanjutkan ke controller. Jika datanya tidak valid, langsung
+                <strong>dikembalikan</strong>, controller tidak akan pernah menerima request yang bermasalah.
+            </p>
+            <p class="mt-3 text-foreground-secondary leading-relaxed">
+                <strong>Validasi di middleware = sekali ditulis, digunakan di semua endpoint.</strong> Controller cukup
+                fokus pada logika bisnis, tidak perlu memikirkan pemeriksaan input lagi.
+            </p>
+            <div class="mt-4 p-4 rounded-lg bg-accent/5 dark:bg-accent/10 border-2 border-dashed border-accent">
+                <span class="flex items-center gap-2 font-bold text-accent">
+                    <BookOpen class="w-4 h-4" />
+                    Bacaan Lanjutan
+                </span>
+                <ul class="text-base text-foreground-secondary mt-2 space-y-1 list-disc list-inside">
+                    <li>
+                        <a href="https://expressjs.com/en/guide/using-middleware.html" target="_blank" rel="noopener noreferrer" class="text-primary hover:underline">Express — Using middleware</a>
+                        : cara kerja middleware dan urutan pemasangannya.
+                    </li>
+                </ul>
+            </div>
+        </Step>
+
+        <!-- ===== SECTION 2: HANDS-ON 1 ===== -->
+
+        <Step id="p1-4" diagram="/diagrams/04/http-status-codes.webp">
+            <StepHeader title="Error Handling & Status Code" tone="primary" />
+            <p class="text-foreground-secondary leading-relaxed">
+                Jika validasi gagal atau terjadi error lain, server harus memberi tahu client dengan cara yang jelas
+                dan konsisten.
+            </p>
+            <p class="mt-3 text-foreground-secondary leading-relaxed">
+                Masalahnya, error mentah seperti stack trace tidak boleh dikembalikan langsung ke client. Selain
+                membocorkan detail internal (nama file, struktur database, versi library), frontend juga menjadi bingung
+                karena formatnya berbeda-beda tiap error. Solusinya: error handler terpusat. Semua error ditangkap
+                di satu tempat, lalu dikembalikan dengan format yang sama, misalnya selalu
+                <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">{'{ success: false, message: "...", errors: ... }'}</code>. Jadi frontend
+                cukup membaca satu format, tidak perlu menebak-nebak.
+            </p>
+            <p class="mt-3 text-foreground-secondary leading-relaxed">
+                Dan supaya frontend tahu jenis errornya tanpa baca isi body, server pakai HTTP status code:
+            </p>
+            <div class="mt-4 overflow-x-auto rounded-lg border border-border">
+                <table class="w-full border-collapse text-left text-sm md:text-base">
+                    <thead>
+                        <tr class="bg-muted text-foreground">
+                            <th class="px-3 py-2 font-semibold whitespace-nowrap">Kode</th>
+                            <th class="px-3 py-2 font-semibold">Arti</th>
+                        </tr>
+                    </thead>
+                    <tbody class="text-foreground-secondary">
+                        <tr class="border-t border-border align-top">
+                            <td class="px-3 py-2 whitespace-nowrap"><code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">400</code></td>
+                            <td class="px-3 py-2">Request salah format</td>
+                        </tr>
+                        <tr class="border-t border-border align-top">
+                            <td class="px-3 py-2 whitespace-nowrap"><code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">401</code></td>
+                            <td class="px-3 py-2">Belum login</td>
+                        </tr>
+                        <tr class="border-t border-border align-top">
+                            <td class="px-3 py-2 whitespace-nowrap"><code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">403</code></td>
+                            <td class="px-3 py-2">Sudah login, tetapi tidak memiliki akses</td>
+                        </tr>
+                        <tr class="border-t border-border align-top">
+                            <td class="px-3 py-2 whitespace-nowrap"><code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">404</code></td>
+                            <td class="px-3 py-2">Data/endpoint tidak ada</td>
+                        </tr>
+                        <tr class="border-t border-border align-top">
+                            <td class="px-3 py-2 whitespace-nowrap"><code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">422</code></td>
+                            <td class="px-3 py-2">Format benar, tetapi nilai tidak valid</td>
+                        </tr>
+                        <tr class="border-t border-border align-top">
+                            <td class="px-3 py-2 whitespace-nowrap"><code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">500</code></td>
+                            <td class="px-3 py-2">Error di server</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="mt-4 p-3 rounded-lg bg-primary/5 dark:bg-primary/10 border-l-4 border-primary">
+                <span class="font-bold text-primary">Catatan</span>
+                <p class="text-sm md:text-base text-foreground-secondary mt-1">
+                    Di hands-on pertemuan ini, kegagalan validasi zod dibalas <strong>400</strong> (lihat
+                    <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">ValidationError</code>). Kode <strong>422</strong> di tabel atas adalah
+                    konvensi alternatif yang dipakai sebagian API. Yang penting: pilih satu gaya dan pakai konsisten.
+                </p>
+            </div>
+            <p class="mt-3 text-foreground-secondary leading-relaxed">
+                Error itu bukan aib, tapi cara ngebalikinnya harus rapi, konsisten, dan informatif.
+            </p>
+
+        </Step>
+
+        <Step id="h1-1" diagram="/diagrams/04/hands-on.webp">
+            <SectionDivider label="Hands-on 1" />
+            <StepHeader title="Salin Project & Bersihkan" tone="success" />
+            <p class="text-foreground-secondary leading-relaxed">
+                Kita tidak memulai dari nol. <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">db</code>,
+                <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">dto</code>, dan <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">repository</code> sudah jadi di
+                pertemuan 3, jadi project itu kita salin lalu ubah hanya bagian yang berkaitan.
+            </p>
+            <a href={repoUrl}
+               target="_blank" rel="noopener noreferrer"
+               class="my-3 inline-flex items-center gap-2 text-sm font-medium text-primary hover:underline">
+                <img src="/icons/github.svg" alt="" aria-hidden="true" class="w-4 h-4 invert-0 dark:invert" />
+                Kode Hands-on di GitHub
+            </a>
+            <TerminalBlock code={`Copy-Item -Recurse ..\\praktikum-pert-3\\hands-on-2 .\nRename-Item hands-on-2 hands-on-1-validasi-error-handling\nSet-Location hands-on-1-validasi-error-handling`} title="PowerShell: Salin project pertemuan-03" />
+            <p class="text-foreground-secondary leading-relaxed">
+                Sesuaikan path di atas bila folder pertemuan-3 kamu diberi nama lain. Folder
+                <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">.env</code> ikut terbawa, artinya koneksi database tidak perlu
+                dikonfigurasi ulang: tetap <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">review_kantin</code> dengan user
+                <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">praktikum_user</code> yang sama.
+            </p>
+            <p class="mt-4 text-foreground-secondary leading-relaxed">
+                Struktur project setelah dilengkapi:
+            </p>
+            <CodeBlock code={strukturHandsOn1} language="bash" />
+            <p class="text-foreground-secondary leading-relaxed">
+                Project salinan masih membawa dependensi Swagger pertemuan 3. Kita tambah <strong>zod</strong> dan
+                buang yang sudah tidak dipakai:
+            </p>
+            <TerminalBlock code={`npm install zod\nnpm uninstall swagger-autogen swagger-ui-express @types/swagger-ui-express\nRemove-Item -Recurse src\\docs`} title="Terminal: Install zod, uninstall swagger" />
+            <div class="mt-4 p-4 rounded-lg bg-warning/5 dark:bg-warning/10 border-l-4 border-warning">
+                <span class="font-bold text-warning">Jangan lewatkan bagian scripts</span>
+                <p class="text-sm md:text-base text-foreground-secondary mt-1">
+                    <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">npm uninstall</code> hanya membersihkan
+                    <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">dependencies</code>. Bagian <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">scripts</code> di
+                    <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">package.json</code> masih membawa
+                    <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">prestart</code>, <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">predev</code>, dan
+                    <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">docs:gen</code> dari pertemuan 3 yang memanggil
+                    <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">tsx src/docs/swagger.ts</code>. Kalau dibiarkan,
+                    <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">npm run dev</code> akan memicu <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">predev</code>
+                    lalu gagal karena file-nya sudah dihapus. Hapus ketiga script itu, sisakan
+                    <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">start</code> dan <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">dev</code> saja.
+                </p>
+            </div>
+            <p class="mt-4 text-foreground-secondary leading-relaxed">
+                Isi akhir <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">package.json</code> (sudah tanpa dependensi swagger). Blok ini
+                adalah hasil akhir dari perintah di atas, jadi tidak perlu diketik manual. Samakan saja bila
+                versi di komputermu berbeda:
+            </p>
+            <CodeBlock code={h1Package} language="json" filename="package.json" compact />
+        </Step>
+
+        <Step id="h1-2" diagram="/diagrams/04/hands-on.webp">
+            <StepHeader title="Konfigurasi .env" tone="success" />
+            <p class="text-foreground-secondary leading-relaxed">
+                <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">.env</code> sudah terbawa saat menyalin project. Bila belum ada, buat dari
+                contohnya:
+            </p>
+            <TerminalBlock code={`Copy-Item .env.example .env`} title="PowerShell: Salin .env" />
+            <p class="mt-3 text-foreground-secondary leading-relaxed">
+                Isinya persis sama dengan pertemuan 3, tidak perlu diubah:
+            </p>
+            <CodeBlock code={h1Env} language="ini" filename=".env.example" compact />
+        </Step>
+
+        <Step id="h1-3" diagram="/diagrams/04/hands-on.webp">
+            <StepHeader title="Schema Validasi zod" tone="success" />
+            <p class="text-foreground-secondary leading-relaxed">
+                Satu file berisi schema untuk <strong>params, query, dan body</strong>. Pola yang perlu
+                diperhatikan:
+            </p>
+            <ul class="mt-3 text-foreground-secondary leading-relaxed space-y-1 list-disc list-inside">
+                <li><code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">z.coerce.number()</code> mengubah query/path yang selalu berbentuk string menjadi <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">number</code>, jadi ini konversi, bukan sekadar validasi.</li>
+                <li><code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">.default(1)</code> dipakai bila client tidak mengirim nilai.</li>
+                <li><code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">.trim()</code> membersihkan whitespace di awal/akhir (sanitasi).</li>
+                <li><code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">.strict()</code> membuang kunci yang tidak dikenal dari body.</li>
+                <li><code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">.partial()</code> membuat semua field opsional, dipakai untuk PUT.</li>
+                <li><code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">z.infer</code> menurunkan tipe TypeScript otomatis dari schema.</li>
+            </ul>
+            <CodeBlock code={h1StallSchema} language="ts" filename="src/schemas/stallSchema.ts" compact />
+            <div class="mt-4 p-3 rounded-lg bg-primary/5 dark:bg-primary/10 border-l-4 border-primary">
+                <span class="font-bold text-primary">Tipe ikut schema</span>
+                <p class="text-sm md:text-base text-foreground-secondary mt-1">
+                    Berkat <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">z.infer</code>, tipe
+                    <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">CreateStallInput</code> dan
+                    <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">UpdateStallInput</code> yang dipakai service serta controller selalu
+                    selaras dengan schema. Ubah schema, tipe ikut berubah, dan TypeScript langsung menegur bila
+                    kode lain belum menyesuaikan.
+                </p>
+            </div>
+        </Step>
+
+        <Step id="h1-4" diagram="/diagrams/04/hands-on.webp">
+            <StepHeader title="Custom Error Class" tone="success" />
+            <p class="text-foreground-secondary leading-relaxed">
+                Sebelumnya error hanya <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">{`new Error('pesan')`}</code> tanpa status code.
+                Sekarang kita punya hierarki error yang masing-masing membawa <strong>status code HTTP</strong>.
+            </p>
+            <CodeBlock code={h1AppError} language="ts" filename="src/errors/AppError.ts" />
+            <CodeBlock code={h1NotFoundError} language="ts" filename="src/errors/NotFoundError.ts" />
+            <CodeBlock code={h1ValidationError} language="ts" filename="src/errors/ValidationError.ts" />
+            <div class="mt-4 p-4 rounded-lg bg-primary/5 dark:bg-primary/10 border-l-4 border-primary">
+                <span class="font-bold text-primary">Kenapa class, bukan string?</span>
+                <p class="text-sm md:text-base text-foreground-secondary mt-1">
+                    Jenis error jadi terdata rapi (<code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">instanceof</code> bisa dibedakan),
+                    punya properti <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">statusCode</code> sungguhan, dan bisa membawa detail
+                    tambahan (<code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">errors</code>). Error handler cukup mengecek
+                    <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">instanceof</code>, tidak ada lagi penerjemahan string manual yang
+                    rawan typo.
+                </p>
+            </div>
+        </Step>
+
+        <Step id="h1-5" diagram="/diagrams/04/hands-on.webp">
+            <StepHeader title="Middleware validate" tone="success" />
+            <p class="text-foreground-secondary leading-relaxed">
+                Ini <strong>factory middleware</strong>: ia menerima schema dan sumber
+                (<code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">body</code>/<code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">query</code>/<code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">params</code>),
+                lalu mengembalikan handler Express. Kalau sukses, data yang lolos disimpan di
+                <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">res.locals.validated[source]</code> untuk dibaca controller. Kalau gagal,
+                <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">ZodError</code> diubah menjadi
+                <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">ValidationError(issues)</code> lalu diteruskan lewat
+                <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">next(error)</code>.
+            </p>
+            <CodeBlock code={h1Validate} language="ts" filename="src/middlewares/validate.ts" compact />
+            <div class="mt-4 p-3 rounded-lg bg-primary/5 dark:bg-primary/10 border-l-4 border-primary">
+                <span class="font-bold text-primary">safeParse, bukan parse</span>
+                <p class="text-sm md:text-base text-foreground-secondary mt-1">
+                    <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">safeParse</code> mengembalikan objek
+                    <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">{'{ success, data | error }'}</code> tanpa melempar exception, jadi
+                    alurnya kita kontrol sendiri: map <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">issue</code> menjadi
+                    <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">{'{ field, message }'}</code>, lalu lempar
+                    <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">ValidationError</code>. Di controller, data valid dibaca dengan
+                    <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">getValidated&lt;T&gt;(res, 'body')</code>, bukan dari
+                    <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">req.body</code>.
+                </p>
+            </div>
+        </Step>
+
+        <Step id="h1-6" diagram="/diagrams/04/hands-on.webp">
+            <StepHeader title="Not Found & Error Handler Terpusat" tone="success" />
+            <p class="text-foreground-secondary leading-relaxed">
+                <strong>Error middleware</strong> Express punya <strong>4 parameter</strong>
+                <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">(error, req, res, next)</code>. Express mengenali jenis middleware ini
+                dari jumlah parameternya. Di sinilah semua error bermuara.
+            </p>
+            <CodeBlock code={h1ErrorHandler} language="ts" filename="src/middlewares/errorHandler.ts" compact />
+            <p class="mt-3 text-foreground-secondary leading-relaxed">Empat cabang di atas:</p>
+            <ol class="mt-2 text-foreground-secondary leading-relaxed space-y-1 list-decimal list-inside">
+                <li><strong>JSON rusak</strong>: <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">express.json()</code> melempar <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">SyntaxError</code> bila body bukan JSON valid (mis. <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">{'{bad json'}</code>), kita balas <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">400</code> yang ramah.</li>
+                <li><strong>Error aplikasi</strong>: <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">ValidationError</code>, <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">NotFoundError</code>, atau <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">AppError</code> lain memakai <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">statusCode</code> dan <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">message</code>-nya, plus <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">errors</code> bila membawa detail.</li>
+                <li><strong>Constraint database</strong>: error mssql <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">2627</code> (unique) dan <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">547</code> (foreign key) diterjemahkan menjadi <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">409 Conflict</code>.</li>
+                <li><strong>Fallback <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">500</code></strong>: error tak terduga di-log ke terminal, detail internalnya tidak dibocorkan ke client.</li>
+            </ol>
+            <p class="mt-4 text-foreground-secondary leading-relaxed">
+                404 otomatis untuk rute yang tidak dikenal:
+            </p>
+            <CodeBlock code={h1NotFound} language="ts" filename="src/middlewares/notFound.ts" compact />
+        </Step>
+
+        <Step id="h1-7" diagram="/diagrams/04/hands-on.webp">
+            <StepHeader title="Refactor Controller, Router & Service" tone="success" />
+            <p class="text-foreground-secondary leading-relaxed">
+                Controller kini <strong>tanpa <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">try/catch</code></strong>: input sudah
+                valid, dan bila service melempar <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">NotFoundError</code>, Express 5 otomatis
+                meneruskan rejection handler async ke <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">errorHandler</code>.
+            </p>
+            <CodeBlock code={h1StallController} language="ts" filename="src/controllers/stallController.ts" compact />
+            <p class="mt-4 text-foreground-secondary leading-relaxed">
+                Router memasang middleware <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">validate</code>
+                <strong>sebelum</strong> controller:
+            </p>
+            <CodeBlock code={h1StallRouter} language="ts" filename="src/routes/stallRouter.ts" compact />
+            <p class="mt-4 text-foreground-secondary leading-relaxed">
+                Service melempar <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">NotFoundError</code>, bukan
+                <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">{`Error('STALL_NOT_FOUND')`}</code> lagi:
+            </p>
+            <CodeBlock code={h1StallService} language="ts" filename="src/services/stallService.ts" compact />
+        </Step>
+
+        <Step id="h1-8" diagram="/diagrams/04/hands-on.webp">
+            <StepHeader title="Entry Point" tone="success" />
+            <p class="text-foreground-secondary leading-relaxed">
+                Urutan middleware itu penting: JSON parser, lalu route, lalu <strong>404</strong>, dan terakhir
+                <strong>error handler</strong>. Error handler yang dipasang sebelum route tidak akan pernah
+                mendeteksi error dari route.
+            </p>
+            <CodeBlock code={h1Index} language="ts" filename="src/index.ts" compact />
+            <div class="mt-4 p-3 rounded-lg bg-primary/5 dark:bg-primary/10 border-l-4 border-primary">
+                <span class="font-bold text-primary">Kenapa 404 di dekat akhir?</span>
+                <p class="text-sm md:text-base text-foreground-secondary mt-1">
+                    <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">notFoundHandler</code> hanya menangkap rute yang tidak cocok dengan
+                    rute mana pun. Karena <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">Router</code> sudah dipasang lebih dulu, request
+                    valid dijawab di sana, dan sisanya baru jatuh ke sini.
+                </p>
+            </div>
+        </Step>
+
+        <Step id="h1-9" diagram="/diagrams/04/hands-on.webp">
+            <StepHeader title="Uji Validasi & Error" tone="success" />
+            <TerminalBlock code={`npm run dev`} title="Terminal: Jalankan server (development)" />
+            <p class="text-foreground-secondary leading-relaxed">
+                Kasus uji <strong>valid</strong> akan dibalas <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">200</code> atau
+                <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">201</code>:
+            </p>
+            <TerminalBlock code={`# PowerShell memakai kutip tunggal untuk body JSON.\ncurl.exe "http://localhost:3000/api/v1/stalls?page=1&limit=2"\ncurl.exe -X POST http://localhost:3000/api/v1/stalls -H "Content-Type: application/json" -d '{"ownerId":2,"name":"Warung Baru"}'`} title="Terminal: Request valid" />
+            <p class="mt-3 text-foreground-secondary leading-relaxed">
+                Contoh respons list (<code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">GET /api/v1/stalls?page=1&limit=2</code>):
+            </p>
+            <CodeBlock code={sampleListResponse} language="json" />
+            <p class="mt-3 text-foreground-secondary leading-relaxed">
+                Contoh respons <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">POST</code> (<code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">201</code>). Kolom
+                opsional diisi <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">null</code> oleh database:
+            </p>
+            <CodeBlock code={sampleCreateResponse} language="json" />
+            <p class="mt-4 text-foreground-secondary leading-relaxed">
+                Kasus uji <strong>invalid</strong> semuanya harus dibalas <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">400</code>
+                dengan daftar <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">errors</code>:
+            </p>
+            <TerminalBlock code={`# query: page bukan angka & limit melebihi batas\ncurl.exe "http://localhost:3000/api/v1/stalls?page=abc"\ncurl.exe "http://localhost:3000/api/v1/stalls?limit=500"\n\n# params: id bukan angka\ncurl.exe "http://localhost:3000/api/v1/stalls/abc"\n\n# body: field wajib kosong / dua error sekaligus\ncurl.exe -X POST http://localhost:3000/api/v1/stalls -H "Content-Type: application/json" -d '{"ownerId":2}'\ncurl.exe -X POST http://localhost:3000/api/v1/stalls -H "Content-Type: application/json" -d '{"ownerId":-1,"name":"ab"}'\n\n# body: JSON rusak (express.json melempar SyntaxError)\ncurl.exe -X POST http://localhost:3000/api/v1/stalls -H "Content-Type: application/json" -d '{bad json'`} title="Terminal: Request invalid" />
+            <p class="mt-3 text-foreground-secondary leading-relaxed">
+                Perhatikan: dua error dilaporkan <strong>sekaligus</strong>, bukan gagal cepat di error pertama.
+            </p>
+            <CodeBlock code={sampleInvalidResponse} language="json" />
+            <p class="mt-4 text-foreground-secondary leading-relaxed">Contoh respons error lainnya:</p>
+            <ul class="mt-2 text-foreground-secondary leading-relaxed space-y-1 list-disc list-inside">
+                <li><code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">400</code>: <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">{'{ "status": "fail", "message": "JSON pada body tidak valid" }'}</code></li>
+                <li><code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">404</code>: <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">{'{ "status": "fail", "message": "Warung tidak ditemukan" }'}</code></li>
+                <li><code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">404</code> rute asing: <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">{'{ "status": "fail", "message": "Route tidak ditemukan: GET /api/v1/xyz" }'}</code></li>
+            </ul>
+            <p class="mt-4 text-foreground-secondary leading-relaxed">Rangkuman kasus uji:</p>
+            <div class="mt-4 overflow-x-auto rounded-lg border border-border">
+                <table class="w-full border-collapse text-left text-sm md:text-base">
+                    <thead>
+                        <tr class="bg-muted text-foreground">
+                            <th class="px-3 py-2 font-semibold whitespace-nowrap">Method</th>
+                            <th class="px-3 py-2 font-semibold whitespace-nowrap">Endpoint</th>
+                            <th class="px-3 py-2 font-semibold">Perilaku</th>
+                        </tr>
+                    </thead>
+                    <tbody class="text-foreground-secondary">
+                        <tr class="border-t border-border align-top">
+                            <td class="px-3 py-2"><code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">GET</code></td>
+                            <td class="px-3 py-2 whitespace-nowrap"><code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">/health</code></td>
+                            <td class="px-3 py-2"><code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">200</code> koneksi DB OK; error DB menjadi <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">500</code> lewat error handler</td>
+                        </tr>
+                        <tr class="border-t border-border align-top">
+                            <td class="px-3 py-2"><code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">GET</code></td>
+                            <td class="px-3 py-2 whitespace-nowrap"><code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">/api/v1/stalls?...</code></td>
+                            <td class="px-3 py-2"><code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">200</code>; query invalid menjadi <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">400</code></td>
+                        </tr>
+                        <tr class="border-t border-border align-top">
+                            <td class="px-3 py-2"><code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">GET/PUT/DELETE</code></td>
+                            <td class="px-3 py-2 whitespace-nowrap"><code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">/api/v1/stalls/:id</code></td>
+                            <td class="px-3 py-2"><code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">404</code> bila tak ada; <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">id</code> non-angka menjadi <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">400</code></td>
+                        </tr>
+                        <tr class="border-t border-border align-top">
+                            <td class="px-3 py-2"><code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">POST</code></td>
+                            <td class="px-3 py-2 whitespace-nowrap"><code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">/api/v1/stalls</code></td>
+                            <td class="px-3 py-2"><code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">201</code>; body invalid menjadi <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">400</code></td>
+                        </tr>
+                        <tr class="border-t border-border align-top">
+                            <td class="px-3 py-2"><code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">GET</code></td>
+                            <td class="px-3 py-2 whitespace-nowrap"><code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">/api/v1/stalls/:id/menus</code></td>
+                            <td class="px-3 py-2"><code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">200</code>; <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">404</code> bila warung tak ada</td>
+                        </tr>
+                        <tr class="border-t border-border align-top">
+                            <td class="px-3 py-2"><code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">rute lain</code></td>
+                            <td class="px-3 py-2 whitespace-nowrap">apa pun</td>
+                            <td class="px-3 py-2"><code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">404</code> lewat <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">notFoundHandler</code></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <p class="mt-4 text-foreground-secondary leading-relaxed">Troubleshooting:</p>
+            <div class="mt-4 overflow-x-auto rounded-lg border border-border">
+                <table class="w-full border-collapse text-left text-sm md:text-base">
+                    <thead>
+                        <tr class="bg-muted text-foreground">
+                            <th class="px-3 py-2 font-semibold">Gejala</th>
+                            <th class="px-3 py-2 font-semibold">Kemungkinan penyebab &amp; solusi</th>
+                        </tr>
+                    </thead>
+                    <tbody class="text-foreground-secondary">
+                        <tr class="border-t border-border align-top">
+                            <td class="px-3 py-2"><code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">400 JSON pada body tidak valid</code> padahal JSON tampak benar</td>
+                            <td class="px-3 py-2">Di PowerShell, body JSON butuh tanda kutip <strong>single</strong>: <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">-d '{`{"a":1}`}'</code>. Backslash <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">\"</code> bukan escape di PowerShell, jadi JSON-nya rusak.</td>
+                        </tr>
+                        <tr class="border-t border-border align-top">
+                            <td class="px-3 py-2"><code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">500 Terjadi kesalahan pada server</code></td>
+                            <td class="px-3 py-2">Error tak terduga; cek log terminal (<code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">console.error</code>). Kalau soal DB, cek kembali prasyarat pertemuan-03.</td>
+                        </tr>
+                        <tr class="border-t border-border align-top">
+                            <td class="px-3 py-2">Pesan validasi default berbahasa Inggris (mis. <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">Expected number, received nan</code>)</td>
+                            <td class="px-3 py-2">Itu pesan bawaan zod untuk <em>coerce</em> yang gagal. Untuk pesan custom, beri argumen pesan: <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">.number({`{ invalid_type_error: '...' }`})</code> atau <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">.min(1, '...')</code>.</td>
+                        </tr>
+                        <tr class="border-t border-border align-top">
+                            <td class="px-3 py-2"><code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">Cannot connect to localhost</code></td>
+                            <td class="px-3 py-2">Server/instans SQL Server tidak aktif, TCP belum aktif, atau <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">.env</code> salah. DB <strong>tidak</strong> perlu dibuat ulang, sudah di-setup di pertemuan-03.</td>
+                        </tr>
+                        <tr class="border-t border-border align-top">
+                            <td class="px-3 py-2">Error <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">ERESOLVE</code> saat install</td>
+                            <td class="px-3 py-2">Versi <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">typescript</code> dkk bentrok; pastikan mengikuti <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">package.json</code> di atas, lalu <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">npm install</code> ulang.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="mt-4 p-4 rounded-lg bg-accent/5 dark:bg-accent/10 border-2 border-dashed border-accent">
+                <span class="flex items-center gap-2 font-bold text-accent">
+                    <BookOpen class="w-4 h-4" />
+                    Bacaan Lanjutan
+                </span>
+                <ul class="text-base text-foreground-secondary mt-2 space-y-1 list-disc list-inside">
+                    <li>
+                        <a href="https://zod.dev" target="_blank" rel="noopener noreferrer" class="text-primary hover:underline">zod</a>
+                        : dokumentasi schema, safeParse, z.coerce, z.infer, strict.
+                    </li>
+                    <li>
+                        <a href="https://expressjs.com/en/guide/error-handling.html" target="_blank" rel="noopener noreferrer" class="text-primary hover:underline">Express — Error Handling</a>
+                        : error middleware (4 argumen), urutan pendaftaran, async error.
+                    </li>
+                </ul>
+            </div>
+        </Step>
+
+        <!-- ===== SECTION 3: HANDS-ON 2 ===== -->
+
+        <Step id="p2-1" diagram="/diagrams/04/swagger-example.webp">
+            <SectionDivider label="Kontrak API" />
+            <StepHeader title="Kontrak API & Swagger" tone="primary" />
+            <p class="text-foreground-secondary leading-relaxed">
+                API itu seperti kontrak: jika frontend ingin menggunakan endpoint yang Anda buat, ia harus mengetahui endpoint apa saja yang tersedia, parameter apa yang dibutuhkan, dan response apa yang dikembalikan termasuk saat terjadi error.
+            </p>
+            <p class="mt-3 text-foreground-secondary leading-relaxed">
+                Masalahnya, jika kontrak ini hanya dikirim lewat chat atau dokumen terpisah, mudah menjadi usang: kode
+                sudah berubah, dokumennya masih versi lama. Akibatnya frontend mengirim request yang salah, dan
+                membuang-buang waktu untuk debugging. Karena itu, dokumentasi sebaiknya dibuat secara otomatis dan interaktif. Dengan
+                Swagger/OpenAPI, dokumentasi dapat digenerate langsung dari kode, ditampilkan di
+                <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">/docs</code>, dan dapat dicoba langsung dari browser tanpa perlu membuka
+                Postman.
+            </p>
+            <p class="mt-3 text-foreground-secondary leading-relaxed">
+                Alur yang dipakai di pertemuan 3:
+            </p>
+            <ol class="mt-2 text-foreground-secondary leading-relaxed space-y-1 list-decimal list-inside">
+                <li>tulis komentar <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">#swagger.*</code> di route,</li>
+                <li><code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">swagger-autogen</code> membaca komentar itu,</li>
+                <li>menghasilkan file <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">swagger-output.json</code> (spek OpenAPI),</li>
+                <li>file itu disajikan <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">swagger-ui-express</code> di <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">/docs</code>.</li>
+            </ol>
+            <p class="mt-3 text-foreground-secondary leading-relaxed">
+                Intinya: <strong>OpenAPI itu standarnya, Swagger itu alatnya.</strong> Dokumentasi bukan hanya untuk
+                orang lain, tetapi juga untuk Anda sendiri tiga bulan kemudian yang sudah lupa fungsi masing-masing endpoint.
+            </p>
+            <p class="mt-4 text-foreground-secondary leading-relaxed">
+                Di pertemuan 4 ini pendekatannya berganti. Schema zod yang sudah digunakan untuk validasi
+                langsung dibangkitkan menjadi spek OpenAPI 3.0, sehingga tidak ada file generate dan tidak ada
+                komentar anotasi. Keduanya sah, berikut perbedaannya:
+            </p>
+            <div class="mt-4 overflow-x-auto rounded-lg border border-border">
+                <table class="w-full border-collapse text-left text-sm md:text-base">
+                    <thead>
+                        <tr class="bg-muted text-foreground">
+                            <th class="px-3 py-2 font-semibold">Aspek</th>
+                            <th class="px-3 py-2 font-semibold">Pertemuan-03 <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">swagger-autogen</code></th>
+                            <th class="px-3 py-2 font-semibold">Pertemuan-04 <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">zod-to-openapi</code></th>
+                        </tr>
+                    </thead>
+                    <tbody class="text-foreground-secondary">
+                        <tr class="border-t border-border align-top">
+                            <td class="px-3 py-2">Versi spec</td>
+                            <td class="px-3 py-2"><strong>Swagger 2.0</strong></td>
+                            <td class="px-3 py-2"><strong>OpenAPI 3.0</strong></td>
+                        </tr>
+                        <tr class="border-t border-border align-top">
+                            <td class="px-3 py-2">Generator</td>
+                            <td class="px-3 py-2">Scan file route + komentar <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">#swagger.*</code></td>
+                            <td class="px-3 py-2">Dari <strong>schema zod</strong> (satu sumber)</td>
+                        </tr>
+                        <tr class="border-t border-border align-top">
+                            <td class="px-3 py-2">Schema</td>
+                            <td class="px-3 py-2"><code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">#/definitions/...</code></td>
+                            <td class="px-3 py-2"><code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">#/components/schemas/...</code></td>
+                        </tr>
+                        <tr class="border-t border-border align-top">
+                            <td class="px-3 py-2">Body request</td>
+                            <td class="px-3 py-2"><code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">parameters[body]</code> / <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">definitions</code></td>
+                            <td class="px-3 py-2"><code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">requestBody</code> + <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">content</code> + <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">$ref</code></td>
+                        </tr>
+                        <tr class="border-t border-border align-top">
+                            <td class="px-3 py-2">Konsistensi dengan validasi</td>
+                            <td class="px-3 py-2">Perlu jaga dua tempat</td>
+                            <td class="px-3 py-2">Otomatis sinkron</td>
+                        </tr>
+                        <tr class="border-t border-border align-top">
+                            <td class="px-3 py-2">Dokumen</td>
+                            <td class="px-3 py-2">File <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">swagger-output.json</code> hasil generate</td>
+                            <td class="px-3 py-2">Objek JS di memori</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="mt-4 p-3 rounded-lg bg-primary/5 dark:bg-primary/10 border-l-4 border-primary">
+                <span class="font-bold text-primary">Project pertemuan 3 tetap aman</span>
+                <p class="text-sm md:text-base text-foreground-secondary mt-1">
+                    Kamu tidak perlu memigrasikan project pertemuan 3. Ini hanya cara lain untuk masalah yang
+                    sama: <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">swagger-autogen</code> cepat untuk prototipe,
+                    <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">zod-to-openapi</code> lebih aman karena spek tidak bisa melenceng
+                    dari schema validasi.
+                </p>
+            </div>
+        </Step>
+
+        <Step id="h2-1" diagram="/diagrams/04/hands-on.webp">
+            <SectionDivider label="Hands-on 2" />
+            <StepHeader title="Instalasi Dependensi Dokumentasi" tone="success" />
+            <p class="text-foreground-secondary leading-relaxed">
+                Hands-on 2 dibangun dari <strong>project hands-on 1</strong>, jadi semua validasi dan error handler
+                sudah utuh. Yang berubah hanya beberapa file:
+            </p>
+            <TerminalBlock code={`Copy-Item -Recurse ..\\hands-on-1-validasi-error-handling .\nRename-Item hands-on-1-validasi-error-handling hands-on-2-dokumentasi-swagger-openapi\nSet-Location hands-on-2-dokumentasi-swagger-openapi`} title="PowerShell: Salin project hands-on 1" />
+            <CodeBlock code={strukturHandsOn2} language="bash" />
+            <TerminalBlock code={`npm install @asteasolutions/zod-to-openapi@7.3.4 swagger-ui-express\nnpm install -D @types/swagger-ui-express`} title="Terminal: Install zod-to-openapi & swagger-ui-express" />
+            <div class="mt-4 p-4 rounded-lg bg-warning/5 dark:bg-warning/10 border-l-4 border-warning">
+                <span class="font-bold text-warning">Kenapa versinya dipatok 7.3.4?</span>
+                <p class="text-sm md:text-base text-foreground-secondary mt-1">
+                    Pasangan stabil untuk <strong>zod v3</strong> adalah <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">zod-to-openapi</code>
+                    v7.x. Versi 8 ke atas sudah bermigrasi ke zod <strong>v4</strong>, dan pemasangan zod v4 akan
+                    mengubah perilaku validasi yang kita bangun di hands-on 1.
+                </p>
+            </div>
+            <p class="mt-4 text-foreground-secondary leading-relaxed">
+                Isi akhir <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">package.json</code> (hasil akhir, tidak perlu diketik manual):
+            </p>
+            <CodeBlock code={h2Package} language="json" filename="package.json" compact />
+            <p class="text-foreground-secondary leading-relaxed">
+                Perhatikan: <strong>tidak ada script <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">docs:gen</code></strong> seperti
+                pertemuan 3. Dokumentasi dibangkitkan di memori, jadi tidak ada langkah generate tambahan.
+            </p>
+            <p class="mt-3 text-foreground-secondary leading-relaxed">
+                <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">.env</code> terbawa dari hands-on 1; isinya sama persis — tidak perlu dikonfigurasi ulang.
+            </p>
+            <a href={repoUrl}
+               target="_blank" rel="noopener noreferrer"
+               class="my-3 inline-flex items-center gap-2 text-sm font-medium text-primary hover:underline">
+                <img src="/icons/github.svg" alt="" aria-hidden="true" class="w-4 h-4 invert-0 dark:invert" />
+                Kode Hands-on di GitHub
+            </a>
+        </Step>
+
+        <Step id="h2-2" diagram="/diagrams/04/hands-on.webp">
+            <StepHeader title="Schema zod + Metadata OpenAPI" tone="success" />
+            <p class="text-foreground-secondary leading-relaxed">
+                Skemanya <strong>sama persis</strong> dengan hands-on 1, hanya ditambah dua hal:
+            </p>
+            <ol class="mt-2 text-foreground-secondary leading-relaxed space-y-1 list-decimal list-inside">
+                <li><code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">extendZodWithOpenApi(z)</code> menambahkan method <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">.openapi()</code> ke semua tipe zod. Wajib dipanggil <strong>sekali, sebelum</strong> schema memakai <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">.openapi(...)</code>.</li>
+                <li>Metadata <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">.openapi({`{ example, description }`})</code> pada tiap field. Inilah yang dibaca generator untuk mengisi contoh dan deskripsi di Swagger UI.</li>
+            </ol>
+            <CodeBlock code={h2StallSchema} language="ts" filename="src/schemas/stallSchema.ts" compact />
+            <div class="mt-4 p-3 rounded-lg bg-primary/5 dark:bg-primary/10 border-l-4 border-primary">
+                <span class="font-bold text-primary">Validasi tidak berubah</span>
+                <p class="text-sm md:text-base text-foreground-secondary mt-1">
+                    <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">.openapi()</code> hanyalah metadata tambahan di samping definisi zod.
+                    Aturan <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">.min()</code>, <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">.max()</code>,
+                    <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">.strict()</code>, dan <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">.partial()</code>
+                    bekerja seperti biasa. Artinya dokumentasi dan validasi lahir dari satu definisi yang sama.
+                </p>
+            </div>
+        </Step>
+
+        <Step id="h2-3" diagram="/diagrams/04/hands-on.webp">
+            <StepHeader title="Bangun Dokumen OpenAPI" tone="success" />
+            <p class="text-foreground-secondary leading-relaxed">
+                Generator bekerja dalam tiga tahap: daftarkan komponen schema, daftarkan tiap endpoint, lalu
+                bangkitkan dokumen di memori.
+            </p>
+            <p class="mt-4 text-foreground-secondary leading-relaxed">
+                Bagian 1: komponen schema. Perhatikan bahwa schema <strong>body yang dipakai validasi</strong>
+                (<code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">createStallSchema</code> dan
+                <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">updateStallSchema</code>) ikut didaftarkan sebagai komponen
+                <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">StallInput</code>/<code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">StallUpdate</code>, supaya bisa
+                dipakai ulang lewat <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">$ref</code> dan tidak terduplikasi di tiap path:
+            </p>
+            <CodeBlock code={h2OpenapiSchemas} language="ts" filename="src/docs/openapi.ts (bagian 1)" compact />
+            <p class="mt-4 text-foreground-secondary leading-relaxed">
+                Bagian 2: daftarkan tiap endpoint. Setiap <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">registerPath</code> menyebut
+                method, summary, request (params/body), dan <strong>semua kemungkinan respons</strong>
+                (200/201/400/404/500), persis yang sudah kita bangun di error handler:
+            </p>
+            <CodeBlock code={h2OpenapiRoutes} language="ts" filename="src/docs/openapi.ts (bagian 2)" compact />
+            <p class="mt-4 text-foreground-secondary leading-relaxed">
+                Endpoint lain mengikuti pola yang sama persis, cukup ganti <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">method</code>,
+                <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">path</code>, dan daftar <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">responses</code>-nya:
+            </p>
+            <ul class="mt-2 text-foreground-secondary leading-relaxed space-y-1 list-disc list-inside">
+                <li><code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">GET /api/v1/stalls</code> memakai <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">request: {`{ query: stallQuerySchema }`}</code>, respons <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">200</code> (list + meta) dan <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">400</code>.</li>
+                <li><code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">GET /health</code> respons <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">200</code>.</li>
+                <li><code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">PUT /api/v1/stalls/{'{id}'}</code> memakai <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">params</code> + body <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">stallUpdate</code>, respons <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">200</code>/<code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">400</code>/<code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">404</code>.</li>
+                <li><code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">DELETE /api/v1/stalls/{'{id}'}</code> memakai <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">params</code>, respons <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">200</code>/<code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">404</code>.</li>
+                <li><code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">GET /api/v1/stalls/{'{id}'}/menus</code> memakai <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">params</code>, respons <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">200</code> (list menu) dan <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">404</code>.</li>
+            </ul>
+            <p class="mt-4 text-foreground-secondary leading-relaxed">
+                Bagian 3: bangkitkan dokumen <strong>di memori</strong>, tanpa file dan tanpa langkah
+                <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">docs:gen</code>:
+            </p>
+            <CodeBlock code={h2OpenapiGenerate} language="ts" filename="src/docs/openapi.ts (bagian 3)" compact />
+            <div class="mt-4 p-4 rounded-lg bg-primary/5 dark:bg-primary/10 border-l-4 border-primary">
+                <span class="font-bold text-primary">Kenapa memakai nilai kembalian register()?</span>
+                <p class="text-sm md:text-base text-foreground-secondary mt-1">
+                    <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">registry.register(...)</code> mengembalikan referensi yang diregistri,
+                    sehingga generator menerjemahkannya menjadi
+                    <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">{'{ "$ref": "#/components/schemas/StallInput" }'}</code>. Kalau memakai
+                    schema mentah, objek schema akan di-inline penuh di dalam
+                    <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">requestBody</code> sehingga spek membengkak dan repetitif.
+                </p>
+            </div>
+            <p class="mt-4 text-foreground-secondary leading-relaxed">
+                Contoh hasil generate, fragmen spek untuk <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">POST /api/v1/stalls</code>:
+            </p>
+            <CodeBlock code={sampleOpenapiFragment} language="json" />
+        </Step>
+
+        <Step id="h2-4" diagram="/diagrams/04/hands-on.webp">
+            <StepHeader title="Sajikan di Swagger UI" tone="success" />
+            <p class="text-foreground-secondary leading-relaxed">
+                Kita pasang Swagger UI di <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">/docs</code> dengan dokumen yang sudah kita
+                bangkitkan. <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">openApiDocument</code> sudah berupa objek
+                <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">OpenAPIV3.Document</code>, jadi tinggal diberikan ke
+                <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">swaggerUi.setup(...)</code>:
+            </p>
+            <CodeBlock code={h2Index} language="ts" filename="src/index.ts" compact />
+            <div class="mt-4 p-3 rounded-lg bg-warning/5 dark:bg-warning/10 border-l-4 border-warning">
+                <span class="font-bold text-warning">Posisi /docs</span>
+                <p class="text-sm md:text-base text-foreground-secondary mt-1">
+                    Struktur middleware lain (validasi, error handler) tetap persis seperti hands-on 1.
+                    <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">/docs</code> ditempatkan <strong>di atas</strong>
+                    <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">notFoundHandler</code> dan
+                    <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">errorHandler</code> supaya tidak dianggap rute asing.
+                </p>
+            </div>
+        </Step>
+
+        <Step id="h2-5" diagram="/diagrams/04/hands-on.webp">
+            <StepHeader title="Uji Endpoint via /docs" tone="success" />
+            <TerminalBlock code={`npm run dev`} title="Terminal: Jalankan server (development)" />
+            <ol class="mt-2 text-foreground-secondary leading-relaxed space-y-1 list-decimal list-inside">
+                <li>Buka <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">http://localhost:3000/docs</code> (atau <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">/docs/</code>) untuk melihat halaman Swagger UI.</li>
+                <li>Pilih endpoint, klik <strong>Try it out</strong>, isi parameter/body, lalu <strong>Execute</strong>. Request benar-benar dikirim ke server, jadi validasi dan error handling tetap berlaku.</li>
+                <li>Coba kasus invalid untuk melihat respons <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">400</code> yang sudah terdokumentasi.</li>
+            </ol>
+            <TerminalBlock code={`curl.exe "http://localhost:3000/api/v1/stalls?page=abc"\ncurl.exe "http://localhost:3000/api/v1/stalls?limit=500"\ncurl.exe -X POST http://localhost:3000/api/v1/stalls -H "Content-Type: application/json" -d '{"ownerId":2}'`} title="Terminal: Uji kasus invalid" />
+            <p class="mt-3 text-foreground-secondary leading-relaxed">
+                Respons <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">400</code> yang tampil di Swagger UI persis seperti di hands-on 1:
+            </p>
+            <CodeBlock code={sampleDocsInvalidResponse} language="json" />
+            <div class="mt-4 p-3 rounded-lg bg-primary/5 dark:bg-primary/10 border-l-4 border-primary">
+                <span class="font-bold text-primary">Catatan</span>
+                <p class="text-sm md:text-base text-foreground-secondary mt-1">
+                    Swagger UI memanggil <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">http://localhost:3000</code> langsung dari
+                    browser kamu, jadi pastikan tidak ada proxy atau CORS manager yang memblokir origin
+                    <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">localhost:3000</code>.
+                </p>
+            </div>
+            <p class="mt-4 text-foreground-secondary leading-relaxed">Troubleshooting:</p>
+            <div class="mt-4 overflow-x-auto rounded-lg border border-border">
+                <table class="w-full border-collapse text-left text-sm md:text-base">
+                    <thead>
+                        <tr class="bg-muted text-foreground">
+                            <th class="px-3 py-2 font-semibold">Gejala</th>
+                            <th class="px-3 py-2 font-semibold">Kemungkinan penyebab &amp; solusi</th>
+                        </tr>
+                    </thead>
+                    <tbody class="text-foreground-secondary">
+                        <tr class="border-t border-border align-top">
+                            <td class="px-3 py-2"><code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">/docs</code> membalas <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">301</code> lalu kosong</td>
+                            <td class="px-3 py-2">Swagger UI me-redirect ke <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">/docs/</code>; buka langsung <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">http://localhost:3000/docs/</code>.</td>
+                        </tr>
+                        <tr class="border-t border-border align-top">
+                            <td class="px-3 py-2">Error <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">UnsupportedZodType</code> saat generate</td>
+                            <td class="px-3 py-2">Tipe zod yang belum didukung, biasanya karena zod v4. Pastikan pasangan versinya: zod <strong>v3</strong> + <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">zod-to-openapi</code> <strong>7.3.4</strong>.</td>
+                        </tr>
+                        <tr class="border-t border-border align-top">
+                            <td class="px-3 py-2"><code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">requestBody</code> ter-inline, bukan <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">$ref</code></td>
+                            <td class="px-3 py-2">Pakai <strong>nilai kembalian</strong> <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">{`registry.register('X', schema)`}</code> di <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">content.schema</code>, bukan variabel schema aslinya.</td>
+                        </tr>
+                        <tr class="border-t border-border align-top">
+                            <td class="px-3 py-2">Contoh/deskripsi tidak muncul</td>
+                            <td class="px-3 py-2">Field belum diberi <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">.openapi({`{ example, description }`})</code>. Metadata <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">example</code> lebih diutamakan daripada <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">examples</code>.</td>
+                        </tr>
+                        <tr class="border-t border-border align-top">
+                            <td class="px-3 py-2">Validasi menolak request dari Swagger UI</td>
+                            <td class="px-3 py-2">Spek hanya dokumentasi; validasi dan error handling tetap bekerja dari middleware <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">validate</code>. Pastikan isi body sesuai contoh.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="mt-4 p-4 rounded-lg bg-accent/5 dark:bg-accent/10 border-2 border-dashed border-accent">
+                <span class="flex items-center gap-2 font-bold text-accent">
+                    <BookOpen class="w-4 h-4" />
+                    Bacaan Lanjutan
+                </span>
+                <ul class="text-base text-foreground-secondary mt-2 space-y-1 list-disc list-inside">
+                    <li>
+                        <a href="https://github.com/asteasolutions/zod-to-openapi" target="_blank" rel="noopener noreferrer" class="text-primary hover:underline">npm: zod-to-openapi</a>
+                        : registri, registerPath, dan contoh lengkap.
+                    </li>
+                    <li>
+                        <a href="https://swagger.io/specification/" target="_blank" rel="noopener noreferrer" class="text-primary hover:underline">OpenAPI Specification 3.0.3</a>
+                        : components/schemas, requestBody, responses, $ref.
+                    </li>
+                    <li>
+                        <a href="https://www.npmjs.com/package/swagger-ui-express" target="_blank" rel="noopener noreferrer" class="text-primary hover:underline">npm: swagger-ui-express</a>
+                        : penyajian spec OpenAPI/Swagger sebagai UI.
+                    </li>
+                </ul>
+            </div>
+        </Step>
+
+    </ScrollyLayout>
+
+    <ScrollyTOC sections={tocSections} />
+</ScrollySection>
+
+<script>
+    import { initScrolly } from '../../lib/scrollyClient';
+    initScrolly();
+</script>
