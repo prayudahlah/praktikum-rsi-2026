@@ -71,7 +71,7 @@ export const meetings: Meeting[] = [
     published: false,
   },
   {
-    slug: "9-audit-log",
+        slug: "09-audit-log",
     title: "Audit Log System",
     description:
       "Desain tabel audit log, mencatat aktivitas CRUD, menampilkan riwayat log.",

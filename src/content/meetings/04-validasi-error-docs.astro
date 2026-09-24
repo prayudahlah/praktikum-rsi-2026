@@ -27,7 +27,6 @@ import h1StallService from '../snippets/04/h1-stall-service.ts?raw';
 import h1Index from '../snippets/04/h1-index.ts?raw';
 
 import h2Package from '../snippets/04/h2-package.json?raw';
-import h2Env from '../snippets/04/h2-env.txt?raw';
 import h2StallSchema from '../snippets/04/h2-stall-schema.ts?raw';
 import h2Openapi from '../snippets/04/h2-openapi.ts?raw';
 import h2Index from '../snippets/04/h2-index.ts?raw';
@@ -76,8 +75,8 @@ const tocSections: TOCSection[] = [
     },
 ];
 
-const strukturHandsOn1 = `pertemuan-04-validasi-error-dokumentasi/
-└─ hands-on-1-validasi-error-handling/
+const strukturHandsOn1 = `praktikum-pert-4/
+└─ hands-on-1/
    ├─ package.json  tsconfig.json  drizzle.config.ts
    ├─ .env                          # SAMA - hasil salinan, reuse database pertemuan-03
    └─ src/
@@ -101,9 +100,9 @@ const strukturHandsOn1 = `pertemuan-04-validasi-error-dokumentasi/
          ├─ notFound.ts
          └─ errorHandler.ts`;
 
-const strukturHandsOn2 = `pertemuan-04-validasi-error-dokumentasi/
-├─ hands-on-1-validasi-error-handling/   # sudah jadi (hands-on 1)
-└─ hands-on-2-dokumentasi-swagger-openapi/
+const strukturHandsOn2 = `praktikum-pert-4/
+├─ hands-on-1/                          # sudah jadi (hands-on 1)
+└─ hands-on-2/
    ├─ package.json  tsconfig.json  drizzle.config.ts
    ├─ .env                          # SAMA - ikut tersalin dari hands-on 1
    └─ src/
@@ -221,13 +220,13 @@ const sampleDocsInvalidResponse = `{
             <SectionDivider label="Validasi & Error Handling" />
             <StepHeader title="Data dari Client Tidak Boleh Dipercaya" tone="primary" />
             <p class="text-foreground-secondary leading-relaxed">
-                Pernahkah Anda memasukkan data yang tidak wajar ke sebuah form? Umur diisi minus, harga diisi teks?
+                Pernahkah kamu memasukkan data yang tidak wajar ke sebuah form? Umur diisi minus, harga diisi teks?
             </p>
             <p class="mt-3 text-foreground-secondary leading-relaxed">
-                Kadang aplikasi langsung menolak dengan pesan <strong>"input tidak valid"</strong>, tetapi kadang justru mengembalikan error yang tidak jelas — atau yang lebih parah: data tetap tersimpan. Padahal, server seharusnya tidak pernah mempercayai data yang dikirim dari HP atau laptop kita. Bisa saja pengirimnya bukan aplikasi resmi, melainkan orang iseng atau program jahat yang sengaja mencoba menerobos sistem.
+                Kadang aplikasi langsung menolak dengan pesan <strong>"input tidak valid"</strong>, tetapi kadang justru mengembalikan error yang tidak jelas. Yang lebih parah, data tetap tersimpan. Padahal, server seharusnya tidak pernah mempercayai data yang dikirim dari HP atau laptop kita. Bisa saja pengirimnya bukan aplikasi resmi, melainkan orang iseng atau program jahat yang sengaja mencoba menerobos sistem.
             </p>
             <p class="mt-3 text-foreground-secondary leading-relaxed">
-                Maka dari itu server membutuhkan "penjaga pintu": memeriksa format dan keamanan data terlebih dahulu sebelum diproses. Tanpa itu, siapa saja bisa memasukkan apa pun ke dalam sistem kita.
+                Maka dari itu server membutuhkan "penjaga pintu" yang memeriksa format dan keamanan data terlebih dahulu sebelum diproses. Tanpa itu, siapa saja bisa memasukkan apa pun ke dalam sistem kita.
             </p>
         </Step>
 
@@ -237,13 +236,13 @@ const sampleDocsInvalidResponse = `{
                 Jika server tidak boleh mempercayai input dari client, bagaimana cara memeriksanya? Terdapat dua lapisan:
             </p>
             <p class="mt-3 text-foreground-secondary leading-relaxed">
-                <strong>Validasi</strong> itu seperti satpam: memeriksa apakah data sesuai aturan atau tidak. Jika tidak, langsung ditolak dan server mengembalikan error. Contoh: harga diisi <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">-500</code>, ditolak karena harus bilangan positif. Sifatnya hanya dua: lolos atau tidak.
+                <strong>Validasi</strong> itu seperti satpam yang memeriksa apakah data sesuai aturan atau tidak. Jika tidak, langsung ditolak dan server mengembalikan error. Contoh: harga diisi <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">-500</code>, ditolak karena harus bilangan positif. Sifatnya hanya dua: lolos atau tidak.
             </p>
             <p class="mt-3 text-foreground-secondary leading-relaxed">
-                <strong>Sanitasi</strong> itu seperti petugas kebersihan: bukan menolak, melainkan membersihkan data sebelum digunakan. Membuang karakter berbahaya, meng-escape tag HTML. Contoh: pengguna mengetik <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">{`<script>alert('xss')</script>`}</code> di kolom komentar. Validasi mungkin lolos karena formatnya berupa string, tetapi sanitasi akan mengubah skrip tersebut menjadi teks biasa, tidak dieksekusi oleh browser.
+                <strong>Sanitasi</strong> itu seperti petugas kebersihan yang tidak menolak data, melainkan membersihkannya sebelum digunakan. Membuang karakter berbahaya, meng-escape tag HTML. Contoh: pengguna mengetik <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">{`<script>alert('xss')</script>`}</code> di kolom komentar. Validasi mungkin lolos karena formatnya berupa string, tetapi sanitasi akan mengubah skrip tersebut menjadi teks biasa, tidak dieksekusi oleh browser.
             </p>
             <p class="mt-3 text-foreground-secondary leading-relaxed">
-                Intinya: <strong>validasi menolak, sanitasi membersihkan.</strong> Digunakan bersamaan: validasi terlebih dahulu untuk memeriksa, sanitasi sebagai jaga-jaga jika ada karakter berbahaya yang lolos.
+                Intinya, <strong>validasi menolak sedangkan sanitasi membersihkan.</strong> Keduanya dipakai bersamaan, validasi lebih dahulu untuk memeriksa, lalu sanitasi sebagai jaga-jaga jika ada karakter berbahaya yang lolos.
             </p>
             <div class="mt-4 p-4 rounded-lg bg-accent/5 dark:bg-accent/10 border-2 border-dashed border-accent">
                 <span class="flex items-center gap-2 font-bold text-accent">
@@ -262,12 +261,12 @@ const sampleDocsInvalidResponse = `{
         <Step id="p1-3" diagram="/diagrams/04/middleware-pipeline.webp">
             <StepHeader title="Validasi di Middleware" tone="primary" />
             <p class="text-foreground-secondary leading-relaxed">
-                Jika validasi dan sanitasi penting, pertanyaan berikutnya: <strong>diletakkan di mana?</strong>
+                Jika validasi dan sanitasi penting, pertanyaan berikutnya adalah, <strong>diletakkan di mana?</strong>
                 Bayangkan jika tidak ada middleware. Setiap controller harus memeriksa sendiri:
                 <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">POST /stalls</code> diperiksa manual,
                 <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">PUT /stalls/:id</code> diperiksa manual lagi,
                 <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">POST /reviews</code> diperiksa manual lagi. Kodenya menjadi berulang, dan
-                begitu ada aturan baru, Anda harus mengedit di banyak tempat. Rumit, dan mudah terlewat.
+                begitu ada aturan baru, kamu harus mengedit di banyak tempat. Rumit, dan mudah terlewat.
             </p>
             <p class="mt-3 text-foreground-secondary leading-relaxed">
                 Middleware itu seperti <strong>gerbang pemeriksaan sebelum masuk gedung.</strong> Semua request
@@ -285,7 +284,7 @@ const sampleDocsInvalidResponse = `{
                 </span>
                 <ul class="text-base text-foreground-secondary mt-2 space-y-1 list-disc list-inside">
                     <li>
-                        <a href="https://expressjs.com/en/guide/using-middleware.html" target="_blank" rel="noopener noreferrer" class="text-primary hover:underline">Express — Using middleware</a>
+                        <a href="https://expressjs.com/en/guide/using-middleware.html" target="_blank" rel="noopener noreferrer" class="text-primary hover:underline">Using middleware (Express)</a>
                         : cara kerja middleware dan urutan pemasangannya.
                     </li>
                 </ul>
@@ -303,7 +302,7 @@ const sampleDocsInvalidResponse = `{
             <p class="mt-3 text-foreground-secondary leading-relaxed">
                 Masalahnya, error mentah seperti stack trace tidak boleh dikembalikan langsung ke client. Selain
                 membocorkan detail internal (nama file, struktur database, versi library), frontend juga menjadi bingung
-                karena formatnya berbeda-beda tiap error. Solusinya: error handler terpusat. Semua error ditangkap
+                karena formatnya berbeda-beda tiap error. Solusinya adalah error handler terpusat. Semua error ditangkap
                 di satu tempat, lalu dikembalikan dengan format yang sama, misalnya selalu
                 <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">{'{ success: false, message: "...", errors: ... }'}</code>. Jadi frontend
                 cukup membaca satu format, tidak perlu menebak-nebak.
@@ -352,11 +351,11 @@ const sampleDocsInvalidResponse = `{
                 <p class="text-sm md:text-base text-foreground-secondary mt-1">
                     Di hands-on pertemuan ini, kegagalan validasi zod dibalas <strong>400</strong> (lihat
                     <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">ValidationError</code>). Kode <strong>422</strong> di tabel atas adalah
-                    konvensi alternatif yang dipakai sebagian API. Yang penting: pilih satu gaya dan pakai konsisten.
+                    konvensi alternatif yang dipakai sebagian API. Yang penting, pilih satu gaya dan pakai konsisten.
                 </p>
             </div>
-            <p class="mt-3 text-foreground-secondary leading-relaxed">
-                Error itu bukan aib, tapi cara ngebalikinnya harus rapi, konsisten, dan informatif.
+            <p class="text-foreground-secondary leading-relaxed">
+                Error itu bukan aib, tetapi cara mengembalikannya harus rapi, konsisten, dan informatif.
             </p>
 
         </Step>
@@ -376,14 +375,14 @@ const sampleDocsInvalidResponse = `{
                 Kode Hands-on di GitHub
             </a>
             <p class="mt-3 text-foreground-secondary leading-relaxed">
-                Buat folder baru bernama <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">hands-on-1-validasi-error-handling</code> di dalam
-                folder <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">pertemuan-04-validasi-error-dokumentasi</code>. Lalu <strong>salin seluruh isi</strong> folder
-                <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">pertemuan-03-database-backend-crud/hands-on-2-orm-drizzle</code> ke folder baru tersebut.
+                Buat folder <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">praktikum-pert-4/hands-on-1</code>.
+                Lalu <strong>salin seluruh isi</strong> folder
+                <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">praktikum-pert-3/hands-on-2</code> ke folder baru tersebut.
             </p>
             <p class="mt-3 text-foreground-secondary leading-relaxed">
                 Database tidak perlu dikonfigurasi ulang: file <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">.env</code> ikut tersalin, jadi koneksinya tetap
                 <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">review_kantin</code> dengan user <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">praktikum_user</code> yang sama. Seluruh langkah
-                berikutnya dijalankan <strong>dari dalam folder</strong> <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">hands-on-1-validasi-error-handling</code>.
+                berikutnya dijalankan <strong>dari dalam folder</strong> <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">hands-on-1</code>.
             </p>
             <p class="mt-4 text-foreground-secondary leading-relaxed">
                 Struktur project setelah dilengkapi:
@@ -533,8 +532,8 @@ const sampleDocsInvalidResponse = `{
         <Step id="h1-7" diagram="/diagrams/04/hands-on.webp">
             <StepHeader title="Refactor Controller, Router & Service" tone="success" />
             <p class="text-foreground-secondary leading-relaxed">
-                Controller kini <strong>tanpa <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">try/catch</code></strong>: input sudah
-                valid, dan bila service melempar <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">NotFoundError</code>, Express 5 otomatis
+                Controller kini <strong>tanpa <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">try/catch</code></strong> karena input sudah
+                valid. Bila service melempar <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">NotFoundError</code>, Express 5 otomatis
                 meneruskan rejection handler async ke <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">errorHandler</code>.
             </p>
             <CodeBlock code={h1StallController} language="ts" filename="src/controllers/stallController.ts" compact />
@@ -591,13 +590,13 @@ const sampleDocsInvalidResponse = `{
             </p>
             <TerminalBlock code={`# query: page bukan angka & limit melebihi batas\ncurl.exe "http://localhost:3000/api/v1/stalls?page=abc"\ncurl.exe "http://localhost:3000/api/v1/stalls?limit=500"\n\n# params: id bukan angka\ncurl.exe "http://localhost:3000/api/v1/stalls/abc"\n\n# body: field wajib kosong / dua error sekaligus\ncurl.exe -X POST http://localhost:3000/api/v1/stalls -H "Content-Type: application/json" -d '{"ownerId":2}'\ncurl.exe -X POST http://localhost:3000/api/v1/stalls -H "Content-Type: application/json" -d '{"ownerId":-1,"name":"ab"}'\n\n# body: JSON rusak (express.json melempar SyntaxError)\ncurl.exe -X POST http://localhost:3000/api/v1/stalls -H "Content-Type: application/json" -d '{bad json'\n\n# body: kunci asing ditolak oleh .strict()\ncurl.exe -X POST http://localhost:3000/api/v1/stalls -H "Content-Type: application/json" -d '{"ownerId":2,"name":"Warung Uji","isAdmin":true}'`} title="Terminal: Request invalid" />
             <p class="mt-3 text-foreground-secondary leading-relaxed">
-                Perhatikan: dua error dilaporkan <strong>sekaligus</strong>, bukan gagal cepat di error pertama.
+                Perhatikan bahwa dua error dilaporkan <strong>sekaligus</strong>, bukan berhenti di error pertama.
             </p>
             <CodeBlock code={sampleInvalidResponse} language="json" />
             <p class="mt-4 text-foreground-secondary leading-relaxed">Contoh respons error lainnya:</p>
             <ul class="mt-2 text-foreground-secondary leading-relaxed space-y-1 list-disc list-inside">
                 <li><code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">400</code>: <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">{'{ "status": "fail", "message": "JSON pada body tidak valid" }'}</code></li>
-                <li><code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">400</code> kunci asing: pesan <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">Unrecognized key: isAdmin</code> pada <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">field: body</code> — inilah <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">.strict()</code> yang <strong>menolak</strong>, bukan membuang.</li>
+                <li><code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">400</code> kunci asing: pesan <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">Unrecognized key: isAdmin</code> pada <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">field: body</code>. Inilah <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">.strict()</code> yang <strong>menolak</strong>, bukan membuang.</li>
                 <li><code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">404</code>: <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">{'{ "status": "fail", "message": "Warung tidak ditemukan" }'}</code></li>
                 <li><code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">404</code> rute asing: <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">{'{ "status": "fail", "message": "Route tidak ditemukan: GET /api/v1/xyz" }'}</code></li>
             </ul>
@@ -665,7 +664,7 @@ const sampleDocsInvalidResponse = `{
                         </tr>
                         <tr class="border-t border-border align-top">
                             <td class="px-3 py-2">Pesan validasi default berbahasa Inggris (mis. <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">Expected number, received nan</code>)</td>
-                            <td class="px-3 py-2">Itu pesan bawaan zod. Pastikan kamu memakai <strong>zod v3</strong> (lihat langkah install di atas) — di zod v4 opsi <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">invalid_type_error</code> diabaikan dan penggantinya adalah <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">error</code>. Untuk pesan custom di v3: <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">.number({`{ invalid_type_error: '...' }`})</code> atau <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">.min(1, '...')</code>.</td>
+                            <td class="px-3 py-2">Itu pesan bawaan zod. Pastikan kamu memakai <strong>zod v3</strong> (lihat langkah install di atas). Di zod v4 opsi <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">invalid_type_error</code> diabaikan dan penggantinya adalah <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">error</code>. Untuk pesan custom di v3: <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">.number({`{ invalid_type_error: '...' }`})</code> atau <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">.min(1, '...')</code>.</td>
                         </tr>
                         <tr class="border-t border-border align-top">
                             <td class="px-3 py-2"><code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">Cannot connect to localhost</code></td>
@@ -689,7 +688,7 @@ const sampleDocsInvalidResponse = `{
                         : dokumentasi schema, safeParse, z.coerce, z.infer, strict.
                     </li>
                     <li>
-                        <a href="https://expressjs.com/en/guide/error-handling.html" target="_blank" rel="noopener noreferrer" class="text-primary hover:underline">Express — Error Handling</a>
+                        <a href="https://expressjs.com/en/guide/error-handling.html" target="_blank" rel="noopener noreferrer" class="text-primary hover:underline">Error Handling (Express)</a>
                         : error middleware (4 argumen), urutan pendaftaran, async error.
                     </li>
                 </ul>
@@ -702,10 +701,10 @@ const sampleDocsInvalidResponse = `{
             <SectionDivider label="Kontrak API" />
             <StepHeader title="Kontrak API & Swagger" tone="primary" />
             <p class="text-foreground-secondary leading-relaxed">
-                API itu seperti kontrak: jika frontend ingin menggunakan endpoint yang Anda buat, ia harus mengetahui endpoint apa saja yang tersedia, parameter apa yang dibutuhkan, dan response apa yang dikembalikan termasuk saat terjadi error.
+                API itu seperti kontrak. Jika frontend ingin menggunakan endpoint yang kamu buat, ia harus mengetahui endpoint apa saja yang tersedia, parameter apa yang dibutuhkan, dan response apa yang dikembalikan termasuk saat terjadi error.
             </p>
             <p class="mt-3 text-foreground-secondary leading-relaxed">
-                Masalahnya, jika kontrak ini hanya dikirim lewat chat atau dokumen terpisah, mudah menjadi usang: kode
+                Masalahnya, jika kontrak ini hanya dikirim lewat chat atau dokumen terpisah, mudah menjadi usang. Kode
                 sudah berubah, dokumennya masih versi lama. Akibatnya frontend mengirim request yang salah, dan
                 membuang-buang waktu untuk debugging. Karena itu, dokumentasi sebaiknya dibuat secara otomatis dan interaktif. Dengan
                 Swagger/OpenAPI, dokumentasi dapat digenerate langsung dari kode, ditampilkan di
@@ -722,8 +721,8 @@ const sampleDocsInvalidResponse = `{
                 <li>file itu disajikan <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">swagger-ui-express</code> di <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">/docs</code>.</li>
             </ol>
             <p class="mt-3 text-foreground-secondary leading-relaxed">
-                Intinya: <strong>OpenAPI itu standarnya, Swagger itu alatnya.</strong> Dokumentasi bukan hanya untuk
-                orang lain, tetapi juga untuk Anda sendiri tiga bulan kemudian yang sudah lupa fungsi masing-masing endpoint.
+                Intinya, <strong>OpenAPI adalah standarnya dan Swagger alat untuk membuatnya.</strong> Dokumentasi bukan hanya untuk
+                orang lain, tetapi juga untuk kamu sendiri tiga bulan kemudian yang sudah lupa fungsi masing-masing endpoint.
             </p>
             <p class="mt-4 text-foreground-secondary leading-relaxed">
                 Di pertemuan 4 ini pendekatannya berganti. Schema zod yang sudah digunakan untuk validasi
@@ -777,7 +776,7 @@ const sampleDocsInvalidResponse = `{
                 <span class="font-bold text-primary">Project pertemuan 3 tetap aman</span>
                 <p class="text-sm md:text-base text-foreground-secondary mt-1">
                     Kamu tidak perlu memigrasikan project pertemuan 3. Ini hanya cara lain untuk masalah yang
-                    sama: <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">swagger-autogen</code> cepat untuk prototipe,
+                    sama. <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">swagger-autogen</code> cepat untuk prototipe, sedangkan
                     <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">zod-to-openapi</code> lebih aman karena spek tidak bisa melenceng
                     dari schema validasi.
                 </p>
@@ -792,9 +791,9 @@ const sampleDocsInvalidResponse = `{
                 sudah utuh. Yang berubah hanya beberapa file:
             </p>
             <p class="mt-3 text-foreground-secondary leading-relaxed">
-                Dari folder <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">pertemuan-04-validasi-error-dokumentasi</code>, <strong>salin seluruh isi</strong> folder
-                <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">hands-on-1-validasi-error-handling</code> ke folder baru bernama
-                <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">hands-on-2-dokumentasi-swagger-openapi</code>. Seluruh langkah berikutnya dijalankan dari dalam folder baru itu.
+                Dari folder <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">praktikum-pert-4</code>, <strong>salin seluruh isi</strong> folder
+                <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">hands-on-1</code> ke folder baru bernama
+                <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">hands-on-2</code>. Seluruh langkah berikutnya dijalankan dari dalam folder baru itu.
             </p>
             <CodeBlock code={strukturHandsOn2} language="bash" />
             <TerminalBlock code={`npm install @asteasolutions/zod-to-openapi@7.3.4 swagger-ui-express\nnpm install -D @types/swagger-ui-express`} title="Terminal: Install zod-to-openapi & swagger-ui-express" />
@@ -811,11 +810,11 @@ const sampleDocsInvalidResponse = `{
             </p>
             <CodeBlock code={h2Package} language="json" filename="package.json" compact />
             <p class="text-foreground-secondary leading-relaxed">
-                Perhatikan: <strong>tidak ada script <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">docs:gen</code></strong> seperti
+                Yang perlu diperhatikan, <strong>tidak ada script <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">docs:gen</code></strong> seperti
                 pertemuan 3. Dokumentasi dibangkitkan di memori, jadi tidak ada langkah generate tambahan.
             </p>
             <p class="mt-3 text-foreground-secondary leading-relaxed">
-                <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">.env</code> terbawa dari hands-on 1; isinya sama persis — tidak perlu dikonfigurasi ulang.
+                <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">.env</code> terbawa dari hands-on 1; isinya sama persis, tidak perlu dikonfigurasi ulang.
             </p>
             <a href={repoUrl}
                target="_blank" rel="noopener noreferrer"
@@ -853,7 +852,7 @@ const sampleDocsInvalidResponse = `{
                 bangkitkan dokumen di memori.
             </p>
             <p class="mt-4 text-foreground-secondary leading-relaxed">
-                Bagian 1: komponen schema. Perhatikan bahwa schema <strong>body yang dipakai validasi</strong>
+                Bagian 1. Komponen schema. Perhatikan bahwa schema <strong>body yang dipakai validasi</strong>
                 (<code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">createStallSchema</code> dan
                 <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">updateStallSchema</code>) ikut didaftarkan sebagai komponen
                 <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">StallInput</code>/<code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">StallUpdate</code>, supaya bisa
@@ -861,7 +860,7 @@ const sampleDocsInvalidResponse = `{
             </p>
             <CodeBlock code={h2OpenapiSchemas} language="ts" filename="src/docs/openapi.ts (bagian 1)" compact />
             <p class="mt-4 text-foreground-secondary leading-relaxed">
-                Bagian 2: daftarkan tiap endpoint. Setiap <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">registerPath</code> menyebut
+                Bagian 2. Daftarkan tiap endpoint. Setiap <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">registerPath</code> menyebut
                 method, summary, request (params/body), dan <strong>semua kemungkinan respons</strong>
                 (200/201/400/404/409/500), persis yang sudah kita bangun di error handler:
             </p>
@@ -878,8 +877,8 @@ const sampleDocsInvalidResponse = `{
                 <li><code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">GET /api/v1/stalls/{'{id}'}/menus</code> memakai <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">params</code>, respons <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">200</code> (list menu) dan <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">404</code>.</li>
             </ul>
             <p class="mt-4 text-foreground-secondary leading-relaxed">
-                Bagian 3: bangkitkan dokumen <strong>di memori</strong>, tanpa file dan tanpa langkah
-                <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">docs:gen</code>:
+                Bagian 3. Bangkitkan dokumen <strong>di memori</strong>, tanpa file dan tanpa langkah
+                <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">docs:gen</code>.
             </p>
             <CodeBlock code={h2OpenapiGenerate} language="ts" filename="src/docs/openapi.ts (bagian 3)" compact />
             <div class="mt-4 p-4 rounded-lg bg-primary/5 dark:bg-primary/10 border-l-4 border-primary">

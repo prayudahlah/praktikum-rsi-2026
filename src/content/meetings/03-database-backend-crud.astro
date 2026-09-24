@@ -84,7 +84,7 @@ const strukturHandsOn1 = `praktikum-pert-3/
 └─ hands-on-1/
    ├─ package.json
    ├─ tsconfig.json
-   ├─ .env
+   ├─ .env.example
    └─ src/
       ├─ index.ts
       └─ config/
@@ -95,7 +95,7 @@ const strukturHandsOn2 = `praktikum-pert-3/
 └─ hands-on-2/
    ├─ package.json
    ├─ tsconfig.json
-   ├─ .env
+   ├─ .env.example
    ├─ drizzle.config.ts
    └─ src/
       ├─ index.ts
@@ -395,10 +395,10 @@ const strukturHandsOn2 = `praktikum-pert-3/
             </p>
             <CodeBlock code={h1Tsconfig} language="json" filename="tsconfig.json" compact />
             <p class="mt-4 text-foreground-secondary leading-relaxed">
-                Buat file <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">.env</code>
-                 berisi kredensial database:
+                Buat file <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">.env.example</code> (template), lalu salin menjadi
+                <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">.env</code> berisi kredensial database:
             </p>
-            <CodeBlock code={h1Env} language="ini" filename=".env" compact />
+            <CodeBlock code={h1Env} language="ini" filename=".env.example" compact />
             <div class="mt-4 p-4 rounded-lg bg-error/5 dark:bg-error/10 border-l-4 border-error">
                 <span class="font-bold text-error">Jangan commit .env</span>
                 <p class="text-sm md:text-base text-foreground-secondary mt-1">
@@ -508,9 +508,10 @@ const strukturHandsOn2 = `praktikum-pert-3/
             </p>
             <CodeBlock code={h2Tsconfig} language="json" filename="tsconfig.json" compact />
             <p class="mt-4 text-foreground-secondary leading-relaxed">
-                Salin file <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">.env</code> dari project hands-on 1 ke project ini:
+                Salin file <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">.env</code> dan
+                <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">.env.example</code> dari project hands-on 1 ke project ini:
             </p>
-            <TerminalBlock code={`Copy-Item ..\\hands-on-1\\.env .`} title="PowerShell: Salin .env" />
+            <TerminalBlock code={`Copy-Item ..\\hands-on-1\\.env .\nCopy-Item ..\\hands-on-1\\.env.example .`} title="PowerShell: Salin .env & .env.example" />
             <p class="mt-4 text-foreground-secondary leading-relaxed">
                 Buat <strong>file baru</strong> <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">drizzle.config.ts</code> berisi:
             </p>
