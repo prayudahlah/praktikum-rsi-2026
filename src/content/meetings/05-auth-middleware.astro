@@ -180,6 +180,22 @@ const sampleOwnershipForbidden = `{
             <p class="mt-3 text-foreground-secondary leading-relaxed">
                 Di JWT, token menjadi bukti autentikasi. Role di dalam token dipakai untuk otorisasi.
             </p>
+            <div class="mt-4 p-4 rounded-lg bg-accent/5 dark:bg-accent/10 border-2 border-dashed border-accent">
+                <span class="flex items-center gap-2 font-bold text-accent">
+                    <BookOpen class="w-4 h-4" />
+                    Bacaan Lanjutan
+                </span>
+                <ul class="text-base text-foreground-secondary mt-2 space-y-1 list-disc list-inside">
+                    <li>
+                        <a href="https://cheatsheetseries.owasp.org/cheatsheets/Authentication_Cheat_Sheet.html" target="_blank" rel="noopener noreferrer" class="text-primary hover:underline">OWASP Authentication Cheat Sheet</a>
+                        : praktik terbaik proses login dan penyimpanan kredensial.
+                    </li>
+                    <li>
+                        <a href="https://cheatsheetseries.owasp.org/cheatsheets/Authorization_Cheat_Sheet.html" target="_blank" rel="noopener noreferrer" class="text-primary hover:underline">OWASP Authorization Cheat Sheet</a>
+                        : pola <em>deny by default</em> dan prinsip <em>least privilege</em>.
+                    </li>
+                </ul>
+            </div>
         </Step>
 
         <Step id="a3" diagram="/diagrams/05/session-jwt.webp">
@@ -232,6 +248,18 @@ const sampleOwnershipForbidden = `{
                     sah sampai <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">exp</code>-nya lewat.
                     Karena itu umur token dibuat pendek.
                 </p>
+            </div>
+            <div class="mt-4 p-4 rounded-lg bg-accent/5 dark:bg-accent/10 border-2 border-dashed border-accent">
+                <span class="flex items-center gap-2 font-bold text-accent">
+                    <BookOpen class="w-4 h-4" />
+                    Bacaan Lanjutan
+                </span>
+                <ul class="text-base text-foreground-secondary mt-2 space-y-1 list-disc list-inside">
+                    <li>
+                        <a href="https://auth0.com/blog/cookies-vs-tokens-whats-the-difference/" target="_blank" rel="noopener noreferrer" class="text-primary hover:underline">Auth0: Cookies vs Tokens</a>
+                        : kapan memilih session, kapan memilih JWT.
+                    </li>
+                </ul>
             </div>
         </Step>
 
@@ -431,6 +459,22 @@ BCRYPT_SALT_ROUNDS=10`}
                     terdaftar.
                 </p>
             </div>
+            <div class="mt-4 p-4 rounded-lg bg-accent/5 dark:bg-accent/10 border-2 border-dashed border-accent">
+                <span class="flex items-center gap-2 font-bold text-accent">
+                    <BookOpen class="w-4 h-4" />
+                    Bacaan Lanjutan
+                </span>
+                <ul class="text-base text-foreground-secondary mt-2 space-y-1 list-disc list-inside">
+                    <li>
+                        <a href="https://cheatsheetseries.owasp.org/cheatsheets/Password_Storage_Cheat_Sheet.html" target="_blank" rel="noopener noreferrer" class="text-primary hover:underline">OWASP Password Storage Cheat Sheet</a>
+                        : kenapa bcrypt dipakai, dan kenapa argon2 lebih direkomendasikan di produksi.
+                    </li>
+                    <li>
+                        <a href="https://www.npmjs.com/package/bcryptjs" target="_blank" rel="noopener noreferrer" class="text-primary hover:underline">npm: bcryptjs</a>
+                        : API <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">hash</code> dan <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">compare</code>.
+                    </li>
+                </ul>
+            </div>
         </Step>
 
         <Step id="h1-5" diagram="/diagrams/05/hands-on.webp">
@@ -569,6 +613,18 @@ authorize('owner', 'admin');   // owner atau admin`}
                     punya akses).
                 </p>
             </div>
+            <div class="mt-4 p-4 rounded-lg bg-accent/5 dark:bg-accent/10 border-2 border-dashed border-accent">
+                <span class="flex items-center gap-2 font-bold text-accent">
+                    <BookOpen class="w-4 h-4" />
+                    Bacaan Lanjutan
+                </span>
+                <ul class="text-base text-foreground-secondary mt-2 space-y-1 list-disc list-inside">
+                    <li>
+                        <a href="https://cheatsheetseries.owasp.org/cheatsheets/Authorization_Cheat_Sheet.html" target="_blank" rel="noopener noreferrer" class="text-primary hover:underline">OWASP Authorization Cheat Sheet</a>
+                        : pola <em>deny by default</em> dan prinsip <em>least privilege</em>.
+                    </li>
+                </ul>
+            </div>
         </Step>
 
         <Step id="b3" diagram="/diagrams/05/protected-routes.webp">
@@ -581,6 +637,87 @@ authorize('owner', 'admin');   // owner atau admin`}
                 <li><strong>Route terlindungi</strong>: butuh token, semua user login boleh. Contoh: profil, tambah review.</li>
                 <li><strong>Route khusus role</strong>: butuh token dan role tertentu. Contoh: hapus warung hanya admin.</li>
             </ol>
+            <p class="mt-4 text-foreground-secondary leading-relaxed">
+                Ringkasan otorisasi tiap endpoint di project ini:
+            </p>
+            <div class="mt-4 overflow-x-auto rounded-lg border border-border">
+                <table class="w-full border-collapse text-left text-sm md:text-base">
+                    <thead>
+                        <tr class="bg-muted text-foreground">
+                            <th class="px-3 py-2 font-semibold">Endpoint</th>
+                            <th class="px-3 py-2 font-semibold whitespace-nowrap">Akses</th>
+                            <th class="px-3 py-2 font-semibold">Catatan</th>
+                        </tr>
+                    </thead>
+                    <tbody class="text-foreground-secondary">
+                        <tr class="border-t border-border align-top">
+                            <td class="px-3 py-2 whitespace-nowrap"><code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">GET /api/v1/stalls</code></td>
+                            <td class="px-3 py-2">publik</td>
+                            <td class="px-3 py-2">daftar warung (filter + pagination)</td>
+                        </tr>
+                        <tr class="border-t border-border align-top">
+                            <td class="px-3 py-2 whitespace-nowrap"><code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">GET /api/v1/stalls/:id</code></td>
+                            <td class="px-3 py-2">publik</td>
+                            <td class="px-3 py-2">detail warung</td>
+                        </tr>
+                        <tr class="border-t border-border align-top">
+                            <td class="px-3 py-2 whitespace-nowrap"><code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">GET /api/v1/stalls/:id/menus</code></td>
+                            <td class="px-3 py-2">publik</td>
+                            <td class="px-3 py-2">menu warung</td>
+                        </tr>
+                        <tr class="border-t border-border align-top">
+                            <td class="px-3 py-2 whitespace-nowrap"><code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">POST /api/v1/auth/register</code></td>
+                            <td class="px-3 py-2">publik</td>
+                            <td class="px-3 py-2">role ditentukan server (<code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">customer</code>)</td>
+                        </tr>
+                        <tr class="border-t border-border align-top">
+                            <td class="px-3 py-2 whitespace-nowrap"><code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">POST /api/v1/auth/login</code></td>
+                            <td class="px-3 py-2">publik</td>
+                            <td class="px-3 py-2">mengembalikan token</td>
+                        </tr>
+                        <tr class="border-t border-border align-top">
+                            <td class="px-3 py-2 whitespace-nowrap"><code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">GET /health</code>, <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">/docs</code></td>
+                            <td class="px-3 py-2">publik</td>
+                            <td class="px-3 py-2">health check & dokumentasi</td>
+                        </tr>
+                        <tr class="border-t border-border align-top">
+                            <td class="px-3 py-2 whitespace-nowrap"><code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">GET /api/v1/auth/me</code></td>
+                            <td class="px-3 py-2">login (semua role)</td>
+                            <td class="px-3 py-2">data dari token</td>
+                        </tr>
+                        <tr class="border-t border-border align-top">
+                            <td class="px-3 py-2 whitespace-nowrap"><code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">GET /api/v1/auth/profile</code></td>
+                            <td class="px-3 py-2">login (semua role)</td>
+                            <td class="px-3 py-2">data terbaru dari database</td>
+                        </tr>
+                        <tr class="border-t border-border align-top">
+                            <td class="px-3 py-2 whitespace-nowrap"><code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">POST /api/v1/stalls/:id/reviews</code></td>
+                            <td class="px-3 py-2">login (semua role)</td>
+                            <td class="px-3 py-2"><code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">userId</code> dari token</td>
+                        </tr>
+                        <tr class="border-t border-border align-top">
+                            <td class="px-3 py-2 whitespace-nowrap"><code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">POST /api/v1/stalls</code></td>
+                            <td class="px-3 py-2">owner, admin</td>
+                            <td class="px-3 py-2"><code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">ownerId</code> dari token</td>
+                        </tr>
+                        <tr class="border-t border-border align-top">
+                            <td class="px-3 py-2 whitespace-nowrap"><code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">PUT /api/v1/stalls/:id</code></td>
+                            <td class="px-3 py-2">owner (miliknya), admin</td>
+                            <td class="px-3 py-2">cek kepemilikan di service</td>
+                        </tr>
+                        <tr class="border-t border-border align-top">
+                            <td class="px-3 py-2 whitespace-nowrap"><code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">DELETE /api/v1/stalls/:id</code></td>
+                            <td class="px-3 py-2">admin</td>
+                            <td class="px-3 py-2">owner yang mencoba mendapat 403</td>
+                        </tr>
+                        <tr class="border-t border-border align-top">
+                            <td class="px-3 py-2 whitespace-nowrap"><code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">GET /api/v1/admin/reports</code></td>
+                            <td class="px-3 py-2">admin</td>
+                            <td class="px-3 py-2">ringkasan laporan</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
             <p class="mt-3 text-foreground-secondary leading-relaxed">
                 Urutannya penting: <strong>authenticate dulu, baru authorize, baru validate</strong>.
                 Dengan begitu, request tanpa token selalu dibalas 401 apa pun isi body-nya, dan aturan
@@ -593,6 +730,18 @@ authorize('owner', 'admin');   // owner atau admin`}
                 bisa dihapus.
             </p>
             <CodeBlock code={expressTypes} language="typescript" filename="src/types/express.d.ts" compact />
+            <div class="mt-4 p-4 rounded-lg bg-accent/5 dark:bg-accent/10 border-2 border-dashed border-accent">
+                <span class="flex items-center gap-2 font-bold text-accent">
+                    <BookOpen class="w-4 h-4" />
+                    Bacaan Lanjutan
+                </span>
+                <ul class="text-base text-foreground-secondary mt-2 space-y-1 list-disc list-inside">
+                    <li>
+                        <a href="https://owasp.org/www-project-application-security-verification-standard/" target="_blank" rel="noopener noreferrer" class="text-primary hover:underline">OWASP ASVS</a>
+                        : daftar pemeriksaan keamanan API yang bisa dipakai untuk audit sendiri.
+                    </li>
+                </ul>
+            </div>
         </Step>
 
         <Step id="b4" diagram="/diagrams/05/middleware-dasar.webp">
@@ -620,6 +769,18 @@ authorize('owner', 'admin');   // owner atau admin`}
                     Seperti perangkat yang tinggal dicolok ke stopkontak. Kebutuhannya disediakan dari
                     luar, jadi sumbernya bebas diganti tanpa membongkar perangkat.
                 </p>
+            </div>
+            <div class="mt-4 p-4 rounded-lg bg-accent/5 dark:bg-accent/10 border-2 border-dashed border-accent">
+                <span class="flex items-center gap-2 font-bold text-accent">
+                    <BookOpen class="w-4 h-4" />
+                    Bacaan Lanjutan
+                </span>
+                <ul class="text-base text-foreground-secondary mt-2 space-y-1 list-disc list-inside">
+                    <li>
+                        <a href="https://martinfowler.com/articles/injection.html" target="_blank" rel="noopener noreferrer" class="text-primary hover:underline">Martin Fowler: Inversion of Control</a>
+                        : konsep Dependency Injection dan variasinya.
+                    </li>
+                </ul>
             </div>
         </Step>
 
@@ -817,7 +978,7 @@ bagas@student.test   -> customer`}
 
         <!-- ===== BAGIAN C: PENUTUP ===== -->
 
-        <Step id="c1" diagram="/diagrams/05/rekap.webp">
+        <Step id="c1" diagram="/diagrams/05/recap.webp">
             <SectionDivider label="Penutup" />
             <StepHeader title="Recap" tone="primary" />
             <p class="text-foreground-secondary leading-relaxed">
