@@ -1,0 +1,880 @@
+---
+import {
+    ScrollySection,
+    Step,
+    StepHeader,
+    SectionDivider,
+    ScrollyLayout,
+    ScrollyTOC,
+} from '../../components/scrolly';
+import type { TOCSection } from '../../components/scrolly';
+import TerminalBlock from '../../components/ui/TerminalBlock.astro';
+import CodeBlock from '../../components/ui/CodeBlock.astro';
+import { BookOpen } from '@lucide/astro';
+
+import jwtPayload from '../snippets/05/c-jwt-payload.json?raw';
+import tokenService from '../snippets/05/c-token-service.ts?raw';
+import middlewareChain from '../snippets/05/c-middleware-chain.ts?raw';
+import diSnippet from '../snippets/05/c-di.ts?raw';
+import authSchema from '../snippets/05/c-auth-schema.ts?raw';
+import authService from '../snippets/05/c-auth-service.ts?raw';
+import authRouter from '../snippets/05/c-auth-router.ts?raw';
+import unauthorizedError from '../snippets/05/c-unauthorized-error.ts?raw';
+import authMiddleware from '../snippets/05/c-auth-middleware.ts?raw';
+import authorizeMw from '../snippets/05/c-authorize.ts?raw';
+import forbiddenError from '../snippets/05/c-forbidden-error.ts?raw';
+import expressTypes from '../snippets/05/c-express-d.ts?raw';
+import protectedRoutes from '../snippets/05/c-protected-routes.ts?raw';
+import stallService from '../snippets/05/c-stall-service.ts?raw';
+import reviewSchema from '../snippets/05/c-review-schema.ts?raw';
+
+const repoUrl = 'https://github.com/rrrambatsigma/praktikum-rsi-2026';
+const mainUrl = `${repoUrl}/tree/main/pertemuan-05-auth-middleware`;
+
+const tocSections: TOCSection[] = [
+    {
+        label: 'Konsep Autentikasi',
+        items: [
+            { id: 'a1', title: 'Kamu itu Siapa?' },
+            { id: 'a2', title: 'Autentikasi vs Otorisasi' },
+            { id: 'a3', title: 'Session vs JWT' },
+            { id: 'a4', title: 'Cara Kerja JWT' },
+            { id: 'a5', title: 'Middleware Dasar' },
+        ],
+    },
+    {
+        label: 'Hands-on 1',
+        items: [
+            { id: 'h1-1', title: 'Ambil Starter' },
+            { id: 'h1-2', title: 'Install & Konfigurasi' },
+            { id: 'h1-3', title: 'Schema Auth' },
+            { id: 'h1-4', title: 'Hash Password & Token' },
+            { id: 'h1-5', title: 'Register, Login, Router' },
+            { id: 'h1-6', title: 'Uji Autentikasi' },
+        ],
+    },
+    {
+        label: 'Konsep Middleware & Otorisasi',
+        items: [
+            { id: 'b1', title: 'Auth Middleware' },
+            { id: 'b2', title: 'Parameterized Middleware' },
+            { id: 'b3', title: 'Protected Routes' },
+            { id: 'b4', title: 'Mengelola Ketergantungan (DI)' },
+        ],
+    },
+    {
+        label: 'Hands-on 2',
+        items: [
+            { id: 'h2-1', title: 'Ambil Starter' },
+            { id: 'h2-2', title: 'Auth & Authorize' },
+            { id: 'h2-3', title: 'Pasang ke Route' },
+            { id: 'h2-4', title: 'Kepemilikan Objek & Review' },
+            { id: 'h2-5', title: 'Uji 401 vs 403' },
+        ],
+    },
+    {
+        label: 'Penutup',
+        items: [{ id: 'c1', title: 'Recap' }],
+    },
+];
+
+const cloneStarter = `git clone --single-branch --branch starter/pertemuan-05 https://github.com/rrrambatsigma/praktikum-rsi-2026.git praktikum-pert-5`;
+
+const sampleRegisterResponse = `{
+  "status": "success",
+  "data": {
+    "user": { "id": 16, "name": "Budi Santoso", "email": "budi@test.com", "role": "customer" }
+  }
+}`;
+
+const sampleLoginResponse = `{
+  "status": "success",
+  "data": {
+    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxIiwibmFtZSI6IkFkbWlu...",
+    "tokenType": "Bearer",
+    "expiresIn": "2h",
+    "user": { "id": 1, "name": "Admin Kantin", "email": "admin@kantin.test", "role": "admin" }
+  }
+}`;
+
+const sampleMe = `{
+  "status": "success",
+  "data": { "id": 12, "name": "Bagas Pratama", "email": "bagas@student.test", "role": "customer" }
+}`;
+
+const sampleUnauthorized = `{
+  "status": "fail",
+  "message": "Header Authorization dengan token Bearer wajib dikirim"
+}`;
+
+const sampleForbidden = `{
+  "status": "fail",
+  "message": "Endpoint ini hanya untuk role: admin"
+}`;
+
+const sampleOwnershipForbidden = `{
+  "status": "fail",
+  "message": "Kamu hanya bisa mengubah warung milikmu sendiri"
+}`;
+---
+
+<ScrollySection>
+    <ScrollyLayout defaultSrc="/diagrams/05/kamu-siapa.webp">
+
+        <!-- ===== BAGIAN A: KONSEP AUTENTIKASI ===== -->
+
+        <Step id="a1" diagram="/diagrams/05/kamu-siapa.webp">
+            <SectionDivider label="Konsep Autentikasi" />
+            <StepHeader title="Kamu itu Siapa?" tone="primary" />
+            <p class="text-foreground-secondary leading-relaxed">
+                API Review Kantin sudah jalan sejak pertemuan 4. Ada endpoint untuk melihat daftar
+                warung, menambah warung, dan menghapus warung. Pertanyaannya, <strong>siapa yang
+                boleh mengakses itu semua?</strong>
+            </p>
+            <p class="mt-3 text-foreground-secondary leading-relaxed">
+                Kalau dibiarkan terbuka, siapa pun yang tahu alamat endpoint-nya bisa{' '}
+                <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">DELETE /api/v1/stalls/1</code>{' '}
+                dan menghapus warung orang lain. Cukup buka Postman, kirim request, beres.
+            </p>
+            <p class="mt-3 text-foreground-secondary leading-relaxed">
+                Masalahnya, server HTTP itu buta. Yang diteruskannya ke aplikasi hanya method, path,
+                header, dan body. Tidak ada konsep "user" di dalam HTTP. Orang yang menekan tombol di
+                aplikasi, orang yang mengirim <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">curl</code>,
+                dan bot yang menebak endpoint, semuanya terlihat sama: sekumpulan byte.
+            </p>
+            <p class="mt-3 text-foreground-secondary leading-relaxed">
+                Jadi server butuh cara untuk <strong>mengenali identitas</strong> pengirim request,
+                lalu <strong>memutuskan boleh atau tidak</strong> aksi tertentu dilakukan. Di pertemuan
+                ini kita belajar keduanya.
+            </p>
+        </Step>
+
+        <Step id="a2" diagram="/diagrams/05/autentikasi-vs-otorisasi.webp">
+            <StepHeader title="Autentikasi vs Otorisasi" tone="primary" />
+            <p class="text-foreground-secondary leading-relaxed">
+                Dua hal ini berbeda, tetapi sering tertukar:
+            </p>
+            <ul class="mt-3 text-foreground-secondary leading-relaxed space-y-2 list-disc list-inside">
+                <li>
+                    <strong>Autentikasi</strong> bertanya "kamu siapa?". Proses login dan verifikasi
+                    identitas. Kalau gagal, server belum tahu kamu siapa, dan jawabannya{' '}
+                    <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">401</code>.
+                </li>
+                <li>
+                    <strong>Otorisasi</strong> bertanya "kamu boleh apa?". Server sudah tahu kamu
+                    siapa, lalu memeriksa hak akses atau role. Kalau gagal, jawabannya{' '}
+                    <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">403</code>.
+                </li>
+            </ul>
+            <p class="mt-3 text-foreground-secondary leading-relaxed">
+                Urutannya wajib <strong>autentikasi dulu, baru otorisasi</strong>. Tidak mungkin
+                memeriksa hak akses kalau belum tahu siapa user-nya.
+            </p>
+            <div class="mt-4 p-3 rounded-lg bg-primary/5 dark:bg-primary/10 border-l-4 border-primary">
+                <span class="font-bold text-primary">Analogi</span>
+                <p class="text-sm md:text-base text-foreground-secondary mt-1">
+                    Autentikasi seperti menunjukkan KTP di pintu masuk. Otorisasi seperti petugas yang
+                    memeriksa apakah KTP itu boleh masuk ruang server.
+                </p>
+            </div>
+            <p class="mt-3 text-foreground-secondary leading-relaxed">
+                Di JWT, token menjadi bukti autentikasi. Role di dalam token dipakai untuk otorisasi.
+            </p>
+        </Step>
+
+        <Step id="a3" diagram="/diagrams/05/session-jwt.webp">
+            <StepHeader title="Session vs JWT" tone="primary" />
+            <p class="text-foreground-secondary leading-relaxed">
+                Ada dua cara server "mengingat" user yang sudah login:
+            </p>
+            <div class="mt-4 overflow-x-auto rounded-lg border border-border">
+                <table class="w-full border-collapse text-left text-sm md:text-base">
+                    <thead>
+                        <tr class="bg-muted text-foreground">
+                            <th class="px-3 py-2 font-semibold whitespace-nowrap">Aspek</th>
+                            <th class="px-3 py-2 font-semibold">Session</th>
+                            <th class="px-3 py-2 font-semibold">JWT</th>
+                        </tr>
+                    </thead>
+                    <tbody class="text-foreground-secondary">
+                        <tr class="border-t border-border align-top">
+                            <td class="px-3 py-2 font-semibold text-foreground">Data login</td>
+                            <td class="px-3 py-2">Disimpan di server (memori/database)</td>
+                            <td class="px-3 py-2">Disimpan di token, dikirim ke client</td>
+                        </tr>
+                        <tr class="border-t border-border align-top">
+                            <td class="px-3 py-2 font-semibold text-foreground">Yang dikirim client</td>
+                            <td class="px-3 py-2">ID session (biasanya cookie)</td>
+                            <td class="px-3 py-2">Token lengkap</td>
+                        </tr>
+                        <tr class="border-t border-border align-top">
+                            <td class="px-3 py-2 font-semibold text-foreground">Pemeriksaan</td>
+                            <td class="px-3 py-2">ID dicocokkan ke penyimpanan server</td>
+                            <td class="px-3 py-2">Signature token diverifikasi</td>
+                        </tr>
+                        <tr class="border-t border-border align-top">
+                            <td class="px-3 py-2 font-semibold text-foreground">Skala</td>
+                            <td class="px-3 py-2">Perlu penyimpanan bersama antar server</td>
+                            <td class="px-3 py-2">Stateless, mudah di-scale</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <p class="mt-3 text-foreground-secondary leading-relaxed">
+                Di pertemuan ini kita <strong>menjelaskan keduanya, tetapi mengimplementasikan JWT
+                saja</strong>. Alasannya, JWT cocok untuk API: stateless, bisa dipakai frontend web
+                maupun mobile, dan datanya sudah ada di dalam token.
+            </p>
+            <div class="mt-4 p-3 rounded-lg bg-warning/5 dark:bg-warning/10 border-l-4 border-warning">
+                <span class="font-bold text-warning">Kekurangan JWT</span>
+                <p class="text-sm md:text-base text-foreground-secondary mt-1">
+                    Token tidak bisa dicabut sebelum kedaluwarsa. Kalau token bocor, token itu tetap
+                    sah sampai <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">exp</code>-nya lewat.
+                    Karena itu umur token dibuat pendek.
+                </p>
+            </div>
+        </Step>
+
+        <Step id="a4" diagram="/diagrams/05/cara-kerja-jwt.webp">
+            <StepHeader title="Cara Kerja JWT" tone="primary" />
+            <p class="text-foreground-secondary leading-relaxed">
+                JWT itu string panjang berisi tiga bagian yang dipisah titik:{' '}
+                <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">header.payload.signature</code>.
+            </p>
+            <ul class="mt-3 text-foreground-secondary leading-relaxed space-y-1.5 list-disc list-inside">
+                <li><strong>Header</strong>: tipe token dan algoritma, biasanya <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">HS256</code>.</li>
+                <li><strong>Payload</strong>: data user (id, name, email, role) plus <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">iat</code> dan <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">exp</code>.</li>
+                <li><strong>Signature</strong>: hasil HMAC dari header + payload + secret. Ini yang membuat token tidak bisa dipalsukan.</li>
+            </ul>
+            <p class="mt-3 text-foreground-secondary leading-relaxed">
+                Payload hanya <strong>di-encode</strong> (base64url), bukan dienkripsi. Siapa pun yang
+                memegang token bisa membacanya. Jadi <strong>jangan pernah menaruh password</strong> di
+                payload.
+            </p>
+            <CodeBlock code={jwtPayload} language="json" filename="payload JWT (hasil decode)" compact />
+            <p class="mt-3 text-foreground-secondary leading-relaxed">
+                Alur pakainya: user login, server membuat token, client menyimpan token, lalu setiap
+                request ke endpoint terlindungi mengirim header{' '}
+                <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">Authorization: Bearer &lt;token&gt;</code>.
+                Server memverifikasi signature dan <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">exp</code>.
+                Kalau valid, request lanjut. Kalau tidak, <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">401</code>.
+            </p>
+            <p class="mt-4 text-foreground-secondary leading-relaxed">
+                Di kode, dua fungsi inilah inti JWT:
+            </p>
+            <CodeBlock code={tokenService} language="typescript" filename="src/services/tokenService.ts" />
+            <div class="mt-4 p-4 rounded-lg bg-accent/5 dark:bg-accent/10 border-2 border-dashed border-accent">
+                <span class="flex items-center gap-2 font-bold text-accent">
+                    <BookOpen class="w-4 h-4" />
+                    Bacaan Lanjutan
+                </span>
+                <ul class="text-base text-foreground-secondary mt-2 space-y-1 list-disc list-inside">
+                    <li>
+                        <a href="https://datatracker.ietf.org/doc/html/rfc7519" target="_blank" rel="noopener noreferrer" class="text-primary hover:underline">RFC 7519 JSON Web Token</a>
+                        : spesifikasi resmi, termasuk makna <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">exp</code>, <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">iat</code>, dan <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">sub</code>.
+                    </li>
+                    <li>
+                        <a href="https://www.npmjs.com/package/jsonwebtoken" target="_blank" rel="noopener noreferrer" class="text-primary hover:underline">npm: jsonwebtoken</a>
+                        : API <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">sign</code> dan <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">verify</code>, daftar error.
+                    </li>
+                </ul>
+            </div>
+        </Step>
+
+        <Step id="a5" diagram="/diagrams/05/middleware-dasar.webp">
+            <StepHeader title="Middleware Dasar" tone="primary" />
+            <p class="text-foreground-secondary leading-relaxed">
+                Sejak pertemuan 4 kita sudah kenal middleware: gerbang sebelum controller. Kali ini
+                middleware dipakai untuk hal baru, yaitu <strong>memeriksa token</strong>.
+            </p>
+            <p class="mt-3 text-foreground-secondary leading-relaxed">
+                Sebelum request masuk ke controller, middleware memeriksa: ada token di header atau
+                tidak, dan token-nya valid atau tidak. Kalau tidak ada atau tidak valid, request
+                langsung ditolak, controller tidak pernah kebagian. Kalau valid, data user disimpan
+                ke <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">req.user</code>{' '}
+                supaya handler berikutnya tidak perlu mengurai token lagi.
+            </p>
+            <p class="mt-3 text-foreground-secondary leading-relaxed">
+                Kenapa di middleware, bukan di controller? Karena <strong>sekali ditulis, dipakai di
+                semua endpoint</strong>. Kalau cara memeriksa token berubah, cukup ubah satu tempat.
+            </p>
+            <CodeBlock code={middlewareChain} language="typescript" filename="urutan middleware per endpoint" compact />
+            <div class="mt-4 p-4 rounded-lg bg-accent/5 dark:bg-accent/10 border-2 border-dashed border-accent">
+                <span class="flex items-center gap-2 font-bold text-accent">
+                    <BookOpen class="w-4 h-4" />
+                    Bacaan Lanjutan
+                </span>
+                <ul class="text-base text-foreground-secondary mt-2 space-y-1 list-disc list-inside">
+                    <li>
+                        <a href="https://expressjs.com/en/guide/using-middleware.html" target="_blank" rel="noopener noreferrer" class="text-primary hover:underline">Using middleware (Express)</a>
+                        : cara kerja dan urutan pemasangan middleware.
+                    </li>
+                </ul>
+            </div>
+        </Step>
+
+        <!-- ===== HANDS-ON 1 ===== -->
+
+        <Step id="h1-1" diagram="/diagrams/05/hands-on.webp">
+            <SectionDivider label="Hands-on 1" />
+            <StepHeader title="Ambil Starter" tone="success" />
+            <p class="text-foreground-secondary leading-relaxed">
+                Kita tidak mulai dari nol. Titik awal Hands-on 1 adalah project pertemuan 4{' '}
+                <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">hands-on-2</code>
+                (validasi zod + error handling + Swagger), yang belum punya autentikasi sama sekali.
+                Supaya titik mulainya jelas, titik awal itu disediakan di branch{' '}
+                <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">starter/pertemuan-05</code>.
+            </p>
+            <TerminalBlock code={cloneStarter} title="Terminal: Clone starter Pertemuan 05" />
+            <p class="text-foreground-secondary leading-relaxed">
+                Hasil clone hanya berisi Pertemuan 5 dalam kondisi awal:
+            </p>
+            <CodeBlock
+                code={`praktikum-pert-5/
+└─ pertemuan-05-auth-middleware/
+   ├─ db/seed-password-hashes.sql          # jalankan sekali sebelum mulai
+   ├─ hands-on-1-autentikasi-jwt/          # titik awal Hands-on 1
+   └─ hands-on-2-middleware-otorisasi/     # titik awal Hands-on 2`}
+                language="bash"
+                compact
+            />
+            <p class="mt-3 text-foreground-secondary leading-relaxed">
+                Masuk ke folder Hands-on 1. Semua langkah berikut dijalankan dari dalam folder ini.
+            </p>
+            <TerminalBlock code={`cd praktikum-pert-5/pertemuan-05-auth-middleware/hands-on-1-autentikasi-jwt`} title="Terminal: Masuk folder Hands-on 1" />
+            <a href={mainUrl}
+               target="_blank" rel="noopener noreferrer"
+               class="my-3 inline-flex items-center gap-2 text-sm font-medium text-primary hover:underline">
+                <img src="/icons/github.svg" alt="" aria-hidden="true" class="w-4 h-4 invert-0 dark:invert" />
+                Versi jadi di GitHub (branch main)
+            </a>
+        </Step>
+
+        <Step id="h1-2" diagram="/diagrams/05/hands-on.webp">
+            <StepHeader title="Install & Konfigurasi" tone="success" />
+            <TerminalBlock code={`npm install\nnpm install jsonwebtoken bcryptjs\nnpm install -D @types/jsonwebtoken`} title="Terminal: Install dependensi" />
+            <p class="text-foreground-secondary leading-relaxed">
+                <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">bcryptjs</code> v3 sudah membawa tipe sendiri, jadi cukup{' '}
+                <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">@types/jsonwebtoken</code> untuk{' '}
+                <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">jsonwebtoken</code>.
+            </p>
+            <p class="mt-3 text-foreground-secondary leading-relaxed">
+                Salin file <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">.env.example</code> menjadi{' '}
+                <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">.env</code>.
+            </p>
+            <p class="mt-3 text-foreground-secondary leading-relaxed">
+                Lalu tambahkan tiga variabel autentikasi ke <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">.env</code>{' '}
+                dan <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">.env.example</code>:
+            </p>
+            <CodeBlock
+                code={`JWT_SECRET=ganti-dengan-string-acak-minimal-32-karakter
+JWT_EXPIRES_IN=2h
+BCRYPT_SALT_ROUNDS=10`}
+                language="ini"
+                filename=".env (tambahan)"
+                compact
+            />
+            <ul class="mt-3 text-foreground-secondary leading-relaxed space-y-1.5 list-disc list-inside">
+                <li><code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">JWT_SECRET</code>: kunci HMAC penanda tangan token. Nilainya bebas, dan wajib diganti di produksi. Kalau bocor, penyerang bisa membuat token palsu.</li>
+                <li><code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">JWT_EXPIRES_IN</code>: umur token (<code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">2h</code>, <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">30m</code>, <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">7d</code>).</li>
+                <li><code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">BCRYPT_SALT_ROUNDS</code>: jumlah iterasi hashing bcrypt.</li>
+            </ul>
+            <div class="mt-4 p-3 rounded-lg bg-warning/5 dark:bg-warning/10 border-l-4 border-warning">
+                <span class="font-bold text-warning">Jangan lupa seed password</span>
+                <p class="text-sm md:text-base text-foreground-secondary mt-1">
+                    Seed Pertemuan 03 masih memakai placeholder <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">hash_admin</code>,
+                    bukan hash bcrypt. Jalankan skrip{' '}
+                    <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">pertemuan-05-auth-middleware/db/seed-password-hashes.sql</code>{' '}
+                    sekali agar akun bisa login:
+                </p>
+                <TerminalBlock code={`# dari folder praktikum-pert-5 (root hasil clone)\nsqlcmd -S localhost -E -C -i pertemuan-05-auth-middleware/db/seed-password-hashes.sql`} title="Terminal: Seed password" />
+                <p class="text-sm md:text-base text-foreground-secondary mt-1">
+                    Lewat SSMS, buka file itu lalu jalankan. Prasyarat database (SQL Server aktif dan{' '}
+                    <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">review_kantin</code> sudah di-seed) ada di Pertemuan 03.
+                </p>
+            </div>
+        </Step>
+
+        <Step id="h1-3" diagram="/diagrams/05/hands-on.webp">
+            <StepHeader title="Schema Auth" tone="success" />
+            <p class="text-foreground-secondary leading-relaxed">
+                Endpoint baru tetap mengikuti aturan validasi pertemuan 4. Yang perlu dicermati:
+                schema register <strong>tidak punya field role</strong>. Role ditentukan server
+                (selalu <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">customer</code>),
+                dan <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">.strict()</code>{' '}
+                menolak percobaan mengirim role dari body.
+            </p>
+            <CodeBlock code={authSchema} language="typescript" filename="src/schemas/authSchema.ts" />
+            <p class="text-foreground-secondary leading-relaxed">
+                Dua detail kecil yang penting: email di-<code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">trim</code>{' '}
+                dan di-<code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">toLowerCase</code>{' '}
+                supaya <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">Budi@Test.COM</code>{' '}
+                tidak jadi akun kedua, dan password dibatasi 72 karakter karena bcrypt hanya memproses
+                72 byte pertama.
+            </p>
+        </Step>
+
+        <Step id="h1-4" diagram="/diagrams/05/hands-on.webp">
+            <StepHeader title="Hash Password & Token" tone="success" />
+            <p class="text-foreground-secondary leading-relaxed">
+                Password tidak pernah disimpan apa adanya. Password di-hash dengan bcrypt, dan saat
+                login input dibandingkan memakai <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">bcrypt.compare()</code>.
+                Token dibuat oleh <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">AuthService</code>{' '}
+                lewat <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">signToken()</code>.
+            </p>
+            <CodeBlock code={authService} language="typescript" filename="src/services/authService.ts" />
+            <div class="mt-4 p-3 rounded-lg bg-primary/5 dark:bg-primary/10 border-l-4 border-primary">
+                <span class="font-bold text-primary">Pesan login disamakan</span>
+                <p class="text-sm md:text-base text-foreground-secondary mt-1">
+                    "Email tidak terdaftar" dan "password salah" sengaja dibalas dengan pesan yang sama.
+                    Kalau dibedakan, endpoint login berubah jadi alat untuk menebak email mana yang
+                    terdaftar.
+                </p>
+            </div>
+        </Step>
+
+        <Step id="h1-5" diagram="/diagrams/05/hands-on.webp">
+            <StepHeader title="Register, Login, Router" tone="success" />
+            <p class="text-foreground-secondary leading-relaxed">
+                Controller membalas hasil service. Register mengembalikan user (tanpa{' '}
+                <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">passwordHash</code>),
+                login mengembalikan token. Router memasang{' '}
+                <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">validate</code>{' '}
+                untuk body-nya. Kedua route ini <strong>publik</strong>, karena justru di sinilah token dibuat.
+            </p>
+            <CodeBlock code={authRouter} language="typescript" filename="src/routes/authRouter.ts" />
+            <CodeBlock code={unauthorizedError} language="typescript" filename="src/errors/UnauthorizedError.ts" compact />
+            <p class="text-foreground-secondary leading-relaxed">
+                Daftarkan router di <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">src/index.ts</code>,
+                lalu rapikan <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">errorHandler</code>{' '}
+                cukup dengan satu cabang <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">if (error instanceof AppError)</code>.
+            </p>
+            <CodeBlock
+                code={`// src/index.ts
+app.use('/api/v1/auth', authRouter);
+
+app.use('/api/v1/stalls', stallRouter);`}
+                language="typescript"
+                compact
+            />
+        </Step>
+
+        <Step id="h1-6" diagram="/diagrams/05/hands-on.webp">
+            <StepHeader title="Uji Autentikasi" tone="success" />
+            <TerminalBlock code={`npm run dev`} title="Terminal: Jalankan server (development)" />
+            <p class="text-foreground-secondary leading-relaxed">
+                Register akun baru. Perhatikan role terisi <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">customer</code>{' '}
+                padahal kita tidak pernah mengirim role, dan tidak ada{' '}
+                <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">passwordHash</code> di respons.
+            </p>
+            <TerminalBlock code={`curl.exe -X POST http://localhost:3000/api/v1/auth/register -H "Content-Type: application/json" -d '{"name":"Budi Santoso","email":"budi@test.com","password":"rahasia123"}'`} title="Terminal: Register" />
+            <CodeBlock code={sampleRegisterResponse} language="json" compact />
+            <p class="mt-3 text-foreground-secondary leading-relaxed">Login dengan akun seed untuk mendapat token:</p>
+            <TerminalBlock code={`curl.exe -X POST http://localhost:3000/api/v1/auth/login -H "Content-Type: application/json" -d '{"email":"admin@kantin.test","password":"rahasia123"}'`} title="Terminal: Login" />
+            <CodeBlock code={sampleLoginResponse} language="json" compact />
+            <p class="mt-4 text-foreground-secondary leading-relaxed">Rangkuman kasus uji:</p>
+            <div class="mt-4 overflow-x-auto rounded-lg border border-border">
+                <table class="w-full border-collapse text-left text-sm md:text-base">
+                    <thead>
+                        <tr class="bg-muted text-foreground">
+                            <th class="px-3 py-2 font-semibold">Kasus</th>
+                            <th class="px-3 py-2 font-semibold">Hasil</th>
+                        </tr>
+                    </thead>
+                    <tbody class="text-foreground-secondary">
+                        <tr class="border-t border-border align-top">
+                            <td class="px-3 py-2">Register valid</td>
+                            <td class="px-3 py-2"><code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">201</code> + role <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">customer</code></td>
+                        </tr>
+                        <tr class="border-t border-border align-top">
+                            <td class="px-3 py-2">Email sudah terdaftar</td>
+                            <td class="px-3 py-2"><code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">409</code> Email sudah terdaftar</td>
+                        </tr>
+                        <tr class="border-t border-border align-top">
+                            <td class="px-3 py-2">Kirim <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">role</code> saat register</td>
+                            <td class="px-3 py-2"><code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">400</code> ditolak <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">.strict()</code></td>
+                        </tr>
+                        <tr class="border-t border-border align-top">
+                            <td class="px-3 py-2">Login valid</td>
+                            <td class="px-3 py-2"><code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">200</code> + token</td>
+                        </tr>
+                        <tr class="border-t border-border align-top">
+                            <td class="px-3 py-2">Password salah / email tak terdaftar</td>
+                            <td class="px-3 py-2"><code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">401</code> pesan sama</td>
+                        </tr>
+                        <tr class="border-t border-border align-top">
+                            <td class="px-3 py-2">Data warung lama tanpa token</td>
+                            <td class="px-3 py-2"><code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">200</code> (belum diproteksi)</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </Step>
+
+        <!-- ===== BAGIAN B: KONSEP MIDDLEWARE & OTORISASI ===== -->
+
+        <Step id="b1" diagram="/diagrams/05/auth-middleware.webp">
+            <SectionDivider label="Konsep Middleware & Otorisasi" />
+            <StepHeader title="Auth Middleware" tone="primary" />
+            <p class="text-foreground-secondary leading-relaxed">
+                Setelah Hands-on 1, user sudah bisa login dan memegang token. Tetapi token itu belum
+                dipakai apa-apa, dan endpoint masih terbuka. Di sinilah <strong>auth middleware</strong>{' '}
+                masuk.
+            </p>
+            <p class="mt-3 text-foreground-secondary leading-relaxed">
+                Tugasnya satu: memeriksa token sebelum request masuk ke controller. Ambil token dari
+                header <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">Authorization</code>,
+                verifikasi signature dan <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">exp</code>.
+                Kalau tidak ada atau tidak valid, langsung{' '}
+                <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">401</code>.
+                Kalau valid, simpan data user ke <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">req.user</code>.
+            </p>
+            <CodeBlock code={authMiddleware} language="typescript" filename="src/middlewares/auth.ts" />
+            <div class="mt-4 p-3 rounded-lg bg-primary/5 dark:bg-primary/10 border-l-4 border-primary">
+                <span class="font-bold text-primary">Kegagalan lewat next(error)</span>
+                <p class="text-sm md:text-base text-foreground-secondary mt-1">
+                    Middleware tidak menulis respons sendiri, tetapi meneruskan error lewat{' '}
+                    <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">next(error)</code>{' '}
+                    supaya semua error tetap melewati satu error handler yang sama seperti pertemuan 4.
+                </p>
+            </div>
+        </Step>
+
+        <Step id="b2" diagram="/diagrams/05/parameterized-middleware.webp">
+            <StepHeader title="Parameterized Middleware" tone="primary" />
+            <p class="text-foreground-secondary leading-relaxed">
+                Auth middleware sudah menjawab "kamu siapa?". Pertanyaan berikutnya: "kamu boleh
+                ngapain?". Beberapa endpoint butuh role tertentu.
+            </p>
+            <p class="mt-3 text-foreground-secondary leading-relaxed">
+                Kalau tiap role dibuatkan middleware sendiri (<code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">isAdmin</code>,{' '}
+                <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">isOwner</code>,{' '}
+                <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">isCustomer</code>),
+                kodenya berulang. Solusinya <strong>parameterized middleware</strong>: satu middleware
+                yang menerima daftar role.
+            </p>
+            <CodeBlock
+                code={`authorize('admin');            // hanya admin
+authorize('owner', 'admin');   // owner atau admin`}
+                language="typescript"
+                compact
+            />
+            <CodeBlock code={authorizeMw} language="typescript" filename="src/middlewares/authorize.ts" />
+            <CodeBlock code={forbiddenError} language="typescript" filename="src/errors/ForbiddenError.ts" compact />
+            <div class="mt-4 p-3 rounded-lg bg-warning/5 dark:bg-warning/10 border-l-4 border-warning">
+                <span class="font-bold text-warning">401 vs 403</span>
+                <p class="text-sm md:text-base text-foreground-secondary mt-1">
+                    Auth middleware gagal berarti <strong>401</strong> (belum login / token invalid).
+                    Role middleware gagal berarti <strong>403</strong> (sudah login, tetapi tidak
+                    punya akses).
+                </p>
+            </div>
+        </Step>
+
+        <Step id="b3" diagram="/diagrams/05/protected-routes.webp">
+            <StepHeader title="Protected Routes" tone="primary" />
+            <p class="text-foreground-secondary leading-relaxed">
+                Dua middleware sudah siap. Tinggal dipasang di route. Route terbagi tiga jenis:
+            </p>
+            <ol class="mt-3 text-foreground-secondary leading-relaxed space-y-1.5 list-decimal list-inside">
+                <li><strong>Route publik</strong>: tidak butuh token. Contoh: register, login, daftar warung.</li>
+                <li><strong>Route terlindungi</strong>: butuh token, semua user login boleh. Contoh: profil, tambah review.</li>
+                <li><strong>Route khusus role</strong>: butuh token dan role tertentu. Contoh: hapus warung hanya admin.</li>
+            </ol>
+            <p class="mt-3 text-foreground-secondary leading-relaxed">
+                Urutannya penting: <strong>authenticate dulu, baru authorize, baru validate</strong>.
+                Dengan begitu, request tanpa token selalu dibalas 401 apa pun isi body-nya, dan aturan
+                validasi tidak terbocor ke pengguna anonim.
+            </p>
+            <CodeBlock code={protectedRoutes} language="typescript" filename="src/routes/stallRouter.ts" />
+            <p class="mt-3 text-foreground-secondary leading-relaxed">
+                Supaya TypeScript tahu <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">req.user</code>{' '}
+                itu ada, kita perluas tipe Express secara global. Setelah itu casting di controller
+                bisa dihapus.
+            </p>
+            <CodeBlock code={expressTypes} language="typescript" filename="src/types/express.d.ts" compact />
+        </Step>
+
+        <Step id="b4" diagram="/diagrams/05/middleware-dasar.webp">
+            <StepHeader title="Mengelola Ketergantungan (Dependency Injection)" tone="primary" />
+            <p class="text-foreground-secondary leading-relaxed">
+                Menutup rangkaian ini, ada satu pertanyaan arsitektural: tiap lapisan butuh lapisan
+                lain. Controller butuh Service, Service butuh Repository. Bagaimana menyambungnya
+                tanpa membuat kode kaku?
+            </p>
+            <p class="mt-3 text-foreground-secondary leading-relaxed">
+                Cara polos: tiap komponen membuat sendiri kebutuhannya. Akibatnya komponen terikat
+                keras ke implementasi beton dan sulit diganti saat testing. Solusinya{' '}
+                <strong>Dependency Injection</strong>: komponen <strong>menerima</strong> ketergantungannya
+                dari luar lewat constructor.
+            </p>
+            <CodeBlock code={diSnippet} language="typescript" filename="pola Dependency Injection" />
+            <ul class="text-foreground-secondary leading-relaxed space-y-1.5 list-disc list-inside">
+                <li>Nilai default mengisi implementasi asli, jadi pemakaian normal tidak perlu menulis apa-apa.</li>
+                <li>Saat testing, cukup suntik tiruan: <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">new AuthService(fakeRepo)</code>, tanpa mengubah <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">AuthService</code>.</li>
+                <li>Alurnya: <strong>Controller, Service, Repository</strong>, disambung dari luar, bukan dikunci di dalam.</li>
+            </ul>
+            <div class="mt-4 p-3 rounded-lg bg-primary/5 dark:bg-primary/10 border-l-4 border-primary">
+                <span class="font-bold text-primary">Analogi</span>
+                <p class="text-sm md:text-base text-foreground-secondary mt-1">
+                    Seperti perangkat yang tinggal dicolok ke stopkontak. Kebutuhannya disediakan dari
+                    luar, jadi sumbernya bebas diganti tanpa membongkar perangkat.
+                </p>
+            </div>
+        </Step>
+
+        <!-- ===== HANDS-ON 2 ===== -->
+
+        <Step id="h2-1" diagram="/diagrams/05/hands-on.webp">
+            <SectionDivider label="Hands-on 2" />
+            <StepHeader title="Ambil Starter" tone="success" />
+            <p class="text-foreground-secondary leading-relaxed">
+                Kalau belum clone branch starter, lakukan sekali:
+            </p>
+            <TerminalBlock code={cloneStarter} title="Terminal: Clone starter Pertemuan 05" />
+            <p class="text-foreground-secondary leading-relaxed">
+                Hands-on 2 memakai folder <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">hands-on-2-middleware-otorisasi</code>.
+                Titik awalnya adalah hasil Hands-on 1: sudah ada register, login, dan token JWT,
+                tetapi token itu belum dipakai.
+            </p>
+            <TerminalBlock code={`cd praktikum-pert-5/pertemuan-05-auth-middleware/hands-on-2-middleware-otorisasi\nnpm install`} title="Terminal: Siapkan Hands-on 2" />
+            <p class="text-foreground-secondary leading-relaxed">
+                Salin file <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">.env.example</code> menjadi{' '}
+                <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">.env</code>.
+            </p>
+            <a href={mainUrl}
+               target="_blank" rel="noopener noreferrer"
+               class="my-3 inline-flex items-center gap-2 text-sm font-medium text-primary hover:underline">
+                <img src="/icons/github.svg" alt="" aria-hidden="true" class="w-4 h-4 invert-0 dark:invert" />
+                Versi jadi di GitHub (branch main)
+            </a>
+        </Step>
+
+        <Step id="h2-2" diagram="/diagrams/05/hands-on.webp">
+            <StepHeader title="Auth & Authorize" tone="success" />
+            <p class="text-foreground-secondary leading-relaxed">
+                Tambahkan dua middleware: <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">authenticate</code>
+                (cek token) dan <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">authorize</code>
+                (cek role). Jangan lupa <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">ForbiddenError</code>{' '}
+                dan perluasan tipe <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">req.user</code>.
+            </p>
+            <CodeBlock code={authMiddleware} language="typescript" filename="src/middlewares/auth.ts" />
+            <CodeBlock code={authorizeMw} language="typescript" filename="src/middlewares/authorize.ts" />
+            <CodeBlock code={expressTypes} language="typescript" filename="src/types/express.d.ts" compact />
+        </Step>
+
+        <Step id="h2-3" diagram="/diagrams/05/hands-on.webp">
+            <StepHeader title="Pasang ke Route" tone="success" />
+            <p class="text-foreground-secondary leading-relaxed">
+                Pasang middleware per route. Route baca tetap publik, route tulis dilindungi, dan
+                hapus warung hanya untuk admin.
+            </p>
+            <CodeBlock code={protectedRoutes} language="typescript" filename="src/routes/stallRouter.ts" />
+        </Step>
+
+        <Step id="h2-4" diagram="/diagrams/05/hands-on.webp">
+            <StepHeader title="Kepemilikan Objek & Review" tone="success" />
+            <p class="text-foreground-secondary leading-relaxed">
+                Role saja belum cukup. Owner hanya boleh mengubah warung miliknya. Pemeriksaan
+                kepemilikan ini dilakukan di service, bukan di middleware, karena middleware tidak
+                tahu data warung. Prinsipnya: <strong>middleware menjawab "role apa?", service
+                menjawab "milik siapa?"</strong>.
+            </p>
+            <CodeBlock code={stallService} language="typescript" filename="src/services/stallService.ts" />
+            <p class="mt-3 text-foreground-secondary leading-relaxed">
+                Identitas juga tidak boleh datang dari body. Schema review sengaja tidak punya{' '}
+                <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">userId</code>,
+                karena identitas penulis selalu diambil dari <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">req.user</code>.
+            </p>
+            <CodeBlock code={reviewSchema} language="typescript" filename="src/schemas/reviewSchema.ts" compact />
+        </Step>
+
+        <Step id="h2-5" diagram="/diagrams/05/hands-on.webp">
+            <StepHeader title="Uji 401 vs 403" tone="success" />
+            <TerminalBlock code={`npm run dev`} title="Terminal: Jalankan server (development)" />
+            <p class="text-foreground-secondary leading-relaxed">
+                Login tiga role, lalu bandingkan hasilnya. Akun seed memakai password{' '}
+                <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">rahasia123</code>.
+            </p>
+            <CodeBlock
+                code={`admin@kantin.test    -> admin
+tini@kantin.test     -> owner  (pemilik warung)
+bagas@student.test   -> customer`}
+                language="bash"
+                compact
+            />
+            <p class="mt-3 text-foreground-secondary leading-relaxed">
+                Tanpa token, endpoint terlindungi membalas <strong>401</strong>:
+            </p>
+            <CodeBlock code={sampleUnauthorized} language="json" compact />
+            <p class="mt-3 text-foreground-secondary leading-relaxed">
+                Dengan token customer ke endpoint admin, jawabannya <strong>403</strong>:
+            </p>
+            <CodeBlock code={sampleForbidden} language="json" compact />
+            <p class="mt-3 text-foreground-secondary leading-relaxed">
+                Owner yang mencoba mengubah warung milik owner lain juga <strong>403</strong>, tetapi
+                pesannya soal kepemilikan:
+            </p>
+            <CodeBlock code={sampleOwnershipForbidden} language="json" compact />
+            <p class="mt-3 text-foreground-secondary leading-relaxed">
+                Sedangkan <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">GET /api/v1/auth/me</code>{' '}
+                hanya membutuhkan token yang valid:
+            </p>
+            <CodeBlock code={sampleMe} language="json" compact />
+            <p class="mt-4 text-foreground-secondary leading-relaxed">Rangkuman kasus uji:</p>
+            <div class="mt-4 overflow-x-auto rounded-lg border border-border">
+                <table class="w-full border-collapse text-left text-sm md:text-base">
+                    <thead>
+                        <tr class="bg-muted text-foreground">
+                            <th class="px-3 py-2 font-semibold">Kasus</th>
+                            <th class="px-3 py-2 font-semibold">Token</th>
+                            <th class="px-3 py-2 font-semibold">Hasil</th>
+                        </tr>
+                    </thead>
+                    <tbody class="text-foreground-secondary">
+                        <tr class="border-t border-border align-top">
+                            <td class="px-3 py-2">Daftar warung</td>
+                            <td class="px-3 py-2">anon</td>
+                            <td class="px-3 py-2"><code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">200</code> route publik</td>
+                        </tr>
+                        <tr class="border-t border-border align-top">
+                            <td class="px-3 py-2"><code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">/auth/me</code> tanpa header</td>
+                            <td class="px-3 py-2">tidak ada</td>
+                            <td class="px-3 py-2"><code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">401</code></td>
+                        </tr>
+                        <tr class="border-t border-border align-top">
+                            <td class="px-3 py-2"><code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">/admin/reports</code></td>
+                            <td class="px-3 py-2">customer / owner</td>
+                            <td class="px-3 py-2"><code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">403</code></td>
+                        </tr>
+                        <tr class="border-t border-border align-top">
+                            <td class="px-3 py-2"><code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">POST /stalls</code></td>
+                            <td class="px-3 py-2">customer</td>
+                            <td class="px-3 py-2"><code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">403</code></td>
+                        </tr>
+                        <tr class="border-t border-border align-top">
+                            <td class="px-3 py-2"><code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">POST /stalls</code> + <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">ownerId</code></td>
+                            <td class="px-3 py-2">owner</td>
+                            <td class="px-3 py-2"><code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">400</code> ditolak <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">.strict()</code></td>
+                        </tr>
+                        <tr class="border-t border-border align-top">
+                            <td class="px-3 py-2"><code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">PUT /stalls/3</code> milik orang lain</td>
+                            <td class="px-3 py-2">owner</td>
+                            <td class="px-3 py-2"><code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">403</code> kepemilikan</td>
+                        </tr>
+                        <tr class="border-t border-border align-top">
+                            <td class="px-3 py-2"><code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">PUT /stalls/3</code></td>
+                            <td class="px-3 py-2">admin</td>
+                            <td class="px-3 py-2"><code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">200</code></td>
+                        </tr>
+                        <tr class="border-t border-border align-top">
+                            <td class="px-3 py-2"><code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">DELETE /stalls/:id</code></td>
+                            <td class="px-3 py-2">owner / admin</td>
+                            <td class="px-3 py-2"><code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">403</code> / <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">200</code></td>
+                        </tr>
+                        <tr class="border-t border-border align-top">
+                            <td class="px-3 py-2">Review warung yang sama dua kali</td>
+                            <td class="px-3 py-2">customer</td>
+                            <td class="px-3 py-2"><code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">201</code> lalu <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">409</code></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <p class="mt-4 text-foreground-secondary leading-relaxed">Troubleshooting:</p>
+            <div class="mt-4 overflow-x-auto rounded-lg border border-border">
+                <table class="w-full border-collapse text-left text-sm md:text-base">
+                    <thead>
+                        <tr class="bg-muted text-foreground">
+                            <th class="px-3 py-2 font-semibold">Gejala</th>
+                            <th class="px-3 py-2 font-semibold">Kemungkinan penyebab &amp; solusi</th>
+                        </tr>
+                    </thead>
+                    <tbody class="text-foreground-secondary">
+                        <tr class="border-t border-border align-top">
+                            <td class="px-3 py-2">Semua endpoint terlindungi balas <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">401</code></td>
+                            <td class="px-3 py-2">Header harus persis <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">Bearer &lt;token&gt;</code>, huruf besar B dan satu spasi.</td>
+                        </tr>
+                        <tr class="border-t border-border align-top">
+                            <td class="px-3 py-2"><code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">403</code> padahal seharusnya <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">200</code></td>
+                            <td class="px-3 py-2">Urutan middleware terbalik. <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">authorize</code> harus dipasang setelah <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">authenticate</code>.</td>
+                        </tr>
+                        <tr class="border-t border-border align-top">
+                            <td class="px-3 py-2"><code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">JWT_SECRET belum diset di .env</code></td>
+                            <td class="px-3 py-2">Isi <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">JWT_SECRET</code>, lalu login ulang. Token lama dengan secret berbeda jadi tidak valid.</td>
+                        </tr>
+                        <tr class="border-t border-border align-top">
+                            <td class="px-3 py-2"><code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">401 Email atau password salah</code> padahal benar</td>
+                            <td class="px-3 py-2">Seed Pertemuan 03 masih berisi <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">hash_admin</code>. Jalankan <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">db/seed-password-hashes.sql</code>.</td>
+                        </tr>
+                        <tr class="border-t border-border align-top">
+                            <td class="px-3 py-2"><code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">Cannot read properties of undefined (reading 'role')</code></td>
+                            <td class="px-3 py-2">Ada handler yang membaca <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">req.user</code> langsung. Pakai pembaca aman yang melempar 401 bila belum ada.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </Step>
+
+        <!-- ===== BAGIAN C: PENUTUP ===== -->
+
+        <Step id="c1" diagram="/diagrams/05/rekap.webp">
+            <SectionDivider label="Penutup" />
+            <StepHeader title="Recap" tone="primary" />
+            <p class="text-foreground-secondary leading-relaxed">
+                User register, password di-hash, lalu login. Server membuat token JWT berisi identitas
+                dan role. Token dikirim client di header{' '}
+                <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">Authorization: Bearer &lt;token&gt;</code>{' '}
+                setiap kali mengakses endpoint terlindungi.
+            </p>
+            <div class="mt-4 overflow-x-auto rounded-lg border border-border">
+                <table class="w-full border-collapse text-left text-sm md:text-base">
+                    <thead>
+                        <tr class="bg-muted text-foreground">
+                            <th class="px-3 py-2 font-semibold">Lapisan</th>
+                            <th class="px-3 py-2 font-semibold">Tugas</th>
+                            <th class="px-3 py-2 font-semibold">Gagal berarti</th>
+                        </tr>
+                    </thead>
+                    <tbody class="text-foreground-secondary">
+                        <tr class="border-t border-border align-top">
+                            <td class="px-3 py-2 font-semibold text-foreground">auth middleware</td>
+                            <td class="px-3 py-2">Membuktikan identitas dari token</td>
+                            <td class="px-3 py-2"><code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">401</code></td>
+                        </tr>
+                        <tr class="border-t border-border align-top">
+                            <td class="px-3 py-2 font-semibold text-foreground">role middleware</td>
+                            <td class="px-3 py-2">Memeriksa role dari <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">req.user</code></td>
+                            <td class="px-3 py-2"><code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">403</code></td>
+                        </tr>
+                        <tr class="border-t border-border align-top">
+                            <td class="px-3 py-2 font-semibold text-foreground">service</td>
+                            <td class="px-3 py-2">Memeriksa kepemilikan objek</td>
+                            <td class="px-3 py-2"><code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">403</code></td>
+                        </tr>
+                        <tr class="border-t border-border align-top">
+                            <td class="px-3 py-2 font-semibold text-foreground">controller</td>
+                            <td class="px-3 py-2">Menjalankan logika bisnis</td>
+                            <td class="px-3 py-2"><code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">400</code> / <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">404</code></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <p class="mt-4 text-foreground-secondary leading-relaxed">
+                Lapisan-lapisan ini disambung dengan <strong>Dependency Injection</strong>: setiap
+                komponen menerima kebutuhannya dari luar, sehingga mudah diuji dan diganti.
+            </p>
+            <p class="mt-4 text-foreground-secondary leading-relaxed">
+                Intinya: <strong>autentikasi mengenal siapa kamu, otorisasi menentukan boleh apa,
+                middleware yang menjaga pintunya.</strong>
+            </p>
+        </Step>
+
+    </ScrollyLayout>
+
+    <ScrollyTOC sections={tocSections} />
+</ScrollySection>
+
+<script>
+    import { initScrolly } from '../../lib/scrollyClient';
+    initScrolly();
+</script>
