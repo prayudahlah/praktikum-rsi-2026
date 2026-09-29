@@ -44,7 +44,7 @@ export const meetings: Meeting[] = [
     description:
       "Autentikasi login, token/session concept, middleware dasar, parameterized middleware, protected routes.",
     order: 5,
-    published: false,
+    published: true,
   },
   {
     slug: "06-frontend-react-tailwind",

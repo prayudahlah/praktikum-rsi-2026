@@ -1,0 +1,8 @@
+{
+  "sub": "1",
+  "name": "Admin Kantin",
+  "email": "admin@kantin.test",
+  "role": "admin",
+  "iat": 1790679286,
+  "exp": 1790686486
+}
