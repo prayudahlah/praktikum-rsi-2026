@@ -27,9 +27,29 @@ import expressTypes from '../snippets/05/c-express-d.ts?raw';
 import protectedRoutes from '../snippets/05/c-protected-routes.ts?raw';
 import stallService from '../snippets/05/c-stall-service.ts?raw';
 import reviewSchema from '../snippets/05/c-review-schema.ts?raw';
+import userRepository from '../snippets/05/c-user-repository.ts?raw';
+import authDto from '../snippets/05/c-auth-dto.ts?raw';
+import authController from '../snippets/05/c-auth-controller.ts?raw';
+import errorHandlerSnippet from '../snippets/05/c-error-handler.ts?raw';
+import openapiAuth from '../snippets/05/c-openapi-auth.ts?raw';
+import authControllerHo2 from '../snippets/05/c-auth-controller-ho2.ts?raw';
+import authRouterHo2 from '../snippets/05/c-auth-router-ho2.ts?raw';
+import profileController from '../snippets/05/c-profile-controller.ts?raw';
+import reviewRepository from '../snippets/05/c-review-repository.ts?raw';
+import reviewService from '../snippets/05/c-review-service.ts?raw';
+import reviewController from '../snippets/05/c-review-controller.ts?raw';
+import reportService from '../snippets/05/c-report-service.ts?raw';
+import adminController from '../snippets/05/c-admin-controller.ts?raw';
+import adminRouter from '../snippets/05/c-admin-router.ts?raw';
+import stallSchemaHo2 from '../snippets/05/c-stall-schema-ho2.ts?raw';
+import stallControllerHo2 from '../snippets/05/c-stall-controller-ho2.ts?raw';
+import indexHo2 from '../snippets/05/c-index-ho2.ts?raw';
+import openapiHo2 from '../snippets/05/c-openapi-ho2.ts?raw';
+import reviewDto from '../snippets/05/c-review-dto.ts?raw';
+import reportDto from '../snippets/05/c-report-dto.ts?raw';
 
 const repoUrl = 'https://github.com/rrrambatsigma/praktikum-rsi-2026';
-const mainUrl = `${repoUrl}/tree/main/pertemuan-05-auth-middleware`;
+const mainUrl = `${repoUrl}/tree/feat/pertemuan-5/pertemuan-05-auth-middleware`;
 
 const tocSections: TOCSection[] = [
     {
@@ -48,9 +68,10 @@ const tocSections: TOCSection[] = [
             { id: 'h1-1', title: 'Ambil Starter' },
             { id: 'h1-2', title: 'Install & Konfigurasi' },
             { id: 'h1-3', title: 'Schema Auth' },
-            { id: 'h1-4', title: 'Hash Password & Token' },
-            { id: 'h1-5', title: 'Register, Login, Router' },
-            { id: 'h1-6', title: 'Uji Autentikasi' },
+            { id: 'h1-4', title: 'Repository & DTO' },
+            { id: 'h1-5', title: 'Hash Password & Token' },
+            { id: 'h1-6', title: 'Register, Login, Router' },
+            { id: 'h1-7', title: 'Uji Autentikasi' },
         ],
     },
     {
@@ -68,8 +89,9 @@ const tocSections: TOCSection[] = [
             { id: 'h2-1', title: 'Ambil Starter' },
             { id: 'h2-2', title: 'Auth & Authorize' },
             { id: 'h2-3', title: 'Pasang ke Route' },
-            { id: 'h2-4', title: 'Kepemilikan Objek & Review' },
-            { id: 'h2-5', title: 'Uji 401 vs 403' },
+            { id: 'h2-4', title: 'Profil & Review' },
+            { id: 'h2-5', title: 'Laporan Admin' },
+            { id: 'h2-6', title: 'Uji 401 vs 403' },
         ],
     },
     {
@@ -374,7 +396,7 @@ const sampleOwnershipForbidden = `{
                target="_blank" rel="noopener noreferrer"
                class="my-3 inline-flex items-center gap-2 text-sm font-medium text-primary hover:underline">
                 <img src="/icons/github.svg" alt="" aria-hidden="true" class="w-4 h-4 invert-0 dark:invert" />
-                Versi jadi di GitHub (branch main)
+                Versi jadi di GitHub (branch feat/pertemuan-5)
             </a>
         </Step>
 
@@ -443,6 +465,17 @@ BCRYPT_SALT_ROUNDS=10`}
         </Step>
 
         <Step id="h1-4" diagram="/diagrams/05/hands-on.webp">
+            <StepHeader title="Repository & DTO" tone="success" />
+            <p class="text-foreground-secondary leading-relaxed">
+                Repository khusus tabel <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">USERS</code> membaca dan menulis baris, dan tidak
+                tahu apa itu hashing. Bentuk data yang dikirim ke client juga dipisahkan lewat DTO,
+                supaya <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">passwordHash</code> tidak pernah ikut terkirim.
+            </p>
+            <CodeBlock code={userRepository} language="typescript" filename="src/repositories/userRepository.ts" />
+            <CodeBlock code={authDto} language="typescript" filename="src/dtos/authDto.ts" compact />
+        </Step>
+
+        <Step id="h1-5" diagram="/diagrams/05/hands-on.webp">
             <StepHeader title="Hash Password & Token" tone="success" />
             <p class="text-foreground-secondary leading-relaxed">
                 Password tidak pernah disimpan apa adanya. Password di-hash dengan bcrypt, dan saat
@@ -477,8 +510,8 @@ BCRYPT_SALT_ROUNDS=10`}
             </div>
         </Step>
 
-        <Step id="h1-5" diagram="/diagrams/05/hands-on.webp">
-            <StepHeader title="Register, Login, Router" tone="success" />
+        <Step id="h1-6" diagram="/diagrams/05/hands-on.webp">
+            <StepHeader title="Register, Login, Controller, Router" tone="success" />
             <p class="text-foreground-secondary leading-relaxed">
                 Controller membalas hasil service. Register mengembalikan user (tanpa{' '}
                 <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">passwordHash</code>),
@@ -486,6 +519,7 @@ BCRYPT_SALT_ROUNDS=10`}
                 <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">validate</code>{' '}
                 untuk body-nya. Kedua route ini <strong>publik</strong>, karena justru di sinilah token dibuat.
             </p>
+            <CodeBlock code={authController} language="typescript" filename="src/controllers/authController.ts" />
             <CodeBlock code={authRouter} language="typescript" filename="src/routes/authRouter.ts" />
             <CodeBlock code={unauthorizedError} language="typescript" filename="src/errors/UnauthorizedError.ts" compact />
             <p class="text-foreground-secondary leading-relaxed">
@@ -501,9 +535,15 @@ app.use('/api/v1/stalls', stallRouter);`}
                 language="typescript"
                 compact
             />
+            <CodeBlock code={errorHandlerSnippet} language="typescript" filename="src/middlewares/errorHandler.ts" compact />
+            <p class="text-foreground-secondary leading-relaxed">
+                Terakhir, tambahkan schema dan path <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">/auth</code> ke Swagger supaya endpoint
+                baru ikut terdokumentasi.
+            </p>
+            <CodeBlock code={openapiAuth} language="typescript" filename="src/docs/openapi.ts (bagian /auth)" compact />
         </Step>
 
-        <Step id="h1-6" diagram="/diagrams/05/hands-on.webp">
+        <Step id="h1-7" diagram="/diagrams/05/hands-on.webp">
             <StepHeader title="Uji Autentikasi" tone="success" />
             <TerminalBlock code={`npm run dev`} title="Terminal: Jalankan server (development)" />
             <p class="text-foreground-secondary leading-relaxed">
@@ -807,7 +847,7 @@ authorize('owner', 'admin');   // owner atau admin`}
                target="_blank" rel="noopener noreferrer"
                class="my-3 inline-flex items-center gap-2 text-sm font-medium text-primary hover:underline">
                 <img src="/icons/github.svg" alt="" aria-hidden="true" class="w-4 h-4 invert-0 dark:invert" />
-                Versi jadi di GitHub (branch main)
+                Versi jadi di GitHub (branch feat/pertemuan-5)
             </a>
         </Step>
 
@@ -821,6 +861,7 @@ authorize('owner', 'admin');   // owner atau admin`}
             </p>
             <CodeBlock code={authMiddleware} language="typescript" filename="src/middlewares/auth.ts" />
             <CodeBlock code={authorizeMw} language="typescript" filename="src/middlewares/authorize.ts" />
+            <CodeBlock code={forbiddenError} language="typescript" filename="src/errors/ForbiddenError.ts" compact />
             <CodeBlock code={expressTypes} language="typescript" filename="src/types/express.d.ts" compact />
         </Step>
 
@@ -828,29 +869,61 @@ authorize('owner', 'admin');   // owner atau admin`}
             <StepHeader title="Pasang ke Route" tone="success" />
             <p class="text-foreground-secondary leading-relaxed">
                 Pasang middleware per route. Route baca tetap publik, route tulis dilindungi, dan
-                hapus warung hanya untuk admin.
+                hapus warung hanya untuk admin. Identitas tidak boleh datang dari body, jadi{' '}
+                <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">ownerId</code>{' '}
+                dihapus dari schema body dan diambil dari token.
             </p>
+            <CodeBlock code={stallSchemaHo2} language="typescript" filename="src/schemas/stallSchema.ts" compact />
             <CodeBlock code={protectedRoutes} language="typescript" filename="src/routes/stallRouter.ts" />
+            <CodeBlock code={stallControllerHo2} language="typescript" filename="src/controllers/stallController.ts" compact />
+            <p class="mt-3 text-foreground-secondary leading-relaxed">
+                Role saja belum cukup. Owner hanya boleh mengubah warung miliknya, dan pemeriksaan itu
+                dilakukan di service, bukan middleware. Prinsipnya: <strong>middleware menjawab "role
+                apa?", service menjawab "milik siapa?"</strong>.
+            </p>
+            <CodeBlock code={stallService} language="typescript" filename="src/services/stallService.ts" />
+            <CodeBlock code={indexHo2} language="typescript" filename="src/index.ts" compact />
         </Step>
 
         <Step id="h2-4" diagram="/diagrams/05/hands-on.webp">
-            <StepHeader title="Kepemilikan Objek & Review" tone="success" />
+            <StepHeader title="Profil & Review" tone="success" />
             <p class="text-foreground-secondary leading-relaxed">
-                Role saja belum cukup. Owner hanya boleh mengubah warung miliknya. Pemeriksaan
-                kepemilikan ini dilakukan di service, bukan di middleware, karena middleware tidak
-                tahu data warung. Prinsipnya: <strong>middleware menjawab "role apa?", service
-                menjawab "milik siapa?"</strong>.
+                Tambahkan endpoint baru yang memakai token. <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">getMe</code> membalas isi token,
+                sedangkan <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">/auth/profile</code> memuat ulang data terbaru dari database.
             </p>
-            <CodeBlock code={stallService} language="typescript" filename="src/services/stallService.ts" />
+            <CodeBlock code={authControllerHo2} language="typescript" filename="src/controllers/authController.ts" compact />
+            <CodeBlock code={authRouterHo2} language="typescript" filename="src/routes/authRouter.ts" compact />
+            <CodeBlock code={profileController} language="typescript" filename="src/controllers/profileController.ts" compact />
             <p class="mt-3 text-foreground-secondary leading-relaxed">
-                Identitas juga tidak boleh datang dari body. Schema review sengaja tidak punya{' '}
-                <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">userId</code>,
-                karena identitas penulis selalu diambil dari <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">req.user</code>.
+                Endpoint review juga dilindungi. Identitas penulis selalu diambil dari{' '}
+                <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">req.user</code>,
+                jadi schema review sengaja tidak punya <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">userId</code>.
             </p>
             <CodeBlock code={reviewSchema} language="typescript" filename="src/schemas/reviewSchema.ts" compact />
+            <CodeBlock code={reviewDto} language="typescript" filename="src/dtos/reviewDto.ts" compact />
+            <CodeBlock code={reviewRepository} language="typescript" filename="src/repositories/reviewRepository.ts" compact />
+            <CodeBlock code={reviewService} language="typescript" filename="src/services/reviewService.ts" compact />
+            <CodeBlock code={reviewController} language="typescript" filename="src/controllers/reviewController.ts" compact />
         </Step>
 
         <Step id="h2-5" diagram="/diagrams/05/hands-on.webp">
+            <StepHeader title="Laporan Admin" tone="success" />
+            <p class="text-foreground-secondary leading-relaxed">
+                Endpoint khusus admin: ringkasan laporan. Hanya role <code class="font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">admin</code> yang boleh,
+                sehingga middleware otorisasi dipasang di router.
+            </p>
+            <CodeBlock code={reportDto} language="typescript" filename="src/dtos/reportDto.ts" compact />
+            <CodeBlock code={reportService} language="typescript" filename="src/services/reportService.ts" compact />
+            <CodeBlock code={adminController} language="typescript" filename="src/controllers/adminController.ts" compact />
+            <CodeBlock code={adminRouter} language="typescript" filename="src/routes/adminRouter.ts" compact />
+            <p class="mt-3 text-foreground-secondary leading-relaxed">
+                Terakhir, dokumentasikan keamanan di Swagger: tambahkan security scheme dan respons
+                401/403.
+            </p>
+            <CodeBlock code={openapiHo2} language="typescript" filename="src/docs/openapi.ts (bagian keamanan)" compact />
+        </Step>
+
+        <Step id="h2-6" diagram="/diagrams/05/hands-on.webp">
             <StepHeader title="Uji 401 vs 403" tone="success" />
             <TerminalBlock code={`npm run dev`} title="Terminal: Jalankan server (development)" />
             <p class="text-foreground-secondary leading-relaxed">
