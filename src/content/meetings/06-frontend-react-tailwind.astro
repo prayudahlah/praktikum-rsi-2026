@@ -54,7 +54,7 @@ const tocSections: TOCSection[] = [
             { id: 'h1-2', title: 'Kenali Starter' },
             { id: 'h1-3', title: 'Header dan Pencarian' },
             { id: 'h1-4', title: 'MenuCard dan Data' },
-            { id: 'h1-5', title: 'Menyusun Katalog' },
+            { id: 'h1-5', title: 'State, Aksi, dan Tampilan' },
             { id: 'h1-6', title: 'Uji Katalog' },
             { id: 'h1-7', title: 'Modal Detail Menu' },
             { id: 'h1-8', title: 'Keranjang' },
@@ -775,7 +775,7 @@ const structureExample = `praktikum-pert-6/
         </Step>
 
         <Step id="h1-5" diagram="/diagrams/06/hands-on.webp">
-            <StepHeader title="Menyusun Katalog" tone="success" />
+            <StepHeader title="State, Aksi, dan Tampilan" tone="success" />
             <p class="text-foreground-secondary leading-relaxed">
                 Di <code class={inlineCode}>App</code> kita menyimpan empat state: pencarian,
                 kategori aktif, menu yang dipilih, dan isi keranjang. Dari state itu, daftar menu
@@ -783,13 +783,32 @@ const structureExample = `praktikum-pert-6/
             </p>
             <CodeBlock code={appStateSnippet} language="tsx" filename="src/App.tsx (state dan filter)" compact />
             <p class="mt-3 text-foreground-secondary leading-relaxed">
-                Bagian tampilan menyusun Header, grid MenuCard, dan CartPanel. Perhatikan
-                <code class={inlineCode}>key=&#123;menu.id&#125;</code> saat merender daftar, dan
-                kondisi saat hasil pencarian kosong.
+                Setelah state, kita menulis aksi yang mengubahnya. Empat fungsi berikut menangani
+                keranjang: menambah item, mengubah jumlah, menghapus item, dan checkout.
+            </p>
+            <CodeBlock code={appCartSnippet} language="tsx" filename="src/App.tsx (aksi keranjang)" compact />
+            <div class="mt-4 p-3 rounded-lg bg-warning/5 dark:bg-warning/10 border-l-4 border-warning">
+                <span class="font-bold text-warning">Urutan deklarasi penting</span>
+                <p class="text-sm md:text-base text-foreground-secondary mt-1">
+                    Semua state dan fungsi harus ditulis <strong>sebelum</strong> blok
+                    <code class={inlineCode}>return</code>. Kode dieksekusi dari atas ke bawah, dan
+                    <code class={inlineCode}>return</code> mengakhiri fungsi. Kalau handler ditulis
+                    setelahnya, ia tidak pernah dibuat dan JSX akan gagal dengan pesan
+                    <code class={inlineCode}>is not defined</code>.
+                </p>
+            </div>
+            <p class="mt-4 text-foreground-secondary leading-relaxed">
+                Baru setelah itu bagian tampilan menyusun Header, grid MenuCard, CartPanel, dan
+                modal. Perhatikan <code class={inlineCode}>key=&#123;menu.id&#125;</code> saat
+                merender daftar, dan kondisi saat hasil pencarian kosong.
             </p>
             <CodeBlock code={appRenderSnippet} language="tsx" filename="src/App.tsx (tampilan)" compact />
-            <div class="mt-4 p-3 rounded-lg bg-warning/5 dark:bg-warning/10 border-l-4 border-warning">
-                <span class="font-bold text-warning">Jangan ubah data asli</span>
+            <p class="mt-3 text-foreground-secondary leading-relaxed">
+                Setelah blok ini ditempel, jalankan <code class={inlineCode}>npm run dev</code>.
+                Sebelumnya build bisa gagal karena masih ada import yang belum terpakai.
+            </p>
+            <div class="mt-4 p-3 rounded-lg bg-primary/5 dark:bg-primary/10 border-l-4 border-primary">
+                <span class="font-bold text-primary">Jangan ubah data asli</span>
                 <p class="text-sm md:text-base text-foreground-secondary mt-1">
                     Menyaring menu dilakukan dengan <code class={inlineCode}>filter</code>, yang
                     menghasilkan array baru. Jangan memakai <code class={inlineCode}>splice</code>
@@ -830,21 +849,13 @@ const structureExample = `praktikum-pert-6/
                             <td class="px-3 py-2">Pencarian dan kategori tanpa hasil</td>
                             <td class="px-3 py-2">Tampil pesan kosong dan tombol reset</td>
                         </tr>
-                        <tr class="border-t border-border align-top">
-                            <td class="px-3 py-2">Klik kartu menu tersedia</td>
-                            <td class="px-3 py-2">Modal detail terbuka</td>
-                        </tr>
-                        <tr class="border-t border-border align-top">
-                            <td class="px-3 py-2">Tekan Escape atau klik latar modal</td>
-                            <td class="px-3 py-2">Modal tertutup</td>
-                        </tr>
-                        <tr class="border-t border-border align-top">
-                            <td class="px-3 py-2">Tambah menu ke keranjang</td>
-                            <td class="px-3 py-2">Jumlah item di header dan panel bertambah</td>
-                        </tr>
                     </tbody>
                 </table>
             </div>
+            <p class="mt-3 text-foreground-secondary leading-relaxed">
+                Komponen keranjang dan modal masih berupa kerangka di titik ini. Keduanya diuji
+                setelah diisi pada step berikutnya.
+            </p>
             <p class="mt-4 text-foreground-secondary leading-relaxed">Kalau ada yang tidak sesuai:</p>
             <div class="mt-3 overflow-x-auto rounded-lg border border-border">
                 <table class="w-full border-collapse text-left text-sm md:text-base">
@@ -873,6 +884,13 @@ const structureExample = `praktikum-pert-6/
                                 <code class={inlineCode}>import "./index.css"</code> hilang di <code class={inlineCode}>main.tsx</code>
                             </td>
                         </tr>
+                        <tr class="border-t border-border align-top">
+                            <td class="px-3 py-2"><code class={inlineCode}>changeQuantity is not defined</code></td>
+                            <td class="px-3 py-2">
+                                Handler keranjang belum ditambahkan, atau ditulis setelah
+                                <code class={inlineCode}>return</code>. Pindahkan ke atas blok tampilan.
+                            </td>
+                        </tr>
                     </tbody>
                 </table>
             </div>
@@ -896,11 +914,10 @@ const structureExample = `praktikum-pert-6/
         <Step id="h1-8" diagram="/diagrams/06/hands-on.webp">
             <StepHeader title="Keranjang" tone="success" />
             <p class="text-foreground-secondary leading-relaxed">
-                Keranjang menyimpan daftar item di state. Saat item ditambah, jumlah diubah, atau
-                item dihapus, kita membuat array baru, bukan mengubah array lama. Total item dan
-                total harga dihitung dari isi keranjang.
+                Handler keranjang sudah kita tulis di step State, Aksi, dan Tampilan. Sekarang
+                tinggal melengkapi tampilan CartPanel: daftar item, tombol ubah jumlah, tombol
+                hapus, total belanja, dan checkout.
             </p>
-            <CodeBlock code={appCartSnippet} language="tsx" filename="src/App.tsx (handler keranjang)" compact />
             <CodeBlock code={cartPanelSnippet} language="tsx" filename="src/components/CartPanel.tsx" compact />
             <div class="mt-4 p-3 rounded-lg bg-primary/5 dark:bg-primary/10 border-l-4 border-primary">
                 <span class="font-bold text-primary">Kenapa total tidak disimpan</span>
@@ -909,6 +926,45 @@ const structureExample = `praktikum-pert-6/
                     lupa diperbarui saat item berubah. Menghitung ulang setiap render selalu
                     menghasilkan angka yang benar.
                 </p>
+            </div>
+            <p class="mt-4 text-foreground-secondary leading-relaxed">
+                Setelah CartPanel dan MenuDetailModal terisi, uji alur berikut:
+            </p>
+            <div class="mt-3 overflow-x-auto rounded-lg border border-border">
+                <table class="w-full border-collapse text-left text-sm md:text-base">
+                    <thead>
+                        <tr class="bg-muted text-foreground">
+                            <th class="px-3 py-2 font-semibold">Kasus</th>
+                            <th class="px-3 py-2 font-semibold">Hasil yang diharapkan</th>
+                        </tr>
+                    </thead>
+                    <tbody class="text-foreground-secondary">
+                        <tr class="border-t border-border align-top">
+                            <td class="px-3 py-2">Tambah satu menu dari modal</td>
+                            <td class="px-3 py-2">Item muncul di keranjang, jumlah di header bertambah</td>
+                        </tr>
+                        <tr class="border-t border-border align-top">
+                            <td class="px-3 py-2">Klik tombol tambah di keranjang</td>
+                            <td class="px-3 py-2">Jumlah item naik, total harga ikut berubah</td>
+                        </tr>
+                        <tr class="border-t border-border align-top">
+                            <td class="px-3 py-2">Kurangi jumlah sampai nol</td>
+                            <td class="px-3 py-2">Item hilang dari keranjang</td>
+                        </tr>
+                        <tr class="border-t border-border align-top">
+                            <td class="px-3 py-2">Klik hapus</td>
+                            <td class="px-3 py-2">Hanya item itu yang hilang, item lain tetap</td>
+                        </tr>
+                        <tr class="border-t border-border align-top">
+                            <td class="px-3 py-2">Checkout saat keranjang kosong</td>
+                            <td class="px-3 py-2">Muncul peringatan, keranjang tidak berubah</td>
+                        </tr>
+                        <tr class="border-t border-border align-top">
+                            <td class="px-3 py-2">Buka modal lalu tekan Escape</td>
+                            <td class="px-3 py-2">Modal tertutup tanpa menambah item</td>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
         </Step>
 
