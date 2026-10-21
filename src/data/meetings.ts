@@ -52,7 +52,7 @@ export const meetings: Meeting[] = [
     description:
       "Component-based architecture, JSX/TSX & props, struktur project React, styling dengan Tailwind.",
     order: 6,
-    published: false,
+    published: true,
   },
   {
     slug: "07-backend-frontend-integration",

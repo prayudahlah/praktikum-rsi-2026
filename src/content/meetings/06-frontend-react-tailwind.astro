@@ -1,0 +1,1087 @@
+---
+import {
+    ScrollySection,
+    Step,
+    StepHeader,
+    SectionDivider,
+    ScrollyLayout,
+    ScrollyTOC,
+} from '../../components/scrolly';
+import type { TOCSection } from '../../components/scrolly';
+import CodeBlock from '../../components/ui/CodeBlock.astro';
+import TerminalBlock from '../../components/ui/TerminalBlock.astro';
+import { BookOpen } from '@lucide/astro';
+
+import headerSnippet from '../snippets/06/c-header.tsx?raw';
+import menuCardSnippet from '../snippets/06/c-menu-card.tsx?raw';
+import menuDetailSnippet from '../snippets/06/c-menu-detail-modal.tsx?raw';
+import cartPanelSnippet from '../snippets/06/c-cart-panel.tsx?raw';
+import appStateSnippet from '../snippets/06/c-app-state.tsx?raw';
+import appCartSnippet from '../snippets/06/c-app-cart.tsx?raw';
+import appRenderSnippet from '../snippets/06/c-app-render.tsx?raw';
+import formatSnippet from '../snippets/06/c-format.ts?raw';
+import dashboardSnippet from '../snippets/06/c-dashboard.tsx?raw';
+import dashboardHeaderSnippet from '../snippets/06/c-dashboard-header.tsx?raw';
+import orderStatsSnippet from '../snippets/06/c-order-stats.tsx?raw';
+import orderListSnippet from '../snippets/06/c-order-list.tsx?raw';
+import orderCardSnippet from '../snippets/06/c-order-card.tsx?raw';
+
+const repoUrl = 'https://github.com/rrrambatsigma/praktikum-rsi-2026';
+const starterUrl = `${repoUrl}/tree/starter/pertemuan-06/pertemuan-06-frontend-dasar`;
+const mainUrlHo1 = `${repoUrl}/tree/feat/pertemuan-6/pertemuan-06-frontend-dasar/hands-on-1-reactprop`;
+const mainUrlHo2 = `${repoUrl}/tree/feat/pertemuan-6/pertemuan-06-frontend-dasar/hands-on-2-dashboard`;
+const cloneStarter = `git clone --single-branch --branch starter/pertemuan-06 ${repoUrl}.git praktikum-pert-6`;
+
+const inlineCode = 'font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded';
+
+const tocSections: TOCSection[] = [
+    {
+        label: 'Konsep Frontend',
+        items: [
+            { id: 'a1', title: 'Frontend: Bagian yang Kamu Sentuh' },
+            { id: 'a2', title: 'Memecah UI jadi Komponen' },
+            { id: 'a3', title: 'React: UI dari Data' },
+            { id: 'a4', title: 'JSX dan TSX' },
+            { id: 'a5', title: 'Props dan Reusability' },
+            { id: 'a6', title: 'Struktur Project React' },
+            { id: 'a7', title: 'Tailwind dan Design Token' },
+        ],
+    },
+    {
+        label: 'Hands-on 1',
+        items: [
+            { id: 'h1-1', title: 'Ambil Starter' },
+            { id: 'h1-2', title: 'Kenali Starter' },
+            { id: 'h1-3', title: 'Header dan Pencarian' },
+            { id: 'h1-4', title: 'MenuCard dan Data' },
+            { id: 'h1-5', title: 'Menyusun Katalog' },
+            { id: 'h1-6', title: 'Uji Katalog' },
+            { id: 'h1-7', title: 'Modal Detail Menu' },
+            { id: 'h1-8', title: 'Keranjang' },
+        ],
+    },
+    {
+        label: 'Hands-on 2',
+        items: [
+            { id: 'h2-1', title: 'Ambil Starter Dashboard' },
+            { id: 'h2-2', title: 'DashboardHeader dan Layout' },
+            { id: 'h2-3', title: 'OrderStats' },
+            { id: 'h2-4', title: 'OrderList dan OrderCard' },
+            { id: 'h2-5', title: 'Uji Ubah Status' },
+        ],
+    },
+    {
+        label: 'Penutup',
+        items: [{ id: 'c1', title: 'Recap' }],
+    },
+];
+
+const jsxExample = `function MenuCard() {
+  return (
+    <article className="rounded-xl border p-4">
+      <h3>Nasi Goreng</h3>
+      <p>Rp15.000</p>
+    </article>
+  )
+}`;
+
+const compiledJsx = `// kurang lebih seperti ini hasil kompilasinya
+function MenuCard() {
+  return jsx('article', {
+    className: 'rounded-xl border p-4',
+    children: [
+      jsx('h3', { children: 'Nasi Goreng' }),
+      jsx('p', { children: 'Rp15.000' }),
+    ],
+  })
+}`;
+
+const plainDom = `const label = document.querySelector('#label-keranjang')
+
+// setiap kali data berubah, kita harus ingat memperbarui tampilan
+label.textContent = \`Keranjang: \${jumlah} item\``;
+
+const reactState = `function Keranjang() {
+  const [jumlah, setJumlah] = useState(0)
+
+  return (
+    <button onClick={() => setJumlah(jumlah + 1)}>
+      Keranjang: {jumlah} item
+    </button>
+  )
+}`;
+
+const tsxProps = `type MenuCardProps = {
+  nama: string
+  harga: number
+  tersedia: boolean
+}
+
+function MenuCard({ nama, harga, tersedia }: MenuCardProps) {
+  return (
+    <article>
+      <h3>{nama}</h3>
+      <p>Rp{harga.toLocaleString('id-ID')}</p>
+      {!tersedia && <span>Habis</span>}
+    </article>
+  )
+}`;
+
+const utilityExample = `/* CSS biasa: satu nama class, isinya banyak aturan */
+.kartu-menu {
+  border-radius: 1rem;
+  border: 1px solid #f0e3db;
+  background: #ffffff;
+  padding: 1rem;
+}
+
+/* Tailwind: aturan kecil yang disusun langsung di elemen */
+<article className="rounded-2xl border border-border bg-surface p-4">`;
+
+const tokenExample = `@import "tailwindcss";
+
+@theme {
+  --color-page: #fff8f4;
+  --color-surface: #ffffff;
+  --color-text: #29231f;
+  --color-muted: #796a61;
+  --color-primary: #b84208;
+  --color-border: #f0e3db;
+}`;
+
+const propsFlow = `function Catalog() {
+  return (
+    <div>
+      {menuItems.map((menu) => (
+        <MenuCard
+          key={menu.id}
+          menu={menu}
+          onSelect={setSelectedMenu}
+        />
+      ))}
+    </div>
+  )
+}
+
+function MenuCard({ menu, onSelect }: MenuCardProps) {
+  return (
+    <button onClick={() => onSelect(menu)}>
+      {menu.name}
+    </button>
+  )
+}`;
+
+const structureExample = `praktikum-pert-6/
+└─ hands-on-1-katalog-menu/
+   ├─ public/
+   │  └─ images/                 # foto menu, logo
+   ├─ src/
+   │  ├─ components/             # potongan UI yang dipakai berulang
+   │  ├─ data/                   # data contoh dan tipenya
+   │  ├─ lib/                    # fungsi bantu, misal format rupiah
+   │  ├─ pages/                  # halaman yang menyusun komponen
+   │  ├─ App.tsx                 # pintu masuk tampilan
+   │  ├─ main.tsx                # memasang React ke HTML
+   │  └─ index.css               # Tailwind dan design token
+   ├─ index.html
+   ├─ package.json
+   ├─ tsconfig.json
+   └─ vite.config.ts`;
+---
+
+<ScrollySection>
+    <ScrollyLayout defaultSrc="/diagrams/06/perkenalan-frontend.webp">
+
+        <!-- ===== BAGIAN A: KONSEP FRONTEND ===== -->
+
+        <Step id="a1" diagram="/diagrams/06/perkenalan-frontend.webp">
+            <SectionDivider label="Konsep Frontend" />
+            <StepHeader title="Frontend: Bagian yang Kamu Sentuh" tone="primary" />
+            <p class="text-foreground-secondary leading-relaxed">
+                Selama lima pertemuan, semua yang kita bangun ada di sisi server. Ada database,
+                ada endpoint, ada token. Semuanya bekerja, tetapi tidak ada yang bisa dilihat
+                pengguna. Yang terlihat hanya Postman dan terminal.
+            </p>
+            <p class="mt-3 text-foreground-secondary leading-relaxed">
+                Hari ini kita pindah ke sisi yang berlawanan. <strong>Frontend</strong> adalah
+                bagian aplikasi yang berinteraksi langsung dengan pengguna. Tugasnya menampilkan
+                informasi, menerima input, dan menyampaikan permintaan ke backend.
+            </p>
+            <div class="mt-4 overflow-x-auto rounded-lg border border-border">
+                <table class="w-full border-collapse text-left text-sm md:text-base">
+                    <thead>
+                        <tr class="bg-muted text-foreground">
+                            <th class="px-3 py-2 font-semibold">Tugas</th>
+                            <th class="px-3 py-2 font-semibold">Contoh di sistem kantin</th>
+                        </tr>
+                    </thead>
+                    <tbody class="text-foreground-secondary">
+                        <tr class="border-t border-border align-top">
+                            <td class="px-3 py-2 font-semibold text-foreground">Menampilkan data</td>
+                            <td class="px-3 py-2">Daftar warung, daftar menu, harga, status ketersediaan</td>
+                        </tr>
+                        <tr class="border-t border-border align-top">
+                            <td class="px-3 py-2 font-semibold text-foreground">Menerima input</td>
+                            <td class="px-3 py-2">Kotak pencarian, pilihan kategori, jumlah pesanan</td>
+                        </tr>
+                        <tr class="border-t border-border align-top">
+                            <td class="px-3 py-2 font-semibold text-foreground">Mengirim permintaan</td>
+                            <td class="px-3 py-2">Menyimpan pesanan, mengubah status pesanan</td>
+                        </tr>
+                        <tr class="border-t border-border align-top">
+                            <td class="px-3 py-2 font-semibold text-foreground">Mengolah jawaban</td>
+                            <td class="px-3 py-2">Menampilkan pesan berhasil, pesan gagal, atau data kosong</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <p class="mt-3 text-foreground-secondary leading-relaxed">
+                Kalau kamu membayangkan sistem kantin, halaman yang kamu lihat semuanya frontend:
+                login, beranda, daftar menu, detail menu, profil, keranjang, dan riwayat pesanan.
+                Di pertemuan ini kita membuat dua di antaranya, yaitu katalog menu dan dashboard
+                pesanan.
+            </p>
+            <div class="mt-4 p-3 rounded-lg bg-primary/5 dark:bg-primary/10 border-l-4 border-primary">
+                <span class="font-bold text-primary">Analogi</span>
+                <p class="text-sm md:text-base text-foreground-secondary mt-1">
+                    Frontend itu meja makan dan buku menu. Pengunjung melihat menu, memilih, dan
+                    memanggil pelayan di sana. Dapur, gudang, dan aturan memasak tetap di belakang.
+                    Pengunjung tidak perlu tahu bagaimana nasi goreng dibuat, tetapi meja yang
+                    berantakan membuat pengalaman makan jadi buruk.
+                </p>
+            </div>
+            <p class="mt-3 text-foreground-secondary leading-relaxed">
+                Satu hal yang sering keliru: frontend <strong>bukan</strong> tempat menyimpan aturan
+                bisnis. Validasi di frontend berguna supaya pengguna cepat tahu kesalahannya, tetapi
+                keputusan tetap milik backend. Ingat pertemuan 4, server tidak boleh mempercayai
+                data dari client. Frontend pun tidak boleh dianggap sebagai penjaga.
+            </p>
+            <p class="mt-3 text-foreground-secondary leading-relaxed">
+                Di pertemuan ini frontend belum tersambung ke API. Datanya masih lokal, karena
+                menyambung frontend ke backend adalah materi pertemuan 7.
+            </p>
+        </Step>
+
+        <Step id="a2" diagram="/diagrams/06/component-based-architecture.webp">
+            <StepHeader title="Memecah UI jadi Komponen" tone="primary" />
+            <p class="text-foreground-secondary leading-relaxed">
+                Bayangkan satu file <code class={inlineCode}>App.tsx</code> berisi seluruh halaman: header, pencarian, daftar
+                menu, detail menu, keranjang, dan footer. Panjangnya bisa ratusan baris. Saat ada
+                dua menu yang tampilannya sama, markup-nya disalin. Saat warna tombol berubah, kamu
+                harus mencari semua salinannya.
+            </p>
+            <p class="mt-3 text-foreground-secondary leading-relaxed">
+                <strong>Component Based Architecture</strong> adalah pendekatan memecah antarmuka
+                menjadi bagian kecil yang punya tanggung jawab jelas dan bisa dipakai ulang.
+                Komponen adalah bagian UI yang dibuat terpisah, lalu disusun bersama komponen lain
+                untuk membentuk halaman.
+            </p>
+            <div class="mt-4 overflow-x-auto rounded-lg border border-border">
+                <table class="w-full border-collapse text-left text-sm md:text-base">
+                    <thead>
+                        <tr class="bg-muted text-foreground">
+                            <th class="px-3 py-2 font-semibold">Alasan</th>
+                            <th class="px-3 py-2 font-semibold">Arti sederhananya</th>
+                            <th class="px-3 py-2 font-semibold">Contoh di katalog</th>
+                        </tr>
+                    </thead>
+                    <tbody class="text-foreground-secondary">
+                        <tr class="border-t border-border align-top">
+                            <td class="px-3 py-2 font-semibold text-foreground">Modularity</td>
+                            <td class="px-3 py-2">Aplikasi terbagi jadi bagian kecil dengan fungsi tertentu</td>
+                            <td class="px-3 py-2">Header, MenuCard, CartPanel</td>
+                        </tr>
+                        <tr class="border-t border-border align-top">
+                            <td class="px-3 py-2 font-semibold text-foreground">Abstraction</td>
+                            <td class="px-3 py-2">Detail di dalam disembunyikan, cukup tahu cara memakainya</td>
+                            <td class="px-3 py-2">Cukup menulis <code class={inlineCode}>&lt;Button /&gt;</code>, tidak perlu tahu kelas Tailwind-nya</td>
+                        </tr>
+                        <tr class="border-t border-border align-top">
+                            <td class="px-3 py-2 font-semibold text-foreground">Encapsulation</td>
+                            <td class="px-3 py-2">Data dan logika yang berkaitan dikelola di dalam komponen itu</td>
+                            <td class="px-3 py-2">Status gambar gagal disimpan di dalam MenuCard</td>
+                        </tr>
+                        <tr class="border-t border-border align-top">
+                            <td class="px-3 py-2 font-semibold text-foreground">Reusability</td>
+                            <td class="px-3 py-2">Komponen dipakai lagi tanpa dibuat dari nol</td>
+                            <td class="px-3 py-2">Sembilan menu memakai satu MenuCard yang sama</td>
+                        </tr>
+                        <tr class="border-t border-border align-top">
+                            <td class="px-3 py-2 font-semibold text-foreground">Separation of Concern</td>
+                            <td class="px-3 py-2">Setiap bagian punya tanggung jawab yang tidak tercampur</td>
+                            <td class="px-3 py-2">Data di <code class={inlineCode}>data/</code>, format harga di <code class={inlineCode}>lib/</code></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <p class="mt-3 text-foreground-secondary leading-relaxed">
+                Hasil akhirnya seperti pohon. Halaman katalog menyusun Header, daftar MenuCard, dan
+                CartPanel. Setiap komponen bisa dibaca sendiri tanpa harus memahami seluruh
+                aplikasi.
+            </p>
+            <div class="mt-4 p-3 rounded-lg bg-warning/5 dark:bg-warning/10 border-l-4 border-warning">
+                <span class="font-bold text-warning">Jangan memecah terlalu cepat</span>
+                <p class="text-sm md:text-base text-foreground-secondary mt-1">
+                    Komponen lahir karena ada pengulangan atau karena tanggung jawabnya jelas,
+                    bukan karena setiap kotak harus jadi file baru. Memecah berlebihan justru
+                    membuat alur data sulit diikuti.
+                </p>
+            </div>
+            <div class="mt-4 p-4 rounded-lg bg-accent/5 dark:bg-accent/10 border-2 border-dashed border-accent">
+                <span class="flex items-center gap-2 font-bold text-accent">
+                    <BookOpen class="w-4 h-4" />
+                    Bacaan Lanjutan
+                </span>
+                <ul class="text-base text-foreground-secondary mt-2 space-y-1 list-disc list-inside">
+                    <li>
+                        <a href="https://react.dev/learn/thinking-in-react" target="_blank" rel="noopener noreferrer" class="text-primary hover:underline">Thinking in React</a>
+                        : cara memecah antarmuka menjadi komponen berdasarkan data dan tanggung jawab.
+                    </li>
+                </ul>
+            </div>
+        </Step>
+
+        <Step id="a3" diagram="/diagrams/06/how_doest_react_js_work.webp">
+            <StepHeader title="React: UI dari Data" tone="primary" />
+            <p class="text-foreground-secondary leading-relaxed">
+                React adalah library JavaScript untuk membangun antarmuka yang interaktif dan
+                berbasis komponen. React bukan framework penuh. Dia tidak mengatur routing,
+                database, atau struktur folder. Dia fokus pada satu hal: menjaga tampilan tetap
+                sesuai dengan data.
+            </p>
+            <p class="mt-3 text-foreground-secondary leading-relaxed">
+                Cara berpikirnya bisa ditulis singkat sebagai <strong>UI adalah fungsi dari
+                data</strong>. Kalau datanya berubah, tampilan ikut berubah. Kamu tidak perlu
+                mencari elemen lalu mengubah isinya satu per satu.
+            </p>
+            <p class="mt-4 text-foreground-secondary leading-relaxed">
+                Cara lama, mengubah DOM secara manual:
+            </p>
+            <CodeBlock code={plainDom} language="ts" filename="cara imperatif (bukan React)" compact />
+            <p class="mt-3 text-foreground-secondary leading-relaxed">
+                Cara React, cukup nyatakan tampilan untuk suatu nilai:
+            </p>
+            <CodeBlock code={reactState} language="tsx" filename="Keranjang.tsx" compact />
+            <p class="mt-3 text-foreground-secondary leading-relaxed">
+                Di contoh kedua, tidak ada perintah "ubah teks tombol". Kita hanya mengubah
+                <code class={inlineCode}>jumlah</code>, lalu React memperbarui tampilan yang
+                memakainya. Inilah yang disebut deklaratif.
+            </p>
+            <p class="mt-3 text-foreground-secondary leading-relaxed">
+                React tidak menulis ulang seluruh halaman setiap kali data berubah. Ia membandingkan
+                hasil render baru dengan hasil sebelumnya lewat representasi ringan yang disebut
+                Virtual DOM, lalu hanya memperbarui bagian yang benar-benar berbeda. Karena itu
+                tugas kita cukup mengubah data, bukan menyentuh DOM satu per satu.
+            </p>
+            <p class="mt-3 text-foreground-secondary leading-relaxed">
+                Tiga istilah yang akan sering muncul:
+            </p>
+            <ul class="mt-2 text-foreground-secondary leading-relaxed space-y-1.5 list-disc list-inside">
+                <li><strong>Component</strong>: fungsi yang mengembalikan markup.</li>
+                <li><strong>Props</strong>: data yang dikirim dari komponen induk ke anak. Bersifat read-only.</li>
+                <li><strong>State</strong>: data milik komponen yang bisa berubah dan memicu render ulang.</li>
+            </ul>
+            <div class="mt-4 p-3 rounded-lg bg-primary/5 dark:bg-primary/10 border-l-4 border-primary">
+                <span class="font-bold text-primary">Analogi</span>
+                <p class="text-sm md:text-base text-foreground-secondary mt-1">
+                    State itu angka di papan skor, tampilan itu papan skornya. Kamu tidak mengecat
+                    ulang angka di papan setiap kali ada gol. Kamu cukup mengubah angkanya, dan
+                    papan selalu menampilkan angka terbaru.
+                </p>
+            </div>
+            <p class="mt-3 text-foreground-secondary leading-relaxed">
+                Di pertemuan ini kita memakai state seperlunya, untuk pencarian, filter, dan
+                keranjang. Routing dan login belum masuk, karena keduanya dibahas di pertemuan 7.
+            </p>
+        </Step>
+
+        <Step id="a4" diagram="/diagrams/06/too-much-jsx.webp">
+            <StepHeader title="JSX dan TSX" tone="primary" />
+            <p class="text-foreground-secondary leading-relaxed">
+                JSX adalah ekstensi sintaks JavaScript yang membuat kita bisa menulis struktur
+                antarmuka mirip HTML di dalam kode JavaScript. TSX adalah versi TypeScript-nya.
+                Karena project kita memakai TypeScript, semua file komponen berekstensi
+                <code class={inlineCode}>.tsx</code>.
+            </p>
+            <CodeBlock code={jsxExample} language="tsx" filename="MenuCard.tsx" />
+            <p class="text-foreground-secondary leading-relaxed">
+                JSX bukan string dan bukan HTML. Sebelum dijalankan browser, JSX dikompilasi
+                menjadi pemanggilan fungsi. Kurang lebih bentuknya seperti ini:
+            </p>
+            <CodeBlock code={compiledJsx} language="ts" filename="hasil kompilasi (gambaran)" compact />
+            <p class="mt-3 text-foreground-secondary leading-relaxed">
+                Beberapa aturan yang paling sering bikin error:
+            </p>
+            <ul class="mt-2 text-foreground-secondary leading-relaxed space-y-1.5 list-disc list-inside">
+                <li>Harus ada satu elemen pembungkus. Kalau tidak ingin menambah elemen, pakai fragment <code class={inlineCode}>&lt;&gt;...&lt;/&gt;</code>.</li>
+                <li>Atribut class ditulis <code class={inlineCode}>className</code>, bukan <code class={inlineCode}>class</code>.</li>
+                <li>Ekspresi JavaScript dimasukkan dengan kurung kurawal, misal <code class={inlineCode}>{'{nama}'}</code>.</li>
+                <li>Label form memakai <code class={inlineCode}>htmlFor</code>, bukan <code class={inlineCode}>for</code>.</li>
+                <li>Semua tag harus ditutup, termasuk yang di HTML boleh terbuka seperti <code class={inlineCode}>&lt;img /&gt;</code>.</li>
+            </ul>
+            <p class="mt-3 text-foreground-secondary leading-relaxed">
+                Karena memakai TypeScript, kita bisa menyatakan bentuk props. Ini membuat kesalahan
+                seperti salah nama properti atau salah tipe ketahuan saat menulis kode, bukan saat
+                aplikasi dibuka.
+            </p>
+            <CodeBlock code={tsxProps} language="tsx" filename="MenuCard.tsx (props bertipe)" />
+            <div class="mt-4 p-4 rounded-lg bg-accent/5 dark:bg-accent/10 border-2 border-dashed border-accent">
+                <span class="flex items-center gap-2 font-bold text-accent">
+                    <BookOpen class="w-4 h-4" />
+                    Bacaan Lanjutan
+                </span>
+                <ul class="text-base text-foreground-secondary mt-2 space-y-1 list-disc list-inside">
+                    <li>
+                        <a href="https://react.dev/learn/writing-markup-with-jsx" target="_blank" rel="noopener noreferrer" class="text-primary hover:underline">Writing Markup with JSX</a>
+                        : aturan JSX dan alasan di baliknya.
+                    </li>
+                </ul>
+            </div>
+        </Step>
+
+        <Step id="a5" diagram="/diagrams/06/Props-in-react.webp">
+            <StepHeader title="Props dan Reusability" tone="primary" />
+            <p class="text-foreground-secondary leading-relaxed">
+                Kalau kamu punya sembilan menu, bukan berarti kamu menulis sembilan komponen kartu.
+                Kamu menulis satu <strong>MenuCard</strong>, lalu memakainya sembilan kali dengan
+                data yang berbeda. Di sinilah props berperan.
+            </p>
+            <p class="mt-3 text-foreground-secondary leading-relaxed">
+                <strong>Props</strong> adalah data yang dikirim dari komponen induk ke komponen
+                anak. Arahnya satu jalur, dari atas ke bawah. Anak menerima props dan memakainya
+                untuk merender tampilan, tetapi tidak boleh mengubahnya.
+            </p>
+            <CodeBlock code={propsFlow} language="tsx" filename="Catalog.tsx dan MenuCard.tsx" />
+            <p class="mt-3 text-foreground-secondary leading-relaxed">
+                Perhatikan dua hal. Pertama, <code class={inlineCode}>menu</code> dikirim sebagai
+                data, sehingga satu MenuCard bisa menampilkan menu apa pun. Kedua,
+                <code class={inlineCode}>onSelect</code> dikirim sebagai fungsi. Anak tidak tahu
+                apa yang harus terjadi saat tombol diklik, ia hanya memanggil fungsi itu. Induk yang
+                memutuskan.
+            </p>
+            <div class="mt-4 overflow-x-auto rounded-lg border border-border">
+                <table class="w-full border-collapse text-left text-sm md:text-base">
+                    <thead>
+                        <tr class="bg-muted text-foreground">
+                            <th class="px-3 py-2 font-semibold">Jenis props</th>
+                            <th class="px-3 py-2 font-semibold">Arah</th>
+                            <th class="px-3 py-2 font-semibold">Contoh</th>
+                        </tr>
+                    </thead>
+                    <tbody class="text-foreground-secondary">
+                        <tr class="border-t border-border align-top">
+                            <td class="px-3 py-2 font-semibold text-foreground">Data</td>
+                            <td class="px-3 py-2">Induk ke anak</td>
+                            <td class="px-3 py-2">Objek menu, teks pencarian, daftar pesanan</td>
+                        </tr>
+                        <tr class="border-t border-border align-top">
+                            <td class="px-3 py-2 font-semibold text-foreground">Callback</td>
+                            <td class="px-3 py-2">Anak memanggil, induk yang menangani</td>
+                            <td class="px-3 py-2">Saat menu dipilih, saat status pesanan diubah</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="mt-4 p-3 rounded-lg bg-primary/5 dark:bg-primary/10 border-l-4 border-primary">
+                <span class="font-bold text-primary">Analogi</span>
+                <p class="text-sm md:text-base text-foreground-secondary mt-1">
+                    Komponen itu seperti cetakan kue. Props adalah isi yang kamu masukkan ke cetakan.
+                    Cetakannya sama, hasilnya bisa berbeda-beda. Kalau cetakannya diubah, semua hasil
+                    ikut berubah. Itu keuntungan reusability.
+                </p>
+            </div>
+            <div class="mt-4 p-3 rounded-lg bg-warning/5 dark:bg-warning/10 border-l-4 border-warning">
+                <span class="font-bold text-warning">Props itu read-only</span>
+                <p class="text-sm md:text-base text-foreground-secondary mt-1">
+                    Jangan mengubah nilai props di dalam anak. Kalau anak perlu mengubah data, data
+                    itu seharusnya jadi state di komponen induk, lalu induk mengirim nilai baru
+                    lewat props.
+                </p>
+            </div>
+            <div class="mt-4 p-4 rounded-lg bg-accent/5 dark:bg-accent/10 border-2 border-dashed border-accent">
+                <span class="flex items-center gap-2 font-bold text-accent">
+                    <BookOpen class="w-4 h-4" />
+                    Bacaan Lanjutan
+                </span>
+                <ul class="text-base text-foreground-secondary mt-2 space-y-1 list-disc list-inside">
+                    <li>
+                        <a href="https://react.dev/learn/passing-props-to-a-component" target="_blank" rel="noopener noreferrer" class="text-primary hover:underline">Passing Props to a Component</a>
+                        : cara mengirim data dan callback, serta aturan props read-only.
+                    </li>
+                </ul>
+            </div>
+        </Step>
+
+        <Step id="a6" diagram="/diagrams/06/too-much-jsx.webp">
+            <StepHeader title="Struktur Project React" tone="primary" />
+            <p class="text-foreground-secondary leading-relaxed">
+                Project React modern biasanya dibuat dengan Vite. Vite menyiapkan server
+                pengembangan, build produksi, dan konfigurasi TypeScript. Struktur yang kita pakai
+                di hands-on nanti seperti ini:
+            </p>
+            <CodeBlock code={structureExample} language="bash" compact />
+            <div class="mt-4 overflow-x-auto rounded-lg border border-border">
+                <table class="w-full border-collapse text-left text-sm md:text-base">
+                    <thead>
+                        <tr class="bg-muted text-foreground">
+                            <th class="px-3 py-2 font-semibold">Folder</th>
+                            <th class="px-3 py-2 font-semibold">Isi</th>
+                        </tr>
+                    </thead>
+                    <tbody class="text-foreground-secondary">
+                        <tr class="border-t border-border align-top">
+                            <td class="px-3 py-2"><code class={inlineCode}>src/components</code></td>
+                            <td class="px-3 py-2">Komponen yang dipakai di lebih dari satu tempat, misal Header dan MenuCard</td>
+                        </tr>
+                        <tr class="border-t border-border align-top">
+                            <td class="px-3 py-2"><code class={inlineCode}>src/pages</code></td>
+                            <td class="px-3 py-2">Halaman yang menyusun komponen, misal Catalog dan Dashboard</td>
+                        </tr>
+                        <tr class="border-t border-border align-top">
+                            <td class="px-3 py-2"><code class={inlineCode}>src/data</code></td>
+                            <td class="px-3 py-2">Data contoh dan tipe datanya</td>
+                        </tr>
+                        <tr class="border-t border-border align-top">
+                            <td class="px-3 py-2"><code class={inlineCode}>src/lib</code></td>
+                            <td class="px-3 py-2">Fungsi bantu yang tidak berhubungan dengan tampilan, misal format rupiah</td>
+                        </tr>
+                        <tr class="border-t border-border align-top">
+                            <td class="px-3 py-2"><code class={inlineCode}>public</code></td>
+                            <td class="px-3 py-2">Aset yang diakses lewat URL, misal gambar menu</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <p class="mt-3 text-foreground-secondary leading-relaxed">
+                Aturan praktisnya sederhana. <code class={inlineCode}>App.tsx</code> hanya menyusun
+                halaman. Logika tampilan tinggal di komponen. Data dan fungsi bantu tidak dicampur
+                ke dalam komponen kalau dipakai di banyak tempat.
+            </p>
+            <div class="mt-4 p-3 rounded-lg bg-warning/5 dark:bg-warning/10 border-l-4 border-warning">
+                <span class="font-bold text-warning">Jangan jadikan App.tsx tempat sampah</span>
+                <p class="text-sm md:text-base text-foreground-secondary mt-1">
+                    Kalau satu file mulai menangani pencarian, filter, keranjang, dan modal
+                    sekaligus, itu tanda ada bagian yang seharusnya jadi komponen atau halaman
+                    sendiri.
+                </p>
+            </div>
+            <p class="mt-3 text-foreground-secondary leading-relaxed">
+                Di hands-on nanti, seluruh file konfigurasi dan aset sudah disiapkan di starter.
+                Kamu fokus ke komponen, bukan ke urusan <code class={inlineCode}>tsconfig</code>.
+            </p>
+        </Step>
+
+        <Step id="a7" diagram="/diagrams/06/tailwind_css.webp">
+            <StepHeader title="Tailwind dan Design Token" tone="primary" />
+            <p class="text-foreground-secondary leading-relaxed">
+                Tailwind CSS adalah framework CSS dengan pendekatan utility-first. Artinya, kita
+                tidak menulis satu class besar berisi banyak aturan. Kita menyusun tampilan dari
+                class kecil yang masing-masing mengerjakan satu hal, seperti mengatur warna, jarak,
+                ukuran, atau tata letak.
+            </p>
+            <CodeBlock code={utilityExample} language="css" compact />
+            <p class="mt-3 text-foreground-secondary leading-relaxed">
+                Kelihatannya class-nya jadi panjang. Untungnya, kamu tidak perlu membuka file CSS
+                lain untuk tahu tampilan sebuah elemen. Semua keputusan styling terlihat di tempat
+                yang sama.
+            </p>
+            <p class="mt-3 text-foreground-secondary leading-relaxed">
+                Masalah muncul kalau warna ditulis mentah di mana-mana, misal
+                <code class={inlineCode}>bg-[#fff8f4]</code> di sepuluh tempat. Saat warna brand
+                berubah, sepuluh tempat itu harus dicari satu per satu. Solusinya
+                <strong>design token</strong>: beri nama pada keputusan desain, lalu pakai namanya.
+            </p>
+            <CodeBlock code={tokenExample} language="css" filename="src/index.css" />
+            <p class="text-foreground-secondary leading-relaxed">
+                Setelah token didefinisikan, komponen memakai nama yang bermakna:
+            </p>
+            <div class="mt-4 overflow-x-auto rounded-lg border border-border">
+                <table class="w-full border-collapse text-left text-sm md:text-base">
+                    <thead>
+                        <tr class="bg-muted text-foreground">
+                            <th class="px-3 py-2 font-semibold">Token</th>
+                            <th class="px-3 py-2 font-semibold">Dipakai untuk</th>
+                            <th class="px-3 py-2 font-semibold">Contoh class</th>
+                        </tr>
+                    </thead>
+                    <tbody class="text-foreground-secondary">
+                        <tr class="border-t border-border align-top">
+                            <td class="px-3 py-2"><code class={inlineCode}>--color-page</code></td>
+                            <td class="px-3 py-2">Latar halaman</td>
+                            <td class="px-3 py-2"><code class={inlineCode}>bg-page</code></td>
+                        </tr>
+                        <tr class="border-t border-border align-top">
+                            <td class="px-3 py-2"><code class={inlineCode}>--color-surface</code></td>
+                            <td class="px-3 py-2">Latar kartu dan panel</td>
+                            <td class="px-3 py-2"><code class={inlineCode}>bg-surface</code></td>
+                        </tr>
+                        <tr class="border-t border-border align-top">
+                            <td class="px-3 py-2"><code class={inlineCode}>--color-text</code></td>
+                            <td class="px-3 py-2">Teks utama</td>
+                            <td class="px-3 py-2"><code class={inlineCode}>text-text</code></td>
+                        </tr>
+                        <tr class="border-t border-border align-top">
+                            <td class="px-3 py-2"><code class={inlineCode}>--color-muted</code></td>
+                            <td class="px-3 py-2">Teks sekunder</td>
+                            <td class="px-3 py-2"><code class={inlineCode}>text-muted</code></td>
+                        </tr>
+                        <tr class="border-t border-border align-top">
+                            <td class="px-3 py-2"><code class={inlineCode}>--color-primary</code></td>
+                            <td class="px-3 py-2">Aksi utama dan penanda brand</td>
+                            <td class="px-3 py-2"><code class={inlineCode}>bg-primary</code></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="mt-4 p-3 rounded-lg bg-warning/5 dark:bg-warning/10 border-l-4 border-warning">
+                <span class="font-bold text-warning">Hindari nilai mentah</span>
+                <p class="text-sm md:text-base text-foreground-secondary mt-1">
+                    <code class={inlineCode}>bg-[#fff8f4]</code> boleh dipakai sesekali untuk
+                    eksperimen, tetapi jangan jadi kebiasaan. Kalau sebuah nilai dipakai lebih dari
+                    sekali, jadikan token.
+                </p>
+            </div>
+            <p class="mt-3 text-foreground-secondary leading-relaxed">
+                Tailwind versi 4 tidak membutuhkan <code class={inlineCode}>tailwind.config.js</code>.
+                Token ditulis langsung di CSS lewat blok <code class={inlineCode}>@theme</code>.
+            </p>
+            <div class="mt-4 p-4 rounded-lg bg-accent/5 dark:bg-accent/10 border-2 border-dashed border-accent">
+                <span class="flex items-center gap-2 font-bold text-accent">
+                    <BookOpen class="w-4 h-4" />
+                    Bacaan Lanjutan
+                </span>
+                <ul class="text-base text-foreground-secondary mt-2 space-y-1 list-disc list-inside">
+                    <li>
+                        <a href="https://tailwindcss.com/docs/theme" target="_blank" rel="noopener noreferrer" class="text-primary hover:underline">Tailwind: Theme variables</a>
+                        : cara kerja <code class={inlineCode}>@theme</code> dan token di Tailwind v4.
+                    </li>
+                </ul>
+            </div>
+        </Step>
+
+        <!-- ===== BAGIAN C: PENUTUP ===== -->
+
+        <!-- ===== BAGIAN B: HANDS-ON 1 ===== -->
+
+        <Step id="h1-1" diagram="/diagrams/06/hands-on.webp">
+            <SectionDivider label="Hands-on 1" />
+            <StepHeader title="Ambil Starter" tone="success" />
+            <p class="text-foreground-secondary leading-relaxed">
+                Kita mulai dari titik awal yang sudah disiapkan, bukan dari folder kosong. Starter
+                berisi konfigurasi, aset gambar, data menu, token Tailwind, dan fungsi
+                <code class={inlineCode}>formatRupiah</code>. Yang dikosongkan hanya komponen yang
+                jadi tujuan belajar.
+            </p>
+            <TerminalBlock code={cloneStarter} title="Terminal: Clone starter Pertemuan 06" />
+            <p class="text-foreground-secondary leading-relaxed">
+                Hasil clone berisi dua folder, sesuai dua hands-on di pertemuan ini:
+            </p>
+            <CodeBlock
+                code={`praktikum-pert-6/
+└─ pertemuan-06-frontend-dasar/
+   ├─ hands-on-1-reactprop/      # titik awal Hands-on 1
+   └─ hands-on-2-dashboard/      # titik awal Hands-on 2`}
+                language="bash"
+                compact
+            />
+            <p class="mt-3 text-foreground-secondary leading-relaxed">
+                Masuk ke folder Hands-on 1. Semua langkah berikut dijalankan dari dalam folder ini.
+            </p>
+            <TerminalBlock code={`cd praktikum-pert-6/pertemuan-06-frontend-dasar/hands-on-1-reactprop`} title="Terminal: Masuk folder Hands-on 1" />
+            <a href={mainUrlHo1}
+               target="_blank" rel="noopener noreferrer"
+               class="my-3 inline-flex items-center gap-2 text-sm font-medium text-primary hover:underline">
+                <img src="/icons/github.svg" alt="" aria-hidden="true" class="w-4 h-4 invert-0 dark:invert" />
+                Versi jadi di GitHub (branch feat/pertemuan-6)
+            </a>
+            <p class="text-foreground-secondary leading-relaxed">
+                Tautan starter lengkap ada di
+                <a href={starterUrl} target="_blank" rel="noopener noreferrer" class="text-primary hover:underline">branch starter/pertemuan-06</a>,
+                kalau kamu ingin melihat isi folder sebelum menjalankan perintah.
+            </p>
+        </Step>
+
+        <Step id="h1-2" diagram="/diagrams/06/hands-on.webp">
+            <StepHeader title="Kenali Starter" tone="success" />
+            <TerminalBlock code={`npm install\nnpm run dev`} title="Terminal: Install dan jalankan" />
+            <p class="text-foreground-secondary leading-relaxed">
+                Vite akan menampilkan alamat lokal, biasanya
+                <code class={inlineCode}>http://localhost:5173</code>. Halaman yang terbuka belum
+                jadi. Header dan footer sudah ada, tetapi isi utama masih berupa teks TODO.
+            </p>
+            <p class="mt-3 text-foreground-secondary leading-relaxed">
+                Sebelum menulis kode, buka file berikut dan baca komentar TODO di dalamnya:
+            </p>
+            <ul class="mt-2 text-foreground-secondary leading-relaxed space-y-1.5 list-disc list-inside">
+                <li><code class={inlineCode}>src/App.tsx</code>: state dan komposisi halaman.</li>
+                <li><code class={inlineCode}>src/components/Header.tsx</code>: header dan pencarian.</li>
+                <li><code class={inlineCode}>src/components/MenuCard.tsx</code>: kartu menu.</li>
+                <li><code class={inlineCode}>src/components/MenuDetailModal.tsx</code>: modal detail, bonus.</li>
+                <li><code class={inlineCode}>src/components/CartPanel.tsx</code>: keranjang, bonus.</li>
+            </ul>
+            <div class="mt-4 p-3 rounded-lg bg-primary/5 dark:bg-primary/10 border-l-4 border-primary">
+                <span class="font-bold text-primary">Cara membaca starter</span>
+                <p class="text-sm md:text-base text-foreground-secondary mt-1">
+                    Interface dan import sudah disiapkan. Tugasmu mengisi markup dan logika di
+                    bagian yang ditandai TODO. Jangan mengubah nama file, nama komponen, atau bentuk
+                    props, karena semuanya sudah dipakai di file lain.
+                </p>
+            </div>
+        </Step>
+
+        <Step id="h1-3" diagram="/diagrams/06/hands-on.webp">
+            <StepHeader title="Header dan Pencarian" tone="success" />
+            <p class="text-foreground-secondary leading-relaxed">
+                Header menerima dua props: nilai pencarian dan fungsi untuk mengubahnya. Ini pola
+                <strong>controlled input</strong>. Nilai input tidak disimpan di dalam Header,
+                tetapi di <code class={inlineCode}>App</code>, supaya daftar menu dan kotak
+                pencarian membaca sumber data yang sama.
+            </p>
+            <CodeBlock code={headerSnippet} language="tsx" filename="src/components/Header.tsx" compact />
+            <p class="mt-3 text-foreground-secondary leading-relaxed">
+                Perhatikan <code class={inlineCode}>value=&#123;search&#125;</code> dan
+                <code class={inlineCode}>onChange</code>. Tanpa keduanya, input tetap bisa diketik,
+                tetapi React tidak tahu isinya dan daftar menu tidak ikut tersaring.
+            </p>
+            <div class="mt-4 p-3 rounded-lg bg-warning/5 dark:bg-warning/10 border-l-4 border-warning">
+                <span class="font-bold text-warning">Jangan simpan dua kali</span>
+                <p class="text-sm md:text-base text-foreground-secondary mt-1">
+                    Kalau nilai pencarian disimpan di Header dan juga di App, keduanya bisa berbeda.
+                    Simpan di satu tempat, lalu kirim lewat props. Ini penerapan single source of
+                    truth.
+                </p>
+            </div>
+        </Step>
+
+        <Step id="h1-4" diagram="/diagrams/06/hands-on.webp">
+            <StepHeader title="MenuCard dan Data" tone="success" />
+            <p class="text-foreground-secondary leading-relaxed">
+                Satu kartu menu menerima satu objek <code class={inlineCode}>menu</code>. Bentuk
+                objeknya sudah didefinisikan di <code class={inlineCode}>data/menu.ts</code>, jadi
+                TypeScript bisa mengingatkan kalau ada properti yang salah nama atau salah tipe.
+            </p>
+            <CodeBlock code={menuCardSnippet} language="tsx" filename="src/components/MenuCard.tsx" compact />
+            <p class="mt-3 text-foreground-secondary leading-relaxed">
+                Ada tiga hal yang perlu diperhatikan. Pertama, kartu menampilkan kondisi berbeda saat
+                menu tidak tersedia. Kedua, harga diformat lewat fungsi bantu, bukan ditulis ulang di
+                dalam komponen. Ketiga, gambar yang gagal dimuat diganti tampilan cadangan.
+            </p>
+            <CodeBlock code={formatSnippet} language="ts" filename="src/lib/format.ts" compact />
+            <p class="mt-3 text-foreground-secondary leading-relaxed">
+                <code class={inlineCode}>formatRupiah</code> sengaja dipisah ke
+                <code class={inlineCode}>lib/</code>. Kalau nanti dashboard juga butuh format harga,
+                fungsi yang sama bisa dipakai tanpa menyalin kode.
+            </p>
+        </Step>
+
+        <Step id="h1-5" diagram="/diagrams/06/hands-on.webp">
+            <StepHeader title="Menyusun Katalog" tone="success" />
+            <p class="text-foreground-secondary leading-relaxed">
+                Di <code class={inlineCode}>App</code> kita menyimpan empat state: pencarian,
+                kategori aktif, menu yang dipilih, dan isi keranjang. Dari state itu, daftar menu
+                yang tampil dihitung ulang, bukan disimpan sebagai state terpisah.
+            </p>
+            <CodeBlock code={appStateSnippet} language="tsx" filename="src/App.tsx (state dan filter)" compact />
+            <p class="mt-3 text-foreground-secondary leading-relaxed">
+                Bagian tampilan menyusun Header, grid MenuCard, dan CartPanel. Perhatikan
+                <code class={inlineCode}>key=&#123;menu.id&#125;</code> saat merender daftar, dan
+                kondisi saat hasil pencarian kosong.
+            </p>
+            <CodeBlock code={appRenderSnippet} language="tsx" filename="src/App.tsx (tampilan)" compact />
+            <div class="mt-4 p-3 rounded-lg bg-warning/5 dark:bg-warning/10 border-l-4 border-warning">
+                <span class="font-bold text-warning">Jangan ubah data asli</span>
+                <p class="text-sm md:text-base text-foreground-secondary mt-1">
+                    Menyaring menu dilakukan dengan <code class={inlineCode}>filter</code>, yang
+                    menghasilkan array baru. Jangan memakai <code class={inlineCode}>splice</code>
+                    atau mengubah <code class={inlineCode}>menuItems</code> langsung, karena data
+                    asli akan rusak dan pencarian berikutnya ikut salah.
+                </p>
+            </div>
+        </Step>
+
+        <Step id="h1-6" diagram="/diagrams/06/hands-on.webp">
+            <StepHeader title="Uji Katalog" tone="success" />
+            <p class="text-foreground-secondary leading-relaxed">
+                Pastikan server masih berjalan, lalu uji beberapa kasus berikut. Jumlah menu awal
+                ada 9.
+            </p>
+            <div class="mt-4 overflow-x-auto rounded-lg border border-border">
+                <table class="w-full border-collapse text-left text-sm md:text-base">
+                    <thead>
+                        <tr class="bg-muted text-foreground">
+                            <th class="px-3 py-2 font-semibold">Kasus</th>
+                            <th class="px-3 py-2 font-semibold">Hasil yang diharapkan</th>
+                        </tr>
+                    </thead>
+                    <tbody class="text-foreground-secondary">
+                        <tr class="border-t border-border align-top">
+                            <td class="px-3 py-2">Halaman pertama dibuka</td>
+                            <td class="px-3 py-2">9 kartu menu tampil</td>
+                        </tr>
+                        <tr class="border-t border-border align-top">
+                            <td class="px-3 py-2">Ketik "mie" di pencarian</td>
+                            <td class="px-3 py-2">Hanya menu yang memuat kata itu, termasuk dari nama warung</td>
+                        </tr>
+                        <tr class="border-t border-border align-top">
+                            <td class="px-3 py-2">Pilih kategori Minuman</td>
+                            <td class="px-3 py-2">Hanya menu minuman yang tampil</td>
+                        </tr>
+                        <tr class="border-t border-border align-top">
+                            <td class="px-3 py-2">Pencarian dan kategori tanpa hasil</td>
+                            <td class="px-3 py-2">Tampil pesan kosong dan tombol reset</td>
+                        </tr>
+                        <tr class="border-t border-border align-top">
+                            <td class="px-3 py-2">Klik kartu menu tersedia</td>
+                            <td class="px-3 py-2">Modal detail terbuka</td>
+                        </tr>
+                        <tr class="border-t border-border align-top">
+                            <td class="px-3 py-2">Tekan Escape atau klik latar modal</td>
+                            <td class="px-3 py-2">Modal tertutup</td>
+                        </tr>
+                        <tr class="border-t border-border align-top">
+                            <td class="px-3 py-2">Tambah menu ke keranjang</td>
+                            <td class="px-3 py-2">Jumlah item di header dan panel bertambah</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <p class="mt-4 text-foreground-secondary leading-relaxed">Kalau ada yang tidak sesuai:</p>
+            <div class="mt-3 overflow-x-auto rounded-lg border border-border">
+                <table class="w-full border-collapse text-left text-sm md:text-base">
+                    <thead>
+                        <tr class="bg-muted text-foreground">
+                            <th class="px-3 py-2 font-semibold">Gejala</th>
+                            <th class="px-3 py-2 font-semibold">Kemungkinan penyebab</th>
+                        </tr>
+                    </thead>
+                    <tbody class="text-foreground-secondary">
+                        <tr class="border-t border-border align-top">
+                            <td class="px-3 py-2">Input tidak bisa diketik</td>
+                            <td class="px-3 py-2"><code class={inlineCode}>value</code> diisi, tetapi <code class={inlineCode}>onChange</code> belum memanggil props</td>
+                        </tr>
+                        <tr class="border-t border-border align-top">
+                            <td class="px-3 py-2">Daftar tidak berubah saat mencari</td>
+                            <td class="px-3 py-2">Filter belum memakai nilai <code class={inlineCode}>search</code>, atau props tidak diteruskan</td>
+                        </tr>
+                        <tr class="border-t border-border align-top">
+                            <td class="px-3 py-2">Gambar menu kosong</td>
+                            <td class="px-3 py-2">Path gambar harus diawali <code class={inlineCode}>/images/</code> dan file ada di <code class={inlineCode}>public/images</code></td>
+                        </tr>
+                        <tr class="border-t border-border align-top">
+                            <td class="px-3 py-2">Style Tailwind tidak jalan</td>
+                            <td class="px-3 py-2">
+                                <code class={inlineCode}>import "./index.css"</code> hilang di <code class={inlineCode}>main.tsx</code>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </Step>
+
+        <Step id="h1-7" diagram="/diagrams/06/hands-on.webp">
+            <StepHeader title="Modal Detail Menu" tone="success" />
+            <p class="text-foreground-secondary leading-relaxed">
+                Modal ini bonus, tetapi isinya bagus untuk latihan state dan efek samping. Ada
+                jumlah pesanan yang dikelola sendiri, penutupan lewat tombol Escape, dan klik di
+                latar gelap untuk menutup.
+            </p>
+            <CodeBlock code={menuDetailSnippet} language="tsx" filename="src/components/MenuDetailModal.tsx" compact />
+            <p class="mt-3 text-foreground-secondary leading-relaxed">
+                <code class={inlineCode}>useEffect</code> dipakai untuk memasang listener keyboard,
+                lalu membersihkannya saat modal ditutup. Tanpa pembersihan, listener menumpuk setiap
+                kali modal dibuka.
+            </p>
+        </Step>
+
+        <Step id="h1-8" diagram="/diagrams/06/hands-on.webp">
+            <StepHeader title="Keranjang" tone="success" />
+            <p class="text-foreground-secondary leading-relaxed">
+                Keranjang menyimpan daftar item di state. Saat item ditambah, jumlah diubah, atau
+                item dihapus, kita membuat array baru, bukan mengubah array lama. Total item dan
+                total harga dihitung dari isi keranjang.
+            </p>
+            <CodeBlock code={appCartSnippet} language="tsx" filename="src/App.tsx (handler keranjang)" compact />
+            <CodeBlock code={cartPanelSnippet} language="tsx" filename="src/components/CartPanel.tsx" compact />
+            <div class="mt-4 p-3 rounded-lg bg-primary/5 dark:bg-primary/10 border-l-4 border-primary">
+                <span class="font-bold text-primary">Kenapa total tidak disimpan</span>
+                <p class="text-sm md:text-base text-foreground-secondary mt-1">
+                    Total adalah turunan dari item. Kalau disimpan sebagai state terpisah, ia bisa
+                    lupa diperbarui saat item berubah. Menghitung ulang setiap render selalu
+                    menghasilkan angka yang benar.
+                </p>
+            </div>
+        </Step>
+
+        <!-- ===== BAGIAN C: HANDS-ON 2 ===== -->
+
+        <Step id="h2-1" diagram="/diagrams/06/hands-on.webp">
+            <SectionDivider label="Hands-on 2" />
+            <StepHeader title="Ambil Starter Dashboard" tone="success" />
+            <p class="text-foreground-secondary leading-relaxed">
+                Hands-on 2 memakai folder kedua dari hasil clone yang sama. Isinya salinan lengkap
+                Hands-on 1, ditambah data pesanan dan kerangka dashboard. Kamu tidak perlu mengulang
+                katalog dari awal.
+            </p>
+            <TerminalBlock code={`cd ../hands-on-2-dashboard\nnpm install\nnpm run dev`} title="Terminal: Pindah ke Hands-on 2" />
+            <a href={mainUrlHo2}
+               target="_blank" rel="noopener noreferrer"
+               class="my-3 inline-flex items-center gap-2 text-sm font-medium text-primary hover:underline">
+                <img src="/icons/github.svg" alt="" aria-hidden="true" class="w-4 h-4 invert-0 dark:invert" />
+                Versi jadi di GitHub (branch feat/pertemuan-6)
+            </a>
+        </Step>
+
+        <Step id="h2-2" diagram="/diagrams/06/hands-on.webp">
+            <StepHeader title="DashboardHeader dan Layout" tone="success" />
+            <p class="text-foreground-secondary leading-relaxed">
+                Header dashboard lebih sederhana dari header katalog. Tidak ada pencarian dan tidak
+                ada tombol keluar, karena autentikasi baru dibahas di pertemuan 7. Tanggal hari ini
+                diformat memakai <code class={inlineCode}>Intl.DateTimeFormat</code> dengan locale
+                Indonesia.
+            </p>
+            <CodeBlock code={dashboardHeaderSnippet} language="tsx" filename="src/components/DashboardHeader.tsx" compact />
+            <p class="mt-3 text-foreground-secondary leading-relaxed">
+                Layout dashboard memakai <code class={inlineCode}>max-w-7xl</code> dan padding
+                responsif. Bagian atas berisi judul dan tanggal, bagian tengah berisi ringkasan, dan
+                bagian bawah berisi daftar pesanan.
+            </p>
+        </Step>
+
+        <Step id="h2-3" diagram="/diagrams/06/hands-on.webp">
+            <StepHeader title="OrderStats" tone="success" />
+            <p class="text-foreground-secondary leading-relaxed">
+                Ringkasan pesanan tidak menyimpan angka sendiri. Setiap kartu menghitung dari array
+                <code class={inlineCode}>orders</code> yang sama, sehingga angka selalu ikut berubah
+                saat status pesanan diperbarui.
+            </p>
+            <CodeBlock code={orderStatsSnippet} language="tsx" filename="src/components/OrderStats.tsx" compact />
+            <div class="mt-4 p-3 rounded-lg bg-warning/5 dark:bg-warning/10 border-l-4 border-warning">
+                <span class="font-bold text-warning">Jangan duplikasi state</span>
+                <p class="text-sm md:text-base text-foreground-secondary mt-1">
+                    Menyimpan <code class={inlineCode}>totalMenunggu</code> di state terpisah
+                    memaksa kamu memperbarui dua tempat setiap kali status berubah. Hitung dari data
+                    sumbernya.
+                </p>
+            </div>
+        </Step>
+
+        <Step id="h2-4" diagram="/diagrams/06/hands-on.webp">
+            <StepHeader title="OrderList dan OrderCard" tone="success" />
+            <p class="text-foreground-secondary leading-relaxed">
+                OrderList menyaring pesanan berdasarkan kata kunci dan filter status. Hasil
+                saringannya dihitung dengan <code class={inlineCode}>useMemo</code> supaya tidak
+                diulang tanpa perlu.
+            </p>
+            <CodeBlock code={orderListSnippet} language="tsx" filename="src/components/OrderList.tsx" compact />
+            <p class="mt-3 text-foreground-secondary leading-relaxed">
+                OrderCard menentukan aksi berikutnya berdasarkan status sekarang. Menunggu menjadi
+                Diproses, Diproses menjadi Selesai, dan Selesai tidak punya aksi lagi.
+            </p>
+            <CodeBlock code={orderCardSnippet} language="tsx" filename="src/components/OrderCard.tsx" compact />
+        </Step>
+
+        <Step id="h2-5" diagram="/diagrams/06/hands-on.webp">
+            <StepHeader title="Uji Ubah Status" tone="success" />
+            <p class="text-foreground-secondary leading-relaxed">
+                Dashboard menyimpan daftar pesanan di state. Saat status diubah, array diganti
+                dengan versi baru yang hanya mengubah satu pesanan. Statistik dan daftar ikut
+                menyesuaikan karena semuanya membaca state yang sama.
+            </p>
+            <CodeBlock code={dashboardSnippet} language="tsx" filename="src/pages/Dashboard.tsx" compact />
+            <p class="mt-4 text-foreground-secondary leading-relaxed">Kasus uji:</p>
+            <div class="mt-3 overflow-x-auto rounded-lg border border-border">
+                <table class="w-full border-collapse text-left text-sm md:text-base">
+                    <thead>
+                        <tr class="bg-muted text-foreground">
+                            <th class="px-3 py-2 font-semibold">Kasus</th>
+                            <th class="px-3 py-2 font-semibold">Hasil yang diharapkan</th>
+                        </tr>
+                    </thead>
+                    <tbody class="text-foreground-secondary">
+                        <tr class="border-t border-border align-top">
+                            <td class="px-3 py-2">Data awal</td>
+                            <td class="px-3 py-2">Total 8, Menunggu 3, Diproses 2, Selesai 3</td>
+                        </tr>
+                        <tr class="border-t border-border align-top">
+                            <td class="px-3 py-2">Cari "MB-012"</td>
+                            <td class="px-3 py-2">Hanya satu pesanan tampil</td>
+                        </tr>
+                        <tr class="border-t border-border align-top">
+                            <td class="px-3 py-2">Filter Selesai</td>
+                            <td class="px-3 py-2">Tiga pesanan selesai tampil</td>
+                        </tr>
+                        <tr class="border-t border-border align-top">
+                            <td class="px-3 py-2">Klik "Mulai proses"</td>
+                            <td class="px-3 py-2">Status jadi Diproses, jumlah Menunggu turun, Diproses naik</td>
+                        </tr>
+                        <tr class="border-t border-border align-top">
+                            <td class="px-3 py-2">Klik "Selesaikan"</td>
+                            <td class="px-3 py-2">Status jadi Selesai dan tombol aksi hilang</td>
+                        </tr>
+                        <tr class="border-t border-border align-top">
+                            <td class="px-3 py-2">Filter tanpa hasil</td>
+                            <td class="px-3 py-2">Pesan kosong dan tombol reset muncul</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </Step>
+
+        <Step id="c1" diagram="/diagrams/06/dashboard.webp">
+            <SectionDivider label="Penutup" />
+            <StepHeader title="Recap" tone="primary" />
+            <p class="text-foreground-secondary leading-relaxed">
+                Frontend adalah sisi yang dilihat dan disentuh pengguna. Supaya tidak jadi satu file
+                raksasa, antarmuka dipecah menjadi komponen dengan tanggung jawab jelas. React
+                menjaga tampilan tetap sesuai data, JSX membuat struktur UI bisa ditulis di dalam
+                kode, dan Tailwind menyusun styling dari utility dengan token sebagai sumber
+                keputusan desain.
+            </p>
+            <div class="mt-4 overflow-x-auto rounded-lg border border-border">
+                <table class="w-full border-collapse text-left text-sm md:text-base">
+                    <thead>
+                        <tr class="bg-muted text-foreground">
+                            <th class="px-3 py-2 font-semibold">Konsep</th>
+                            <th class="px-3 py-2 font-semibold">Inti yang perlu diingat</th>
+                        </tr>
+                    </thead>
+                    <tbody class="text-foreground-secondary">
+                        <tr class="border-t border-border align-top">
+                            <td class="px-3 py-2 font-semibold text-foreground">Frontend</td>
+                            <td class="px-3 py-2">Menampilkan, menerima input, dan berkomunikasi dengan backend</td>
+                        </tr>
+                        <tr class="border-t border-border align-top">
+                            <td class="px-3 py-2 font-semibold text-foreground">Komponen</td>
+                            <td class="px-3 py-2">Bagian UI kecil dengan tanggung jawab jelas dan bisa dipakai ulang</td>
+                        </tr>
+                        <tr class="border-t border-border align-top">
+                            <td class="px-3 py-2 font-semibold text-foreground">React</td>
+                            <td class="px-3 py-2">Tampilan mengikuti data, bukan diperintah satu per satu</td>
+                        </tr>
+                        <tr class="border-t border-border align-top">
+                            <td class="px-3 py-2 font-semibold text-foreground">Props dan state</td>
+                            <td class="px-3 py-2">Props masuk dari induk, state milik komponen sendiri</td>
+                        </tr>
+                        <tr class="border-t border-border align-top">
+                            <td class="px-3 py-2 font-semibold text-foreground">Tailwind</td>
+                            <td class="px-3 py-2">Utility-first, dengan token untuk nilai yang dipakai berulang</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <p class="mt-4 text-foreground-secondary leading-relaxed">
+                Di hands-on tadi, kita menyusun katalog menu dari komponen kecil, lalu membuat
+                dashboard pesanan dari komponen yang sama polanya. Setelah ini, pertemuan 7
+                menyambungkan frontend ke API, menambahkan routing, dan membahas alur login.
+            </p>
+        </Step>
+
+    </ScrollyLayout>
+
+    <ScrollyTOC sections={tocSections} />
+</ScrollySection>
+
+<script>
+    import { initScrolly } from '../../lib/scrollyClient';
+    initScrolly();
+</script>
