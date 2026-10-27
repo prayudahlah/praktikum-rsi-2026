@@ -1,0 +1,151 @@
+// frontend/src/lib/api.ts
+
+const fallbackBaseUrl = 'http://localhost:3000/api';
+const envBaseUrl = import.meta.env.VITE_API_BASE_URL?.trim();
+export const API_BASE_URL = (envBaseUrl || fallbackBaseUrl).replace(/\/$/, '');
+
+export class ApiError extends Error {
+  readonly status: number;
+  readonly details: ApiErrorDetail[];
+
+  constructor(message: string, status: number, details: ApiErrorDetail[] = []) {
+    super(message);
+    this.name = 'ApiError';
+    this.status = status;
+    this.details = details;
+  }
+}
+
+// ... helper isRecord() dan isErrorDetail()
+
+async function request<T>(path: string, init: RequestInit = {}): Promise<T> {
+  const headers = new Headers(init.headers);
+
+  headers.set('Accept', 'application/json');
+
+  if (init.body !== undefined && !headers.has('Content-Type')) {
+    headers.set('Content-Type', 'application/json');
+  }
+
+  let response: Response;
+
+  try {
+    response = await fetch(`${API_BASE_URL}${path}`, {
+      ...init,
+      headers,
+      cache: 'no-store',
+    });
+  } catch {
+    throw new ApiError(
+      'Tidak dapat terhubung ke server. Pastikan backend berjalan.',
+      0,
+    );
+  }
+
+  if (response.status === 204) {
+    return undefined as T;
+  }
+
+  const rawBody = await response.text();
+  let payload: unknown = null;
+
+  if (rawBody) {
+    try {
+      payload = JSON.parse(rawBody);
+    } catch {
+      payload = null;
+    }
+  }
+
+  if (!response.ok) {
+    const failure = isRecord(payload) ? payload : {};
+    const message =
+      typeof failure.message === 'string'
+        ? failure.message
+        : `Permintaan gagal dengan status ${response.status}`;
+    const details = Array.isArray(failure.errors)
+      ? failure.errors.filter(isErrorDetail)
+      : [];
+
+    throw new ApiError(message, response.status, details);
+  }
+
+  if (!isRecord(payload) || !('data' in payload)) {
+    throw new ApiError('Respons server tidak memiliki format yang valid.', response.status);
+  }
+
+  return (payload as unknown as ApiEnvelope<T>).data;
+}
+
+export function getMenus(): Promise<MenuItem[]> {
+  return request<MenuItem[]>('/menu');
+}
+
+export function getStalls(): Promise<Stall[]> {
+  return request<Stall[]>('/stalls');
+}
+
+// frontend/src/hooks/useMenuData.ts
+
+import { useCallback, useEffect, useRef, useState } from 'react';
+import { getMenus, getStalls } from '../lib/api';
+import type { MenuItem, Stall } from '../types/menu';
+
+export function useMenuData() {
+  const [menus, setMenus] = useState<MenuItem[]>([]);
+  const [stalls, setStalls] = useState<Stall[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [reloadKey, setReloadKey] = useState(0);
+  const requestIdRef = useRef(0);
+
+  const reload = useCallback(() => {
+    setReloadKey((current) => current + 1);
+  }, []);
+
+  useEffect(() => {
+    const requestId = requestIdRef.current + 1;
+    requestIdRef.current = requestId;
+    let cancelled = false;
+
+    async function loadData(): Promise<void> {
+      setIsLoading(true);
+      setError(null);
+
+      try {
+        const [menuData, stallData] = await Promise.all([getMenus(), getStalls()]);
+
+        if (cancelled || requestId !== requestIdRef.current) return;
+
+        setMenus(menuData);
+        setStalls(stallData);
+      } catch (caughtError) {
+        if (cancelled || requestId !== requestIdRef.current) return;
+
+        setError(
+          caughtError instanceof Error
+            ? caughtError.message
+            : 'Gagal memuat data dari server.',
+        );
+      } finally {
+        if (!cancelled && requestId === requestIdRef.current) {
+          setIsLoading(false);
+        }
+      }
+    }
+
+    void loadData();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [reloadKey]);
+
+  return {
+    menus,
+    stalls,
+    isLoading,
+    error,
+    reload,
+  };
+}

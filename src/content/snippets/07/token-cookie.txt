@@ -1,0 +1,60 @@
+// backend/src/utils/cookie.ts
+
+import type { Response } from 'express';
+import { env } from '../config/env.ts';
+import { getTokenMaxAge } from '../services/tokenService.ts';
+
+const secure = env.nodeEnv === 'production';
+
+export function setAuthCookie(res: Response, token: string): void {
+  res.cookie(env.authCookieName, token, {
+    httpOnly: true,
+    sameSite: 'lax',
+    secure,
+    path: '/',
+    maxAge: getTokenMaxAge(token),
+  });
+}
+
+export function clearAuthCookie(res: Response): void {
+  res.clearCookie(env.authCookieName, {
+    httpOnly: true,
+    sameSite: 'lax',
+    secure,
+    path: '/',
+  });
+}
+
+// backend/src/controllers/authController.ts
+
+  login = async (_req: Request, res: Response): Promise<void> => {
+    const input = getValidated<LoginInput>(res, 'body');
+    const result = await this.authService.login(input);
+
+    setAuthCookie(res, result.token);
+    res.status(200).json({ status: 'success', data: result.user });
+  };
+
+  me = async (req: Request, res: Response): Promise<void> => {
+    const user = getUser(req);
+    const data = await this.authService.me(user.id);
+
+    res.status(200).json({ status: 'success', data });
+  };
+
+  logout = async (_req: Request, res: Response): Promise<void> => {
+    clearAuthCookie(res);
+    res.status(204).send();
+  };
+
+// frontend/src/lib/http.ts
+
+export const http = axios.create({
+  baseURL,
+  withCredentials: true,
+  headers: {
+    Accept: 'application/json',
+    'Content-Type': 'application/json',
+  },
+  timeout: 15000,
+});
