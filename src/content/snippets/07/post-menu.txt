@@ -1,0 +1,43 @@
+// frontend/src/types/menu.ts
+
+export interface MenuPayload {
+  stallId: number;
+  name: string;
+  price: number;
+  isAvailable: boolean;
+}
+
+// frontend/src/lib/api.ts
+
+export function createMenu(payload: MenuPayload): Promise<MenuItem> {
+  return request<MenuItem>('/menu', {
+    method: 'POST',
+    body: JSON.stringify(payload),
+  });
+}
+
+// frontend/src/App.tsx
+
+async function handleMenuSubmit(payload: MenuPayload): Promise<void> {
+  setIsMutating(true);
+
+  try {
+    if (editingMenu) {
+      await updateMenu(editingMenu.id, payload);
+      setToast({
+        type: 'success',
+        message: 'Menu berhasil diperbarui.',
+      });
+    } else {
+      await createMenu(payload);
+      setToast({
+        type: 'success',
+        message: 'Menu baru berhasil ditambahkan.',
+      });
+    }
+
+    reload();
+  } finally {
+    setIsMutating(false);
+  }
+}
