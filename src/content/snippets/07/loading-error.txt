@@ -1,0 +1,96 @@
+// frontend/src/hooks/useMenuData.ts
+
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  // ... state menus, stalls, reloadKey, dan requestIdRef
+
+  return {
+    menus,
+    stalls,
+    isLoading,
+    error,
+    reload,
+  };
+
+// frontend/src/App.tsx
+
+  function handleRefresh(): void {
+    reload();
+  }
+
+        <section className="mt-4" aria-label="Daftar menu">
+          {isLoading ? (
+            <StatePanel variant="loading" />
+          ) : error ? (
+            <StatePanel
+              variant="error"
+              title="Backend tidak dapat dihubungi"
+              message={error}
+              actionLabel="Coba Lagi"
+              onAction={handleRefresh}
+            />
+          ) : filteredMenus.length === 0 ? (
+            <StatePanel
+              variant="empty"
+              title={hasFilters ? 'Menu tidak ditemukan' : 'Belum ada menu'}
+              message={
+                hasFilters
+                  ? 'Coba ubah kata kunci atau reset filter untuk melihat menu lainnya.'
+                  : 'Tambahkan menu pertama untuk mulai mengelola kantin.'
+              }
+              actionLabel={hasFilters ? 'Reset Filter' : 'Tambah Menu'}
+              actionIcon={hasFilters ? 'reset' : 'add'}
+              onAction={handleEmptyAction}
+            />
+          ) : (
+            <MenuTable
+              menus={filteredMenus}
+              isMutating={isMutating}
+              onEdit={handleOpenEdit}
+              onDelete={setDeletingMenu}
+            />
+          )}
+        </section>
+
+// frontend/src/components/StatePanel.tsx (varian loading dan error)
+
+  if (variant === 'loading') {
+    return (
+      <div
+        className="space-y-3"
+        role="status"
+        aria-label="Memuat data menu"
+        aria-busy="true"
+      >
+        {[0, 1, 2].map((item) => (
+          <div
+            key={item}
+            className="h-24 animate-pulse rounded-card border border-border bg-surface"
+          />
+        ))}
+        <span className="sr-only">Memuat data menu...</span>
+      </div>
+    );
+  }
+
+  const isError = variant === 'error';
+  const Icon = isError ? AlertCircle : Inbox;
+  const ActionIcon = actionIcons[actionIcon];
+
+  return (
+    <div className="rounded-card border border-border bg-surface px-5 py-12 text-center shadow-card">
+      {/* ... ikon, judul, dan pesan ... */}
+
+      {onAction && actionLabel ? (
+        <button
+          type="button"
+          onClick={onAction}
+          className="mt-5 inline-flex h-11 items-center justify-center gap-2 rounded-control bg-primary px-4 text-sm font-semibold text-white transition hover:bg-primary-hover"
+        >
+          <ActionIcon className="size-4" aria-hidden="true" />
+          {actionLabel}
+        </button>
+      ) : null}
+    </div>
+  );

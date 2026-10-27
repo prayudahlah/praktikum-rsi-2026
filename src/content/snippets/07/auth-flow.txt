@@ -1,0 +1,61 @@
+// frontend/src/lib/api.ts
+
+const data = <T>(response: { data: ApiResponse<T> }): T => response.data.data;
+
+export const authApi = {
+  register: (input: RegisterInput) =>
+    http.post<ApiResponse<User>>('/auth/register', input).then(data),
+  login: (input: LoginInput) =>
+    http.post<ApiResponse<User>>('/auth/login', input).then(data),
+  me: () => http.get<ApiResponse<User>>('/auth/me').then(data),
+  logout: () => http.post('/auth/logout'),
+};
+
+// frontend/src/context/AuthContext.tsx
+
+useEffect(() => {
+  let active = true;
+
+  const handleUnauthorized = () => {
+    if (active) setUser(null);
+  };
+
+  window.addEventListener('auth:unauthorized', handleUnauthorized);
+
+  authApi
+    .me()
+    .then((currentUser) => {
+      if (active) setUser(currentUser);
+    })
+    .catch((error: unknown) => {
+      if (
+        !axios.isAxiosError(error) ||
+        (error.response?.status !== 401 && error.response?.status !== 403)
+      ) {
+        console.error('Gagal memeriksa sesi:', error);
+      }
+      if (active) setUser(null);
+    })
+    .finally(() => {
+      if (active) setIsReady(true);
+    });
+
+  return () => {
+    active = false;
+    window.removeEventListener('auth:unauthorized', handleUnauthorized);
+  };
+}, []);
+
+const login = useCallback(async (input: LoginInput) => {
+  const currentUser = await authApi.login(input);
+  setUser(currentUser);
+  return currentUser;
+}, []);
+
+const logout = useCallback(async () => {
+  try {
+    await authApi.logout();
+  } finally {
+    setUser(null);
+  }
+}, []);

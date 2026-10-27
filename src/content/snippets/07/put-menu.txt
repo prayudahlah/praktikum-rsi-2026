@@ -1,0 +1,22 @@
+// frontend/src/lib/api.ts
+
+export function updateMenu(id: number, payload: MenuPayload): Promise<MenuItem> {
+  return request<MenuItem>(`/menu/${id}`, {
+    method: 'PUT',
+    body: JSON.stringify(payload),
+  });
+}
+
+// frontend/src/App.tsx (cabang edit di handleMenuSubmit)
+
+    if (editingMenu) {
+      await updateMenu(editingMenu.id, payload);
+      setToast({
+        type: 'success',
+        message: 'Menu berhasil diperbarui.',
+      });
+    } else {
+      // ... cabang createMenu dibahas di slide POST
+    }
+
+    reload();

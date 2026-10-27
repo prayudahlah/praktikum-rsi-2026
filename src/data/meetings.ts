@@ -60,7 +60,7 @@ export const meetings: Meeting[] = [
     description:
       "Fetch/axios ke REST API, menampilkan data backend di frontend, mengirim form ke backend, auth flow di sisi frontend.",
     order: 7,
-    published: false,
+    published: true,
   },
   {
     slug: "08-validation-error-handling",

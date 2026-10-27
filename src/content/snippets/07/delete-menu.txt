@@ -1,0 +1,32 @@
+// frontend/src/lib/api.ts
+
+export function deleteMenu(id: number): Promise<void> {
+  return request<void>(`/menu/${id}`, {
+    method: 'DELETE',
+  });
+}
+
+// frontend/src/lib/api.ts (di dalam request)
+
+  if (response.status === 204) {
+    return undefined as T;
+  }
+
+// frontend/src/App.tsx
+
+async function handleDeleteMenu(): Promise<void> {
+  if (!deletingMenu) return;
+
+  setIsMutating(true);
+
+  try {
+    await deleteMenu(deletingMenu.id);
+    setToast({
+      type: 'success',
+      message: `Menu "${deletingMenu.name}" berhasil dihapus.`,
+    });
+    reload();
+  } finally {
+    setIsMutating(false);
+  }
+}
