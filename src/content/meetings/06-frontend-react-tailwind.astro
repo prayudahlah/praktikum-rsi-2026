@@ -189,7 +189,7 @@ const structureExample = `praktikum-pert-6/
    └─ vite.config.ts`;
 ---
 
-<ScrollySection>
+<ScrollySection className="meeting-relaxed">
     <ScrollyLayout defaultSrc="/diagrams/06/perkenalan-frontend.webp">
 
         <!-- ===== BAGIAN A: KONSEP FRONTEND ===== -->
@@ -363,8 +363,7 @@ const structureExample = `praktikum-pert-6/
             </p>
             <CodeBlock code={reactState} language="tsx" filename="Keranjang.tsx" compact />
             <p class="mt-3 text-foreground-secondary leading-relaxed">
-                Di contoh kedua, tidak ada perintah "ubah teks tombol". Kita hanya mengubah
-                <code class={inlineCode}>jumlah</code>, lalu React memperbarui tampilan yang
+                Di contoh kedua, tidak ada perintah "ubah teks tombol". Kita hanya mengubah <code class={inlineCode}>jumlah</code>, lalu React memperbarui tampilan yang
                 memakainya. Inilah yang disebut deklaratif.
             </p>
             <p class="mt-3 text-foreground-secondary leading-relaxed">
@@ -400,8 +399,7 @@ const structureExample = `praktikum-pert-6/
             <p class="text-foreground-secondary leading-relaxed">
                 JSX adalah ekstensi sintaks JavaScript yang membuat kita bisa menulis struktur
                 antarmuka mirip HTML di dalam kode JavaScript. TSX adalah versi TypeScript-nya.
-                Karena project kita memakai TypeScript, semua file komponen berekstensi
-                <code class={inlineCode}>.tsx</code>.
+                Karena project kita memakai TypeScript, semua file komponen berekstensi <code class={inlineCode}>.tsx</code>.
             </p>
             <CodeBlock code={jsxExample} language="tsx" filename="MenuCard.tsx" />
             <p class="text-foreground-secondary leading-relaxed">
@@ -454,8 +452,7 @@ const structureExample = `praktikum-pert-6/
             <CodeBlock code={propsFlow} language="tsx" filename="Catalog.tsx dan MenuCard.tsx" />
             <p class="mt-3 text-foreground-secondary leading-relaxed">
                 Perhatikan dua hal. Pertama, <code class={inlineCode}>menu</code> dikirim sebagai
-                data, sehingga satu MenuCard bisa menampilkan menu apa pun. Kedua,
-                <code class={inlineCode}>onSelect</code> dikirim sebagai fungsi. Anak tidak tahu
+                data, sehingga satu MenuCard bisa menampilkan menu apa pun. Kedua, <code class={inlineCode}>onSelect</code> dikirim sebagai fungsi. Anak tidak tahu
                 apa yang harus terjadi saat tombol diklik, ia hanya memanggil fungsi itu. Induk yang
                 memutuskan.
             </p>
@@ -586,10 +583,8 @@ const structureExample = `praktikum-pert-6/
                 yang sama.
             </p>
             <p class="mt-3 text-foreground-secondary leading-relaxed">
-                Masalah muncul kalau warna ditulis mentah di mana-mana, misal
-                <code class={inlineCode}>bg-[#fff8f4]</code> di sepuluh tempat. Saat warna brand
-                berubah, sepuluh tempat itu harus dicari satu per satu. Solusinya
-                <strong>design token</strong>: beri nama pada keputusan desain, lalu pakai namanya.
+                Masalah muncul kalau warna ditulis mentah di mana-mana, misal <code class={inlineCode}>bg-[#fff8f4]</code> di sepuluh tempat. Saat warna brand
+                berubah, sepuluh tempat itu harus dicari satu per satu. Solusinya <strong>design token</strong>: beri nama pada keputusan desain, lalu pakai namanya.
             </p>
             <CodeBlock code={tokenExample} language="css" filename="src/index.css" />
             <p class="text-foreground-secondary leading-relaxed">
@@ -668,8 +663,7 @@ const structureExample = `praktikum-pert-6/
             <StepHeader title="Ambil Starter" tone="success" />
             <p class="text-foreground-secondary leading-relaxed">
                 Kita mulai dari titik awal yang sudah disiapkan, bukan dari folder kosong. Starter
-                berisi konfigurasi, aset gambar, data menu, token Tailwind, dan fungsi
-                <code class={inlineCode}>formatRupiah</code>. Yang dikosongkan hanya komponen yang
+                berisi konfigurasi, aset gambar, data menu, token Tailwind, dan fungsi <code class={inlineCode}>formatRupiah</code>. Yang dikosongkan hanya komponen yang
                 jadi tujuan belajar.
             </p>
             <TerminalBlock code={cloneStarter} title="Terminal: Clone starter Pertemuan 06" />
@@ -705,8 +699,7 @@ const structureExample = `praktikum-pert-6/
             <StepHeader title="Kenali Starter" tone="success" />
             <TerminalBlock code={`npm install\nnpm run dev`} title="Terminal: Install dan jalankan" />
             <p class="text-foreground-secondary leading-relaxed">
-                Vite akan menampilkan alamat lokal, biasanya
-                <code class={inlineCode}>http://localhost:5173</code>. Halaman yang terbuka belum
+                Vite akan menampilkan alamat lokal, biasanya <code class={inlineCode}>http://localhost:5173</code>. Halaman yang terbuka belum
                 jadi. Header dan footer sudah ada, tetapi isi utama masih berupa teks TODO.
             </p>
             <p class="mt-3 text-foreground-secondary leading-relaxed">
@@ -732,15 +725,13 @@ const structureExample = `praktikum-pert-6/
         <Step id="h1-3" diagram="/diagrams/06/hands-on.webp">
             <StepHeader title="Header dan Pencarian" tone="success" />
             <p class="text-foreground-secondary leading-relaxed">
-                Header menerima dua props: nilai pencarian dan fungsi untuk mengubahnya. Ini pola
-                <strong>controlled input</strong>. Nilai input tidak disimpan di dalam Header,
+                Header menerima dua props: nilai pencarian dan fungsi untuk mengubahnya. Ini pola <strong>controlled input</strong>. Nilai input tidak disimpan di dalam Header,
                 tetapi di <code class={inlineCode}>App</code>, supaya daftar menu dan kotak
                 pencarian membaca sumber data yang sama.
             </p>
             <CodeBlock code={headerSnippet} language="tsx" filename="src/components/Header.tsx" compact />
             <p class="mt-3 text-foreground-secondary leading-relaxed">
-                Perhatikan <code class={inlineCode}>value=&#123;search&#125;</code> dan
-                <code class={inlineCode}>onChange</code>. Tanpa keduanya, input tetap bisa diketik,
+                Perhatikan <code class={inlineCode}>value=&#123;search&#125;</code> dan <code class={inlineCode}>onChange</code>. Tanpa keduanya, input tetap bisa diketik,
                 tetapi React tidak tahu isinya dan daftar menu tidak ikut tersaring.
             </p>
             <div class="mt-4 p-3 rounded-lg bg-warning/5 dark:bg-warning/10 border-l-4 border-warning">
@@ -768,8 +759,7 @@ const structureExample = `praktikum-pert-6/
             </p>
             <CodeBlock code={formatSnippet} language="ts" filename="src/lib/format.ts" compact />
             <p class="mt-3 text-foreground-secondary leading-relaxed">
-                <code class={inlineCode}>formatRupiah</code> sengaja dipisah ke
-                <code class={inlineCode}>lib/</code>. Kalau nanti dashboard juga butuh format harga,
+                <code class={inlineCode}>formatRupiah</code> sengaja dipisah ke <code class={inlineCode}>lib/</code>. Kalau nanti dashboard juga butuh format harga,
                 fungsi yang sama bisa dipakai tanpa menyalin kode.
             </p>
         </Step>
@@ -790,11 +780,8 @@ const structureExample = `praktikum-pert-6/
             <div class="mt-4 p-3 rounded-lg bg-warning/5 dark:bg-warning/10 border-l-4 border-warning">
                 <span class="font-bold text-warning">Urutan deklarasi penting</span>
                 <p class="text-sm md:text-base text-foreground-secondary mt-1">
-                    Semua state dan fungsi harus ditulis <strong>sebelum</strong> blok
-                    <code class={inlineCode}>return</code>. Kode dieksekusi dari atas ke bawah, dan
-                    <code class={inlineCode}>return</code> mengakhiri fungsi. Kalau handler ditulis
-                    setelahnya, ia tidak pernah dibuat dan JSX akan gagal dengan pesan
-                    <code class={inlineCode}>is not defined</code>.
+                    Semua state dan fungsi harus ditulis <strong>sebelum</strong> blok <code class={inlineCode}>return</code>. Kode dieksekusi dari atas ke bawah, dan <code class={inlineCode}>return</code> mengakhiri fungsi. Kalau handler ditulis
+                    setelahnya, ia tidak pernah dibuat dan JSX akan gagal dengan pesan <code class={inlineCode}>is not defined</code>.
                 </p>
             </div>
             <p class="mt-4 text-foreground-secondary leading-relaxed">
@@ -811,8 +798,7 @@ const structureExample = `praktikum-pert-6/
                 <span class="font-bold text-primary">Jangan ubah data asli</span>
                 <p class="text-sm md:text-base text-foreground-secondary mt-1">
                     Menyaring menu dilakukan dengan <code class={inlineCode}>filter</code>, yang
-                    menghasilkan array baru. Jangan memakai <code class={inlineCode}>splice</code>
-                    atau mengubah <code class={inlineCode}>menuItems</code> langsung, karena data
+                    menghasilkan array baru. Jangan memakai <code class={inlineCode}>splice</code> atau mengubah <code class={inlineCode}>menuItems</code> langsung, karena data
                     asli akan rusak dan pencarian berikutnya ikut salah.
                 </p>
             </div>
@@ -887,8 +873,7 @@ const structureExample = `praktikum-pert-6/
                         <tr class="border-t border-border align-top">
                             <td class="px-3 py-2"><code class={inlineCode}>changeQuantity is not defined</code></td>
                             <td class="px-3 py-2">
-                                Handler keranjang belum ditambahkan, atau ditulis setelah
-                                <code class={inlineCode}>return</code>. Pindahkan ke atas blok tampilan.
+                                Handler keranjang belum ditambahkan, atau ditulis setelah <code class={inlineCode}>return</code>. Pindahkan ke atas blok tampilan.
                             </td>
                         </tr>
                     </tbody>
@@ -1006,8 +991,7 @@ const structureExample = `praktikum-pert-6/
         <Step id="h2-3" diagram="/diagrams/06/hands-on.webp">
             <StepHeader title="OrderStats" tone="success" />
             <p class="text-foreground-secondary leading-relaxed">
-                Ringkasan pesanan tidak menyimpan angka sendiri. Setiap kartu menghitung dari array
-                <code class={inlineCode}>orders</code> yang sama, sehingga angka selalu ikut berubah
+                Ringkasan pesanan tidak menyimpan angka sendiri. Setiap kartu menghitung dari array <code class={inlineCode}>orders</code> yang sama, sehingga angka selalu ikut berubah
                 saat status pesanan diperbarui.
             </p>
             <CodeBlock code={orderStatsSnippet} language="tsx" filename="src/components/OrderStats.tsx" compact />
