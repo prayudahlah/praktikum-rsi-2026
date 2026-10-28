@@ -15,15 +15,18 @@ import { BookOpen } from '@lucide/astro';
 import routingSnippet from '../snippets/07/routing.ts?raw';
 import axiosClientSnippet from '../snippets/07/axios-client.txt?raw';
 import tokenCookieSnippet from '../snippets/07/token-cookie.txt?raw';
-import h1ApiGet from '../snippets/07/h1-api-get.ts?raw';
-import h1ApiCreate from '../snippets/07/h1-api-create.ts?raw';
-import h1ApiUpdate from '../snippets/07/h1-api-update.ts?raw';
-import h1ApiDelete from '../snippets/07/h1-api-delete.ts?raw';
-import h1UseMenuData from '../snippets/07/h1-use-menu-data.tsx?raw';
-import h2HttpInterceptor from '../snippets/07/h2-http-interceptor.ts?raw';
-import h2AuthApi from '../snippets/07/h2-auth-api.ts?raw';
-import h2MenuApi from '../snippets/07/h2-menu-api.ts?raw';
-import h2ProtectedRoute from '../snippets/07/h2-protected-route.tsx?raw';
+import h1ApiGet from '../snippets/07/h1-api-get.txt?raw';
+import h1ApiCreate from '../snippets/07/h1-api-create.txt?raw';
+import h1ApiUpdate from '../snippets/07/h1-api-update.txt?raw';
+import h1ApiDelete from '../snippets/07/h1-api-delete.txt?raw';
+import h1UseMenuData from '../snippets/07/h1-use-menu-data.txt?raw';
+import h2HttpInterceptor from '../snippets/07/h2-http-interceptor.txt?raw';
+import h2AuthApi from '../snippets/07/h2-auth-api.txt?raw';
+import h2MenuApi from '../snippets/07/h2-menu-api.txt?raw';
+import h2ProtectedRoute from '../snippets/07/h2-protected-route.txt?raw';
+import envHo1Backend from '../snippets/07/env-ho1-backend.txt?raw';
+import envHo2Backend from '../snippets/07/env-ho2-backend.txt?raw';
+import envFrontend from '../snippets/07/env-frontend.txt?raw';
 
 const repoUrl = 'https://github.com/rrrambatsigma/praktikum-rsi-2026';
 const featBranch = 'feat/pertemuan-07-integrasi-fe-be';
@@ -35,19 +38,15 @@ const ho2Url = `${repoUrl}/tree/${featBranch}/${ho2Path}`;
 
 const cloneProject = `git clone --single-branch --branch ${starterBranch} ${repoUrl}.git praktikum-pert-7`;
 const runHo1Backend = `cd praktikum-pert-7/${ho1Path}/backend
-Copy-Item .env.example .env
 npm install
 npm run dev`;
 const runHo1Frontend = `cd praktikum-pert-7/${ho1Path}/frontend
-Copy-Item .env.example .env
 npm install
 npm run dev`;
 const runHo2Backend = `cd praktikum-pert-7/${ho2Path}/backend
-Copy-Item .env.example .env
 npm install
 npm run dev`;
 const runHo2Frontend = `cd praktikum-pert-7/${ho2Path}/frontend
-Copy-Item .env.example .env
 npm install
 npm run dev`;
 
@@ -738,9 +737,17 @@ const tocSections: TOCSection[] = [
                     Backend sudah lengkap dan tidak perlu diubah. Semua snippet di bawah adalah bagian frontend yang harus kamu tempel ke titik <code class={inlineCode}>TODO</code>. Snippet backend hanya untuk dibaca.
                 </p>
             </div>
+            <div class="mt-4 p-3 rounded-lg bg-warning/5 dark:bg-warning/10 border-l-4 border-warning">
+                <span class="font-bold text-warning">Sebelum menjalankan backend</span>
+                <p class="mt-1 text-sm md:text-base text-foreground-secondary leading-relaxed">
+                    Salin <code class={inlineCode}>.env.example</code> menjadi <code class={inlineCode}>.env</code> di folder backend. File contoh sengaja memakai placeholder, jadi ganti nilainya dengan konfigurasi praktikum berikut. <code class={inlineCode}>DB_PASSWORD</code> wajib sama dengan password database yang kamu buat di Pertemuan 3.
+                </p>
+            </div>
+            <CodeBlock code={envHo1Backend} language="ini" filename="backend/.env (Hands-on 1)" compact />
             <p class="mt-3 text-foreground-secondary leading-relaxed">
-                Salin <code class={inlineCode}>.env.example</code> menjadi <code class={inlineCode}>.env</code> di backend, sesuaikan kredensial SQL Server, lalu jalankan backend dan frontend:
+                Frontend juga punya <code class={inlineCode}>.env</code>. Isinya cukup alamat API:
             </p>
+            <CodeBlock code={envFrontend} language="ini" filename="frontend/.env" compact />
             <TerminalBlock code={runHo1Backend} title="Terminal: Backend Hands-on 1" />
             <TerminalBlock code={runHo1Frontend} title="Terminal: Frontend Hands-on 1" />
             <p class="mt-3 text-foreground-secondary leading-relaxed">
@@ -820,6 +827,13 @@ const tocSections: TOCSection[] = [
             <p class="text-foreground-secondary leading-relaxed">
                 Hands-on 2 memakai Axios dan autentikasi. Backend sudah menyediakan login, logout, cookie, dan middleware role. Yang kamu kerjakan hanya sisi frontend.
             </p>
+            <div class="mt-4 p-3 rounded-lg bg-warning/5 dark:bg-warning/10 border-l-4 border-warning">
+                <span class="font-bold text-warning">Sebelum menjalankan backend</span>
+                <p class="mt-1 text-sm md:text-base text-foreground-secondary leading-relaxed">
+                    Salin <code class={inlineCode}>.env.example</code> menjadi <code class={inlineCode}>.env</code> di backend Hands-on 2. Selain kredensial database, isi juga <code class={inlineCode}>JWT_SECRET</code> dan nama cookie. Frontend memakai <code class={inlineCode}>.env</code> yang sama seperti Hands-on 1.
+                </p>
+            </div>
+            <CodeBlock code={envHo2Backend} language="ini" filename="backend/.env (Hands-on 2)" compact />
             <TerminalBlock code={runHo2Backend} title="Terminal: Backend Hands-on 2" />
             <TerminalBlock code={runHo2Frontend} title="Terminal: Frontend Hands-on 2" />
             <p class="mt-3 text-foreground-secondary leading-relaxed">
