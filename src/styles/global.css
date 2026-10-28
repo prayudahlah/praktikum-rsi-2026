@@ -229,3 +229,28 @@ html::-webkit-scrollbar-thumb:hover {
         color: var(--shiki-dark) !important;
     }
 }
+
+/* Typography for long-form meetings 06 and 07 */
+.meeting-relaxed p,
+.meeting-relaxed ul {
+  max-width: 42rem;
+}
+
+.meeting-relaxed table th,
+.meeting-relaxed table td {
+  padding-top: 0.75rem;
+  padding-bottom: 0.75rem;
+}
+
+.meeting-relaxed table tbody {
+  line-height: 1.625;
+}
+
+.meeting-relaxed div:has(> table) {
+  margin-top: 1.5rem;
+  max-width: 46rem;
+}
+
+.meeting-relaxed p + p {
+  margin-top: 1rem;
+}
