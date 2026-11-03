@@ -1,0 +1,8 @@
+export function register(
+  payload: RegisterPayload,
+): Promise<{ message: string; data: User }> {
+  return getResult<User>(
+    http.post('/auth/register', payload),
+    'Akun berhasil dibuat. Silakan masuk.',
+  )
+}

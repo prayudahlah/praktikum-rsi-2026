@@ -1,0 +1,26 @@
+# Jalankan dari folder pertemuan-08-validasi-error-handling/
+
+# Hands-on 1
+cd hands-on-1-form-validation/backend
+npm run typecheck
+npm run test:unit          # 27 test
+npm run test:integration   # 24 test, butuh database + seed
+
+cd ../frontend
+npm run lint
+npm run build
+
+# Hands-on 2
+cd ../../hands-on-2-centralized-error-handling/backend
+npm run typecheck
+npm run test:unit          # 42 test
+npm run test:integration   # 14 test, butuh database + seed
+
+cd ../frontend
+npm run lint
+npm run build
+
+# Catatan
+# - Folder tests/ dan script "test" hanya ada di branch lengkap.
+# - Di branch starter, verifikasi UI dilakukan manual di browser.
+# - Unit test frontend di branch lengkap: 23 test (HO1) dan 33 test (HO2).

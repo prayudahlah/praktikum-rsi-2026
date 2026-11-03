@@ -1,0 +1,22 @@
+export function createMenu(
+  payload: MenuPayload,
+): Promise<{ message: string; data: MenuItem }> {
+  return getResult<MenuItem>(
+    http.post('/menu', payload),
+    'Menu berhasil ditambahkan.',
+  )
+}
+
+export function updateMenu(
+  id: number,
+  payload: MenuPayload,
+): Promise<{ message: string; data: MenuItem }> {
+  return getResult<MenuItem>(
+    http.put(`/menu/${id}`, payload),
+    'Menu berhasil diperbarui.',
+  )
+}
+
+export async function deleteMenu(id: number): Promise<void> {
+  await http.delete(`/menu/${id}`)
+}

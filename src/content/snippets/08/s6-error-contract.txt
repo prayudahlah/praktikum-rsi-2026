@@ -1,0 +1,12 @@
+{
+  "status": "fail",
+  "code": "MENU_NAME_TAKEN",
+  "message": "Nama menu sudah digunakan di warung ini.",
+  "errors": [
+    {
+      "field": "name",
+      "message": "Nama menu harus unik dalam satu warung."
+    }
+  ],
+  "requestId": "8b7f0f5e-4e86-4f4e-9a77-6b1f5a9f0c11"
+}

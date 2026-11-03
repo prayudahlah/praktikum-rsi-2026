@@ -1,0 +1,14 @@
+TODO frontend Hands-on 1
+------------------------
+[ ] frontend/src/lib/validation.ts  -> Step h2
+[ ] frontend/src/lib/api.ts          -> Step h3 (auth + data)
+
+TODO frontend Hands-on 2
+------------------------
+[ ] frontend/src/lib/errors.ts                   -> Step b2
+[ ] frontend/src/lib/http.ts                     -> Step b2
+[ ] frontend/src/lib/api.ts                      -> Step b3
+[ ] frontend/src/lib/validation.ts               -> Step b4
+[ ] frontend/src/components/ProtectedRoute.tsx   -> Step b5
+
+Backend, test, dan seed sudah lengkap di branch starter.

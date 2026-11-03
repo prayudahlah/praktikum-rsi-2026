@@ -1,0 +1,31 @@
+export function validateCheckoutForm(values: CheckoutFormValues): CheckoutFormErrors {
+  const errors: CheckoutFormErrors = {}
+  const customerName = values.customerName.trim()
+  const phone = normalizePhone(values.phone)
+
+  if (!customerName) {
+    errors.customerName = 'Nama penerima wajib diisi.'
+  } else if (customerName.length < 2) {
+    errors.customerName = 'Nama penerima minimal 2 karakter.'
+  } else if (customerName.length > 80) {
+    errors.customerName = 'Nama penerima maksimal 80 karakter.'
+  }
+
+  if (!values.phone.trim()) {
+    errors.phone = 'Nomor telepon wajib diisi.'
+  } else if (phone.length < 9) {
+    errors.phone = 'Nomor telepon minimal 9 digit.'
+  } else if (phone.length > 15) {
+    errors.phone = 'Nomor telepon maksimal 15 digit.'
+  }
+
+  if (!PAYMENT_OPTIONS.some((option) => option.value === values.paymentMethod)) {
+    errors.paymentMethod = 'Metode pembayaran tidak valid.'
+  }
+
+  if (values.note.trim().length > 200) {
+    errors.note = 'Catatan maksimal 200 karakter.'
+  }
+
+  return errors
+}
