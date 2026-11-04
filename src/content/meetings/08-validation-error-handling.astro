@@ -1,0 +1,2159 @@
+---
+import {
+    ScrollySection,
+    Step,
+    StepHeader,
+    SectionDivider,
+    ScrollyLayout,
+    ScrollyTOC,
+} from '../../components/scrolly';
+import type { TOCSection } from '../../components/scrolly';
+import CodeBlock from '../../components/ui/CodeBlock.astro';
+import TerminalBlock from '../../components/ui/TerminalBlock.astro';
+import { BookOpen } from '@lucide/astro';
+
+import s6ErrorContract from '../snippets/08/s6-error-contract.txt?raw';
+
+import h1EnvBackend from '../snippets/08/h1-env-backend.txt?raw';
+import h1EnvFrontend from '../snippets/08/h1-env-frontend.txt?raw';
+import h1Validation from '../snippets/08/h1-validation.txt?raw';
+import h1ApiData from '../snippets/08/h1-api-data.txt?raw';
+import h1ApiAuth from '../snippets/08/h1-api-auth.txt?raw';
+import h1MenuSchema from '../snippets/08/h1-menu-schema.txt?raw';
+import h1AuthSchema from '../snippets/08/h1-auth-schema.txt?raw';
+
+import h2EnvBackend from '../snippets/08/h2-env-backend.txt?raw';
+import h2EnvFrontend from '../snippets/08/h2-env-frontend.txt?raw';
+import h2Errors from '../snippets/08/h2-errors.txt?raw';
+import h2Http from '../snippets/08/h2-http.txt?raw';
+import h2ApiMenu from '../snippets/08/h2-api-menu.txt?raw';
+import h2ApiRegister from '../snippets/08/h2-api-register.txt?raw';
+import h2ApiOrder from '../snippets/08/h2-api-order.txt?raw';
+import h2ApiOrderStatus from '../snippets/08/h2-api-order-status.txt?raw';
+import h2ValidationRegister from '../snippets/08/h2-validation-register.txt?raw';
+import h2ValidationCheckout from '../snippets/08/h2-validation-checkout.txt?raw';
+import h2ProtectedRoute from '../snippets/08/h2-protected-route.txt?raw';
+import h2Authorize from '../snippets/08/h2-authorize.txt?raw';
+import h2Ownership from '../snippets/08/h2-ownership.txt?raw';
+import h2ErrorHandler from '../snippets/08/h2-error-handler.txt?raw';
+
+import c1Checklist from '../snippets/08/c1-checklist.txt?raw';
+
+const inlineCode = 'font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded';
+
+const repoUrl = 'https://github.com/rrrambatsigma/praktikum-rsi-2026';
+const featBranch = 'feat/pertemuan-08-validasi-error-handling';
+const starterBranch = 'starter/pertemuan-08';
+const ho1Path = 'pertemuan-08-validasi-error-handling/hands-on-1-form-validation';
+const ho2Path = 'pertemuan-08-validasi-error-handling/hands-on-2-centralized-error-handling';
+const ho1Url = `${repoUrl}/tree/${featBranch}/${ho1Path}`;
+const ho2Url = `${repoUrl}/tree/${featBranch}/${ho2Path}`;
+const starterUrl = `${repoUrl}/tree/${starterBranch}/pertemuan-08-validasi-error-handling`;
+
+const ghFile = (path: string, branch = featBranch) => `${repoUrl}/blob/${branch}/${path}`;
+const ho1File = (file: string) => ghFile(`${ho1Path}/${file}`);
+const ho2File = (file: string) => ghFile(`${ho2Path}/${file}`);
+
+const cloneStarter = `git clone --single-branch --branch ${starterBranch} ${repoUrl}.git praktikum-pert-8`;
+
+const runHo1Backend = `cd praktikum-pert-8/${ho1Path}/backend
+npm install
+npm run dev`;
+
+const runHo1Frontend = `cd praktikum-pert-8/${ho1Path}/frontend
+npm install
+npm run dev`;
+
+const runHo2Backend = `cd praktikum-pert-8/${ho2Path}/backend
+npm install
+npm run dev`;
+
+const runHo2Frontend = `cd praktikum-pert-8/${ho2Path}/frontend
+npm install
+npm run dev`;
+
+const folderTree = `praktikum-pert-8/
+└─ pertemuan-08-validasi-error-handling/
+   ├─ db/                              # migrasi + seed
+   ├─ hands-on-1-form-validation/
+   │  ├─ backend/                      # Express + zod + mssql
+   │  │  └─ src/ ...                    # sudah lengkap
+   │  └─ frontend/                     # React + Fetch API
+   │     └─ src/lib/validation.ts      # TODO
+   │     └─ src/lib/api.ts             # TODO
+   └─ hands-on-2-centralized-error-handling/
+      ├─ backend/                      # Express + RBAC + Axios contract
+      │  └─ src/ ...                    # sudah lengkap
+      └─ frontend/                     # React + Axios
+         └─ src/lib/errors.ts          # TODO
+         └─ src/lib/http.ts            # TODO
+         └─ src/lib/api.ts             # TODO
+         └─ src/lib/validation.ts      # TODO
+         └─ src/components/ProtectedRoute.tsx  # TODO`;
+
+const httpExample = `POST /api/menu
+Content-Type: application/json
+
+{
+  "stallId": 1,
+  "name": "Es Jeruk",
+  "category": "minuman",
+  "price": -5000
+}
+
+HTTP/1.1 400 Bad Request
+Content-Type: application/json
+X-Request-Id: 8b7f0f5e-4e86-4f4e-9a77-6b1f5a9f0c11
+
+{
+  "status": "fail",
+  "code": "VALIDATION_ERROR",
+  "message": "Data yang dikirim tidak valid.",
+  "errors": [
+    { "field": "price", "message": "Harga harus lebih dari 0." }
+  ],
+  "requestId": "8b7f0f5e-4e86-4f4e-9a77-6b1f5a9f0c11"
+}`;
+
+const tocSections: TOCSection[] = [
+    {
+        label: 'Dasar Validasi',
+        items: [
+            { id: 's1', title: 'Mengapa Validasi & Error Handling?' },
+            { id: 's2', title: 'Validation: Frontend vs Backend' },
+            { id: 's3', title: 'Frontend Form Validation' },
+            { id: 's4', title: 'API Error & HTTP Status Code' },
+        ],
+    },
+    {
+        label: 'Error Handling',
+        items: [
+            { id: 's5', title: 'Error Handling di Frontend' },
+            { id: 's6', title: 'Konsistensi Error Response' },
+            { id: 's7', title: 'Protected Route & Access Control' },
+        ],
+    },
+    {
+        label: 'Hands-on 1: Form & Fetch',
+        items: [
+            { id: 'h1', title: 'Ambil Starter & Kenali TODO' },
+            { id: 'h2', title: 'Validasi Form (validation.ts)' },
+            { id: 'h3', title: 'Fetch API (api.ts)' },
+            { id: 'h4', title: 'Backend Memvalidasi Ulang' },
+            { id: 'h5', title: 'Uji Hands-on 1' },
+        ],
+    },
+    {
+        label: 'Hands-on 2: Error Terpusat & RBAC',
+        items: [
+            { id: 'b1', title: 'Starter, Env, dan Akun Demo' },
+            { id: 'b2', title: 'errors.ts dan http.ts' },
+            { id: 'b3', title: 'API Axios (api.ts)' },
+            { id: 'b4', title: 'Validasi Register & Checkout' },
+            { id: 'b5', title: 'Protected Route & RBAC' },
+            { id: 'b6', title: 'Uji Hands-on 2' },
+        ],
+    },
+    {
+        label: 'Penutup',
+        items: [{ id: 'c1', title: 'Checklist & Rangkuman' }],
+    },
+];
+---
+
+<ScrollySection className="meeting-relaxed">
+    <ScrollyLayout defaultSrc="/diagrams/08/slide-1.webp">
+
+        <!-- ===== SLIDE 1 ===== -->
+
+        <Step id="s1" diagram="/diagrams/08/slide-1.webp">
+            <SectionDivider label="Validasi & Error Handling" />
+            <StepHeader title="Mengapa Validasi & Error Handling?" tone="primary" />
+
+            <p class="text-foreground-secondary leading-relaxed">
+                <strong>Validasi</strong> dan <strong>error handling</strong> merupakan bagian penting dalam
+                pengembangan aplikasi. Validasi memastikan data yang diproses sesuai aturan, sedangkan error
+                handling memastikan aplikasi dapat merespons kegagalan secara tepat. Keduanya bekerja di titik
+                yang berbeda, tetapi tujuannya sama: menjaga aplikasi tetap dapat dipercaya.
+            </p>
+            <p class="mt-3 text-foreground-secondary leading-relaxed">
+                Tanpa validasi, data kosong, salah format, atau nilai yang tidak masuk akal bisa masuk ke
+                database. Tanpa error handling, satu kegagalan kecil dapat membuat pengguna melihat layar
+                kosong, pesan teknis yang membingungkan, atau aplikasi yang seolah berhenti bekerja.
+            </p>
+
+            <h4 class="mt-5 mb-2 font-semibold text-foreground">Mengapa keduanya diperlukan?</h4>
+            <ul class="text-foreground-secondary leading-relaxed space-y-1.5 list-disc list-inside">
+                <li><strong>Menjaga kualitas data:</strong> mencegah data kosong, salah format, atau tidak sesuai aturan masuk ke proses aplikasi.</li>
+                <li><strong>Meningkatkan pengalaman pengguna:</strong> memberikan pesan yang jelas ketika input tidak valid atau proses gagal.</li>
+                <li><strong>Menjaga keamanan aplikasi:</strong> memastikan data dan tindakan pengguna diperiksa sesuai aturan dan hak akses.</li>
+                <li><strong>Menjaga konsistensi sistem:</strong> memastikan kesalahan ditangani secara terstruktur di berbagai bagian aplikasi.</li>
+                <li><strong>Mempermudah pemeliharaan:</strong> membantu pengembang mengidentifikasi dan menangani sumber kesalahan.</li>
+            </ul>
+
+            <div class="mt-4 overflow-x-auto rounded-lg border border-border">
+                <table class="w-full border-collapse text-left text-sm md:text-base">
+                    <thead>
+                        <tr class="bg-muted text-foreground">
+                            <th class="px-3 py-2 font-semibold">Aspek</th>
+                            <th class="px-3 py-2 font-semibold">Validasi</th>
+                            <th class="px-3 py-2 font-semibold">Error Handling</th>
+                        </tr>
+                    </thead>
+                    <tbody class="text-foreground-secondary">
+                        <tr class="border-t border-border align-top">
+                            <td class="px-3 py-2 font-semibold text-foreground">Fokus</td>
+                            <td class="px-3 py-2">Memastikan data memenuhi aturan sebelum diproses</td>
+                            <td class="px-3 py-2">Menjaga aplikasi tetap terkendali ketika terjadi kegagalan</td>
+                        </tr>
+                        <tr class="border-t border-border align-top">
+                            <td class="px-3 py-2 font-semibold text-foreground">Waktu bekerja</td>
+                            <td class="px-3 py-2">Sebelum data digunakan atau disimpan</td>
+                            <td class="px-3 py-2">Saat proses berjalan, gagal, atau menerima respons yang tidak diharapkan</td>
+                        </tr>
+                        <tr class="border-t border-border align-top">
+                            <td class="px-3 py-2 font-semibold text-foreground">Contoh di kantin</td>
+                            <td class="px-3 py-2">Menolak harga <code class={inlineCode}>-5000</code></td>
+                            <td class="px-3 py-2">Menampilkan “Menu gagal disimpan. Silakan coba lagi.”</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="mt-4 p-3 rounded-lg bg-primary/5 dark:bg-primary/10 border-l-4 border-primary">
+                <span class="font-bold text-primary">Studi kasus: harga menu -5000</span>
+                <p class="text-sm md:text-base text-foreground-secondary mt-1">
+                    Pengguna mengisi harga menu sebesar <code class={inlineCode}>-5000</code> pada aplikasi
+                    kantin kampus. Tanpa validasi, nilai itu berpotensi diproses sebagai harga menu. Dengan
+                    validasi, aplikasi menolak input dan menampilkan pesan{' '}
+                    <strong>“Harga harus lebih dari 0.”</strong>
+                </p>
+                <p class="mt-2 text-sm md:text-base text-foreground-secondary">
+                    Jika proses penyimpanan gagal karena server bermasalah, error handling menampilkan pesan
+                    seperti <strong>“Menu gagal disimpan. Silakan coba lagi.”</strong> Pengguna tetap tahu apa
+                    yang terjadi dan dapat mencoba kembali.
+                </p>
+            </div>
+
+            <p class="mt-3 text-foreground-secondary leading-relaxed">
+                Dengan kata lain, validasi adalah penjaga pintu masuk data, sedangkan error handling adalah
+                prosedur ketika sesuatu tetap gagal di tengah jalan. Keduanya harus dirancang bersama, bukan
+                ditambahkan belakangan setelah aplikasi selesai.
+            </p>
+
+            <div class="mt-4 p-4 rounded-lg bg-accent/5 dark:bg-accent/10 border-2 border-dashed border-accent">
+                <span class="flex items-center gap-2 font-bold text-accent">
+                    <BookOpen class="w-4 h-4" />
+                    Bacaan Lanjutan
+                </span>
+                <ul class="text-base text-foreground-secondary mt-2 space-y-1 list-disc list-inside">
+                    <li>
+                        <a href="https://developer.mozilla.org/en-US/docs/Learn_web_development/Extensions/Forms/Form_validation" target="_blank" rel="noopener noreferrer" class="text-primary hover:underline">MDN: Client-side form validation</a>
+                        : dasar validasi form dan pesan kesalahan.
+                    </li>
+                    <li>
+                        <a href="https://cheatsheetseries.owasp.org/cheatsheets/Input_Validation_Cheat_Sheet.html" target="_blank" rel="noopener noreferrer" class="text-primary hover:underline">OWASP: Input Validation Cheat Sheet</a>
+                        : praktik validasi input dari sisi keamanan.
+                    </li>
+                </ul>
+            </div>
+        </Step>
+
+        <!-- ===== SLIDE 2 ===== -->
+
+        <Step id="s2" diagram="/diagrams/08/slide-2.webp">
+            <StepHeader title="Validation: Frontend vs Backend" tone="primary" />
+
+            <p class="text-foreground-secondary leading-relaxed">
+                <strong>Validasi</strong> adalah proses pemeriksaan data untuk memastikan bahwa input memenuhi
+                aturan yang ditetapkan sebelum digunakan atau diproses oleh sistem. Validasi dapat dilakukan
+                pada dua lapisan, yaitu frontend dan backend, yang memiliki peran berbeda tetapi saling
+                melengkapi.
+            </p>
+
+            <h4 class="mt-4 font-semibold text-foreground">1. Frontend Validation</h4>
+            <p class="mt-2 text-foreground-secondary leading-relaxed">
+                Validasi yang dilakukan pada sisi pengguna (client-side), biasanya melalui browser sebelum data
+                dikirim ke server.
+            </p>
+            <ul class="mt-2 text-foreground-secondary leading-relaxed space-y-1.5 list-disc list-inside">
+                <li>Memberikan umpan balik secara langsung kepada pengguna.</li>
+                <li>Memeriksa kelengkapan input, format, tipe, dan rentang nilai.</li>
+                <li>Mengurangi pengiriman request dengan input yang jelas tidak valid.</li>
+                <li>Contoh: memastikan kolom nama tidak kosong dan format email sesuai.</li>
+            </ul>
+
+            <h4 class="mt-4 font-semibold text-foreground">2. Backend Validation</h4>
+            <p class="mt-2 text-foreground-secondary leading-relaxed">
+                Validasi yang dilakukan pada sisi server ketika menerima request dari frontend, sebelum data
+                diproses atau disimpan.
+            </p>
+            <ul class="mt-2 text-foreground-secondary leading-relaxed space-y-1.5 list-disc list-inside">
+                <li>Memastikan data tetap memenuhi aturan meskipun validasi frontend dilewati.</li>
+                <li>Memeriksa aturan bisnis dan kondisi data di server atau database.</li>
+                <li>Menjadi lapisan validasi yang wajib untuk menjaga integritas dan keamanan data.</li>
+                <li>Contoh: memastikan email belum terdaftar dan harga menu lebih dari nol.</li>
+            </ul>
+
+            <h4 class="mt-5 mb-2 font-semibold text-foreground">Perbandingan</h4>
+            <div class="mt-4 overflow-x-auto rounded-lg border border-border">
+                <table class="w-full border-collapse text-left text-sm md:text-base">
+                    <thead>
+                        <tr class="bg-muted text-foreground">
+                            <th class="px-3 py-2 font-semibold">Aspek</th>
+                            <th class="px-3 py-2 font-semibold">Frontend Validation</th>
+                            <th class="px-3 py-2 font-semibold">Backend Validation</th>
+                        </tr>
+                    </thead>
+                    <tbody class="text-foreground-secondary">
+                        <tr class="border-t border-border align-top">
+                            <td class="px-3 py-2 font-semibold text-foreground">Lokasi</td>
+                            <td class="px-3 py-2">Browser / aplikasi klien</td>
+                            <td class="px-3 py-2">Server / API</td>
+                        </tr>
+                        <tr class="border-t border-border align-top">
+                            <td class="px-3 py-2 font-semibold text-foreground">Waktu</td>
+                            <td class="px-3 py-2">Sebelum request dikirim</td>
+                            <td class="px-3 py-2">Setelah request diterima</td>
+                        </tr>
+                        <tr class="border-t border-border align-top">
+                            <td class="px-3 py-2 font-semibold text-foreground">Tujuan utama</td>
+                            <td class="px-3 py-2">Umpan balik cepat</td>
+                            <td class="px-3 py-2">Menjamin data memenuhi aturan</td>
+                        </tr>
+                        <tr class="border-t border-border align-top">
+                            <td class="px-3 py-2 font-semibold text-foreground">Contoh pemeriksaan</td>
+                            <td class="px-3 py-2">Kolom wajib, format email</td>
+                            <td class="px-3 py-2">Keunikan email, aturan bisnis</td>
+                        </tr>
+                        <tr class="border-t border-border align-top">
+                            <td class="px-3 py-2 font-semibold text-foreground">Keamanan</td>
+                            <td class="px-3 py-2">Dapat dilewati pengguna</td>
+                            <td class="px-3 py-2">Tetap wajib dilakukan</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="mt-4 p-3 rounded-lg bg-warning/5 dark:bg-warning/10 border-l-4 border-warning">
+                <span class="font-bold text-warning">Dua lapisan, bukan dua pilihan</span>
+                <p class="text-sm md:text-base text-foreground-secondary mt-1">
+                    Frontend validation membuat pengalaman pengguna lebih nyaman. Backend validation menjaga
+                    integritas data dan keamanan sistem. Jika hanya mengandalkan frontend, aturan bisa dilewati
+                    dengan memanggil API secara langsung. Jika hanya mengandalkan backend, pengguna baru tahu
+                    kesalahannya setelah menunggu request selesai.
+                </p>
+            </div>
+
+            <div class="mt-4 p-4 rounded-lg bg-accent/5 dark:bg-accent/10 border-2 border-dashed border-accent">
+                <span class="flex items-center gap-2 font-bold text-accent">
+                    <BookOpen class="w-4 h-4" />
+                    Bacaan Lanjutan
+                </span>
+                <ul class="text-base text-foreground-secondary mt-2 space-y-1 list-disc list-inside">
+                    <li>
+                        <a href="https://weqtechnologies.com/frontend-vs-backend-in-2025-key-differences-tools/" target="_blank" rel="noopener noreferrer" class="text-primary hover:underline">WeQ Technologies: Frontend vs Backend</a>
+                        : perbedaan peran frontend dan backend.
+                    </li>
+                    <li>
+                        <a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Constraint_validation" target="_blank" rel="noopener noreferrer" class="text-primary hover:underline">MDN: Constraint validation</a>
+                        : aturan validasi bawaan HTML dan perilakunya di browser.
+                    </li>
+                </ul>
+            </div>
+        </Step>
+
+        <!-- ===== SLIDE 3 ===== -->
+
+        <Step id="s3" diagram="/diagrams/08/slide-3.webp">
+            <StepHeader title="Frontend Form Validation" tone="primary" />
+
+            <p class="text-foreground-secondary leading-relaxed">
+                <strong>Frontend form validation</strong> adalah proses memeriksa data yang dimasukkan pengguna
+                melalui form sebelum data dikirim ke backend. Validasi ini membantu mendeteksi kesalahan sejak
+                awal sehingga pengguna dapat langsung memperbaiki input tanpa harus menunggu respons dari
+                server.
+            </p>
+
+            <h4 class="mt-5 mb-2 font-semibold text-foreground">Tujuan Frontend Form Validation</h4>
+            <ul class="text-foreground-secondary leading-relaxed space-y-1.5 list-disc list-inside">
+                <li>Memastikan seluruh field wajib telah diisi.</li>
+                <li>Memeriksa format dan tipe data sesuai ketentuan.</li>
+                <li>Memastikan nilai input berada dalam rentang yang diperbolehkan.</li>
+                <li>Menampilkan pesan kesalahan yang jelas dan spesifik.</li>
+                <li>Meningkatkan pengalaman pengguna saat mengisi form.</li>
+            </ul>
+
+            <h4 class="mt-5 mb-2 font-semibold text-foreground">Jenis Validasi pada Form</h4>
+            <div class="mt-4 overflow-x-auto rounded-lg border border-border">
+                <table class="w-full border-collapse text-left text-sm md:text-base">
+                    <thead>
+                        <tr class="bg-muted text-foreground">
+                            <th class="px-3 py-2 font-semibold">Jenis validasi</th>
+                            <th class="px-3 py-2 font-semibold">Contoh aturan</th>
+                            <th class="px-3 py-2 font-semibold">Implementasi</th>
+                        </tr>
+                    </thead>
+                    <tbody class="text-foreground-secondary">
+                        <tr class="border-t border-border align-top">
+                            <td class="px-3 py-2 font-semibold text-foreground">Required validation</td>
+                            <td class="px-3 py-2">Nama menu tidak boleh kosong</td>
+                            <td class="px-3 py-2"><code class={inlineCode}>required</code></td>
+                        </tr>
+                        <tr class="border-t border-border align-top">
+                            <td class="px-3 py-2 font-semibold text-foreground">Format validation</td>
+                            <td class="px-3 py-2">Email harus memiliki format yang sesuai</td>
+                            <td class="px-3 py-2"><code class={inlineCode}>type="email"</code></td>
+                        </tr>
+                        <tr class="border-t border-border align-top">
+                            <td class="px-3 py-2 font-semibold text-foreground">Length validation</td>
+                            <td class="px-3 py-2">Password minimal 8 karakter</td>
+                            <td class="px-3 py-2"><code class={inlineCode}>minLength={'{8}'}</code></td>
+                        </tr>
+                        <tr class="border-t border-border align-top">
+                            <td class="px-3 py-2 font-semibold text-foreground">Range validation</td>
+                            <td class="px-3 py-2">Harga harus lebih dari 0</td>
+                            <td class="px-3 py-2"><code class={inlineCode}>min={'{1}'}</code> atau validasi khusus</td>
+                        </tr>
+                        <tr class="border-t border-border align-top">
+                            <td class="px-3 py-2 font-semibold text-foreground">Custom validation</td>
+                            <td class="px-3 py-2">Konfirmasi password harus sama</td>
+                            <td class="px-3 py-2">Logika JavaScript / React</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <h4 class="mt-5 mb-2 font-semibold text-foreground">Prinsip yang Perlu Diperhatikan</h4>
+            <ul class="text-foreground-secondary leading-relaxed space-y-1.5 list-disc list-inside">
+                <li>Pesan error harus spesifik dan mudah dipahami.</li>
+                <li>Kesalahan sebaiknya ditampilkan di dekat field yang bermasalah.</li>
+                <li>Jangan hanya mengandalkan perubahan warna untuk menandai kesalahan.</li>
+                <li>Validasi perlu mempertimbangkan aksesibilitas, misalnya dengan atribut <code class={inlineCode}>aria-invalid</code> dan <code class={inlineCode}>aria-describedby</code>.</li>
+            </ul>
+
+            <div class="mt-4 p-3 rounded-lg bg-primary/5 dark:bg-primary/10 border-l-4 border-primary">
+                <span class="font-bold text-primary">Kode lengkap ada di Hands-on 1</span>
+                <p class="text-sm md:text-base text-foreground-secondary mt-1">
+                    Aturan validasi dipisahkan dari komponen form di
+                    <code class={inlineCode}>frontend/src/lib/validation.ts</code>. Implementasi lengkap
+                    <code class={inlineCode}>validateMenuForm</code> dan
+                    <code class={inlineCode}>validateLoginForm</code> dibahas di bagian <strong>Validasi Form</strong>,
+                    lalu dipakai oleh <code class={inlineCode}>MenuForm</code> dan
+                    <code class={inlineCode}>LoginPage</code>.
+                </p>
+            </div>
+
+            <div class="mt-4 p-4 rounded-lg bg-accent/5 dark:bg-accent/10 border-2 border-dashed border-accent">
+                <span class="flex items-center gap-2 font-bold text-accent">
+                    <BookOpen class="w-4 h-4" />
+                    Bacaan Lanjutan
+                </span>
+                <ul class="text-base text-foreground-secondary mt-2 space-y-1 list-disc list-inside">
+                    <li>
+                        <a href="https://www.tutorjoes.in/JS_tutorial/form_validation_in_js" target="_blank" rel="noopener noreferrer" class="text-primary hover:underline">Tutor Joes: Form Validation in JavaScript</a>
+                        : contoh validasi form dengan JavaScript.
+                    </li>
+                    <li>
+                        <a href="https://web.dev/learn/forms/validation" target="_blank" rel="noopener noreferrer" class="text-primary hover:underline">web.dev: Learn Forms: Validation</a>
+                        : praktik validasi form yang ramah pengguna.
+                    </li>
+                    <li>
+                        <a href="https://www.w3.org/WAI/WCAG21/Understanding/error-identification.html" target="_blank" rel="noopener noreferrer" class="text-primary hover:underline">WCAG 3.3.1: Error Identification</a>
+                        : cara menyampaikan kesalahan yang dapat diakses semua pengguna.
+                    </li>
+                </ul>
+            </div>
+        </Step>
+
+        <!-- ===== SLIDE 4 ===== -->
+
+        <Step id="s4" diagram="/diagrams/08/slide-4-5.webp">
+            <StepHeader title="API Error & HTTP Status Code" tone="primary" />
+
+            <p class="text-foreground-secondary leading-relaxed">
+                <strong>API error</strong> dan <strong>HTTP status code</strong> membahas bagaimana API
+                menyampaikan hasil pemrosesan request kepada frontend. Kode status membantu frontend menentukan
+                apakah request berhasil, data yang dikirim tidak valid, pengguna tidak memiliki akses, atau
+                server mengalami gangguan.
+            </p>
+
+            <h4 class="mt-5 mb-2 font-semibold text-foreground">1. Apa Itu HTTP Status Code?</h4>
+            <p class="text-foreground-secondary leading-relaxed">
+                <strong>HTTP status code</strong> adalah kode numerik yang dikirimkan server sebagai bagian
+                dari respons HTTP untuk menunjukkan hasil suatu request. Kode ini dibagi menjadi lima kelompok:
+            </p>
+            <div class="mt-4 overflow-x-auto rounded-lg border border-border">
+                <table class="w-full border-collapse text-left text-sm md:text-base">
+                    <thead>
+                        <tr class="bg-muted text-foreground">
+                            <th class="px-3 py-2 font-semibold">Kelompok</th>
+                            <th class="px-3 py-2 font-semibold">Makna</th>
+                            <th class="px-3 py-2 font-semibold">Contoh</th>
+                        </tr>
+                    </thead>
+                    <tbody class="text-foreground-secondary">
+                        <tr class="border-t border-border align-top">
+                            <td class="px-3 py-2 font-mono">1xx</td>
+                            <td class="px-3 py-2">Informasi</td>
+                            <td class="px-3 py-2">Proses komunikasi masih berlangsung</td>
+                        </tr>
+                        <tr class="border-t border-border align-top">
+                            <td class="px-3 py-2 font-mono">2xx</td>
+                            <td class="px-3 py-2">Berhasil</td>
+                            <td class="px-3 py-2"><code class={inlineCode}>200 OK</code>, <code class={inlineCode}>201 Created</code></td>
+                        </tr>
+                        <tr class="border-t border-border align-top">
+                            <td class="px-3 py-2 font-mono">3xx</td>
+                            <td class="px-3 py-2">Pengalihan</td>
+                            <td class="px-3 py-2"><code class={inlineCode}>301 Moved Permanently</code></td>
+                        </tr>
+                        <tr class="border-t border-border align-top">
+                            <td class="px-3 py-2 font-mono">4xx</td>
+                            <td class="px-3 py-2">Kesalahan pada request atau akses klien</td>
+                            <td class="px-3 py-2"><code class={inlineCode}>400</code>, <code class={inlineCode}>401</code>, <code class={inlineCode}>403</code>, <code class={inlineCode}>404</code>, <code class={inlineCode}>409</code></td>
+                        </tr>
+                        <tr class="border-t border-border align-top">
+                            <td class="px-3 py-2 font-mono">5xx</td>
+                            <td class="px-3 py-2">Kegagalan pemrosesan di server</td>
+                            <td class="px-3 py-2"><code class={inlineCode}>500</code>, <code class={inlineCode}>503</code></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <h4 class="mt-5 mb-2 font-semibold text-foreground">2. HTTP Status Code yang Sering Digunakan pada API</h4>
+            <div class="mt-4 overflow-x-auto rounded-lg border border-border">
+                <table class="w-full border-collapse text-left text-sm md:text-base">
+                    <thead>
+                        <tr class="bg-muted text-foreground">
+                            <th class="px-3 py-2 font-semibold">Status Code</th>
+                            <th class="px-3 py-2 font-semibold">Arti</th>
+                            <th class="px-3 py-2 font-semibold">Contoh pada aplikasi kantin</th>
+                        </tr>
+                    </thead>
+                    <tbody class="text-foreground-secondary">
+                        <tr class="border-t border-border align-top">
+                            <td class="px-3 py-2 font-mono whitespace-nowrap">200 OK</td>
+                            <td class="px-3 py-2">Request berhasil</td>
+                            <td class="px-3 py-2">Daftar menu berhasil diambil</td>
+                        </tr>
+                        <tr class="border-t border-border align-top">
+                            <td class="px-3 py-2 font-mono whitespace-nowrap">201 Created</td>
+                            <td class="px-3 py-2">Data baru berhasil dibuat</td>
+                            <td class="px-3 py-2">Menu baru berhasil ditambahkan</td>
+                        </tr>
+                        <tr class="border-t border-border align-top">
+                            <td class="px-3 py-2 font-mono whitespace-nowrap">400 Bad Request</td>
+                            <td class="px-3 py-2">Request tidak valid: JSON rusak atau payload gagal validasi</td>
+                            <td class="px-3 py-2">Harga negatif, field asing, atau JSON tidak dapat dibaca</td>
+                        </tr>
+                        <tr class="border-t border-border align-top">
+                            <td class="px-3 py-2 font-mono whitespace-nowrap">401 Unauthorized</td>
+                            <td class="px-3 py-2">Autentikasi diperlukan atau tidak valid</td>
+                            <td class="px-3 py-2">Pengguna belum login</td>
+                        </tr>
+                        <tr class="border-t border-border align-top">
+                            <td class="px-3 py-2 font-mono whitespace-nowrap">403 Forbidden</td>
+                            <td class="px-3 py-2">Pengguna tidak memiliki izin</td>
+                            <td class="px-3 py-2">Pelanggan mencoba menambah menu</td>
+                        </tr>
+                        <tr class="border-t border-border align-top">
+                            <td class="px-3 py-2 font-mono whitespace-nowrap">404 Not Found</td>
+                            <td class="px-3 py-2">Resource tidak ditemukan</td>
+                            <td class="px-3 py-2">Menu dengan ID tertentu tidak tersedia</td>
+                        </tr>
+                        <tr class="border-t border-border align-top">
+                            <td class="px-3 py-2 font-mono whitespace-nowrap">409 Conflict</td>
+                            <td class="px-3 py-2">Terjadi konflik dengan kondisi data</td>
+                            <td class="px-3 py-2">Nama menu sudah digunakan dan harus unik</td>
+                        </tr>
+                        <tr class="border-t border-border align-top">
+                            <td class="px-3 py-2 font-mono whitespace-nowrap">500 Internal Server Error</td>
+                            <td class="px-3 py-2">Terjadi kesalahan internal server</td>
+                            <td class="px-3 py-2">Server gagal memproses penyimpanan menu</td>
+                        </tr>
+                        <tr class="border-t border-border align-top">
+                            <td class="px-3 py-2 font-mono whitespace-nowrap">503 Service Unavailable</td>
+                            <td class="px-3 py-2">Layanan sementara tidak tersedia</td>
+                            <td class="px-3 py-2">API sedang mengalami gangguan</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="mt-4 p-3 rounded-lg bg-primary/5 dark:bg-primary/10 border-l-4 border-primary">
+                <span class="font-bold text-primary">Cara cepat membaca status code</span>
+                <p class="text-sm md:text-base text-foreground-secondary mt-1">
+                    <code class={inlineCode}>4xx</code> berarti masalahnya ada pada request atau akses klien.{' '}
+                    <code class={inlineCode}>400</code> dipakai ketika payload gagal validasi zod atau JSON
+                    rusak, sedangkan <code class={inlineCode}>409</code> dipakai ketika data bertentangan
+                    dengan kondisi di database, misalnya nama menu duplikat. <code class={inlineCode}>5xx</code>{' '}
+                    berarti server yang gagal memproses, bukan pengguna yang salah mengisi form.
+                </p>
+            </div>
+
+            <CodeBlock
+                code={httpExample}
+                language="http"
+                filename="Contoh request dan respons error"
+                compact
+            />
+
+            <div class="mt-4 p-4 rounded-lg bg-accent/5 dark:bg-accent/10 border-2 border-dashed border-accent">
+                <span class="flex items-center gap-2 font-bold text-accent">
+                    <BookOpen class="w-4 h-4" />
+                    Bacaan Lanjutan
+                </span>
+                <ul class="text-base text-foreground-secondary mt-2 space-y-1 list-disc list-inside">
+                    <li>
+                        <a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Status" target="_blank" rel="noopener noreferrer" class="text-primary hover:underline">MDN: HTTP response status codes</a>
+                        : daftar lengkap dan arti setiap kode status.
+                    </li>
+                    <li>
+                        <a href="https://www.rfc-editor.org/rfc/rfc9110.html" target="_blank" rel="noopener noreferrer" class="text-primary hover:underline">RFC 9110: HTTP Semantics</a>
+                        : spesifikasi resmi metode, status, dan semantik HTTP.
+                    </li>
+                    <li>
+                        <a href="https://httpstatuses.io/" target="_blank" rel="noopener noreferrer" class="text-primary hover:underline">httpstatuses.io</a>
+                        : referensi cepat kode status beserta penjelasannya.
+                    </li>
+                </ul>
+            </div>
+        </Step>
+
+        <!-- ===== SLIDE 5 ===== -->
+
+        <Step id="s5" diagram="/diagrams/08/slide-4-5.webp">
+            <SectionDivider label="Error Handling" />
+            <StepHeader title="Error Handling di Frontend" tone="warning" />
+
+            <p class="text-foreground-secondary leading-relaxed">
+                <strong>Error handling di frontend</strong> adalah mekanisme untuk menangani kesalahan yang
+                terjadi selama aplikasi berjalan, seperti kegagalan request API, respons server yang gagal,
+                atau data yang tidak dapat diproses. Tujuannya adalah menjaga aplikasi tetap terkendali dan
+                memberikan informasi yang jelas kepada pengguna ketika suatu proses tidak berhasil.
+            </p>
+
+            <h4 class="mt-5 mb-2 font-semibold text-foreground">1. Mengapa Error Handling Diperlukan?</h4>
+            <ul class="text-foreground-secondary leading-relaxed space-y-1.5 list-disc list-inside">
+                <li>Mencegah aplikasi gagal secara tidak terkendali ketika terjadi kesalahan.</li>
+                <li>Memberikan feedback kepada pengguna melalui pesan error yang mudah dipahami.</li>
+                <li>Menjaga alur aplikasi agar pengguna dapat mencoba kembali atau melakukan tindakan alternatif.</li>
+                <li>Mempermudah debugging dengan mencatat detail kesalahan untuk pengembang tanpa membocorkan informasi internal kepada pengguna.</li>
+            </ul>
+
+            <h4 class="mt-5 mb-2 font-semibold text-foreground">2. Teknik Error Handling di Frontend</h4>
+            <div class="mt-4 overflow-x-auto rounded-lg border border-border">
+                <table class="w-full border-collapse text-left text-sm md:text-base">
+                    <thead>
+                        <tr class="bg-muted text-foreground">
+                            <th class="px-3 py-2 font-semibold">Teknik</th>
+                            <th class="px-3 py-2 font-semibold">Fungsi</th>
+                            <th class="px-3 py-2 font-semibold">Contoh penggunaan</th>
+                        </tr>
+                    </thead>
+                    <tbody class="text-foreground-secondary">
+                        <tr class="border-t border-border align-top">
+                            <td class="px-3 py-2"><code class={inlineCode}>try...catch</code></td>
+                            <td class="px-3 py-2">Menangani exception saat operasi dijalankan</td>
+                            <td class="px-3 py-2">Request API gagal</td>
+                        </tr>
+                        <tr class="border-t border-border align-top">
+                            <td class="px-3 py-2"><code class={inlineCode}>response.ok</code></td>
+                            <td class="px-3 py-2">Memeriksa apakah respons HTTP berhasil</td>
+                            <td class="px-3 py-2">Mendeteksi status 404 atau 500</td>
+                        </tr>
+                        <tr class="border-t border-border align-top">
+                            <td class="px-3 py-2"><code class={inlineCode}>finally</code></td>
+                            <td class="px-3 py-2">Menjalankan proses penutup, baik berhasil maupun gagal</td>
+                            <td class="px-3 py-2">Menghentikan loading</td>
+                        </tr>
+                        <tr class="border-t border-border align-top">
+                            <td class="px-3 py-2">Error state</td>
+                            <td class="px-3 py-2">Menyimpan status atau pesan kesalahan</td>
+                            <td class="px-3 py-2">Menampilkan pesan pada UI</td>
+                        </tr>
+                        <tr class="border-t border-border align-top">
+                            <td class="px-3 py-2">Conditional rendering</td>
+                            <td class="px-3 py-2">Menampilkan UI sesuai kondisi aplikasi</td>
+                            <td class="px-3 py-2">Loading, error, atau data berhasil</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <h4 class="mt-5 mb-2 font-semibold text-foreground">3. Kondisi UI yang Perlu Dipikirkan</h4>
+            <div class="mt-4 overflow-x-auto rounded-lg border border-border">
+                <table class="w-full border-collapse text-left text-sm md:text-base">
+                    <thead>
+                        <tr class="bg-muted text-foreground">
+                            <th class="px-3 py-2 font-semibold">Kondisi</th>
+                            <th class="px-3 py-2 font-semibold">Yang ditampilkan</th>
+                            <th class="px-3 py-2 font-semibold">Contoh</th>
+                        </tr>
+                    </thead>
+                    <tbody class="text-foreground-secondary">
+                        <tr class="border-t border-border align-top">
+                            <td class="px-3 py-2 font-semibold text-foreground">Loading</td>
+                            <td class="px-3 py-2">Indikator proses</td>
+                            <td class="px-3 py-2">“Memuat daftar menu…”</td>
+                        </tr>
+                        <tr class="border-t border-border align-top">
+                            <td class="px-3 py-2 font-semibold text-foreground">Success</td>
+                            <td class="px-3 py-2">Data atau konfirmasi</td>
+                            <td class="px-3 py-2">Daftar menu tampil</td>
+                        </tr>
+                        <tr class="border-t border-border align-top">
+                            <td class="px-3 py-2 font-semibold text-foreground">Empty</td>
+                            <td class="px-3 py-2">Pesan bahwa data belum ada</td>
+                            <td class="px-3 py-2">“Belum ada menu di warung ini.”</td>
+                        </tr>
+                        <tr class="border-t border-border align-top">
+                            <td class="px-3 py-2 font-semibold text-foreground">Error</td>
+                            <td class="px-3 py-2">Pesan kesalahan dan tindakan lanjutan</td>
+                            <td class="px-3 py-2">“Gagal memuat menu.” + tombol “Coba lagi”</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <h4 class="mt-5 mb-2 font-semibold text-foreground">4. Prinsip yang Perlu Diperhatikan</h4>
+            <ul class="text-foreground-secondary leading-relaxed space-y-1.5 list-disc list-inside">
+                <li>Gunakan pesan yang mudah dipahami pengguna, bukan hanya kode teknis seperti 500.</li>
+                <li>Jangan menganggap semua kegagalan berasal dari server; koneksi jaringan dan pemrosesan data juga dapat bermasalah.</li>
+                <li>Jangan membiarkan indikator loading terus aktif setelah request selesai.</li>
+                <li>Catat detail teknis untuk debugging secara aman, tetapi hindari menampilkan stack trace atau informasi sensitif kepada pengguna.</li>
+                <li>Sediakan mekanisme untuk mencoba kembali ketika proses memang dapat diulang.</li>
+            </ul>
+
+            <div class="mt-4 p-3 rounded-lg bg-primary/5 dark:bg-primary/10 border-l-4 border-primary">
+                <span class="font-bold text-primary">Kode lengkap ada di Hands-on 1 dan 2</span>
+                <p class="text-sm md:text-base text-foreground-secondary mt-1">
+                    Hands-on 1 memakai Fetch API dengan helper
+                    <code class={inlineCode}>request&lt;T&gt;</code> yang sudah disediakan starter
+                    (bagian <strong>Fetch API</strong>). Hands-on 2 memakai Axios dan memusatkan normalisasi error di
+                    <code class={inlineCode}>errors.ts</code> serta interceptor
+                    <code class={inlineCode}>http.ts</code> (bagian <strong>errors.ts dan http.ts</strong>).
+                </p>
+                <p class="mt-2 text-sm md:text-base text-foreground-secondary">
+                    Ingat: <code class={inlineCode}>fetch</code> tidak otomatis melempar error pada status
+                    4xx/5xx, sehingga <code class={inlineCode}>response.ok</code> harus diperiksa eksplisit.
+                </p>
+            </div>
+
+            <div class="mt-4 p-4 rounded-lg bg-accent/5 dark:bg-accent/10 border-2 border-dashed border-accent">
+                <span class="flex items-center gap-2 font-bold text-accent">
+                    <BookOpen class="w-4 h-4" />
+                    Bacaan Lanjutan
+                </span>
+                <ul class="text-base text-foreground-secondary mt-2 space-y-1 list-disc list-inside">
+                    <li>
+                        <a href="https://axios-http.com/docs/handling_errors" target="_blank" rel="noopener noreferrer" class="text-primary hover:underline">Axios: Handling Errors</a>
+                        : pola penanganan error pada request Axios.
+                    </li>
+                    <li>
+                        <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/try...catch" target="_blank" rel="noopener noreferrer" class="text-primary hover:underline">MDN: try...catch</a>
+                        : dasar menangani exception di JavaScript.
+                    </li>
+                    <li>
+                        <a href="https://react.dev/reference/react/Component#catching-rendering-errors-with-an-error-boundary" target="_blank" rel="noopener noreferrer" class="text-primary hover:underline">React: Error Boundary</a>
+                        : menangani error rendering agar seluruh aplikasi tidak ikut gagal.
+                    </li>
+                </ul>
+            </div>
+        </Step>
+
+        <!-- ===== SLIDE 6 ===== -->
+
+        <Step id="s6" diagram="/diagrams/08/slide-6.webp">
+            <StepHeader title="Konsistensi Error Response" tone="warning" />
+
+            <p class="text-foreground-secondary leading-relaxed">
+                <strong>Konsistensi error response</strong> adalah penerapan format respons kesalahan yang
+                seragam pada API agar frontend dapat menangani berbagai jenis error dengan cara yang
+                terstruktur dan mudah diprediksi.
+            </p>
+            <p class="mt-3 text-foreground-secondary leading-relaxed">
+                Dalam aplikasi yang memiliki banyak endpoint, setiap API dapat menghasilkan kesalahan yang
+                berbeda. Tanpa format yang konsisten, frontend harus menyesuaikan logika penanganan error untuk
+                setiap endpoint sehingga kode menjadi lebih kompleks dan sulit dipelihara.
+            </p>
+
+            <h4 class="mt-5 mb-2 font-semibold text-foreground">1. Mengapa Konsistensi Error Response Diperlukan?</h4>
+            <ul class="text-foreground-secondary leading-relaxed space-y-1.5 list-disc list-inside">
+                <li>Mempermudah integrasi frontend dan backend karena struktur respons memiliki pola yang sama.</li>
+                <li>Menyederhanakan error handling sehingga frontend dapat menggunakan mekanisme penanganan error yang dapat dipakai kembali.</li>
+                <li>Memudahkan debugging melalui kode error yang terstruktur.</li>
+                <li>Meningkatkan pengalaman pengguna karena pesan kesalahan dapat ditampilkan secara konsisten.</li>
+                <li>Mempermudah pengembangan aplikasi ketika jumlah endpoint dan fitur bertambah.</li>
+            </ul>
+
+            <h4 class="mt-5 mb-2 font-semibold text-foreground">2. Contoh Standar Error Response</h4>
+            <p class="text-foreground-secondary leading-relaxed">
+                Untuk mengatasi masalah tersebut, tim pengembang dapat menetapkan format respons error yang
+                seragam. Format berikut memisahkan status umum, kode error, pesan untuk pengguna, dan rincian
+                per field.
+            </p>
+            <div class="mt-4 overflow-x-auto rounded-lg border border-border">
+                <table class="w-full border-collapse text-left text-sm md:text-base">
+                    <thead>
+                        <tr class="bg-muted text-foreground">
+                            <th class="px-3 py-2 font-semibold">Properti</th>
+                            <th class="px-3 py-2 font-semibold">Fungsi</th>
+                        </tr>
+                    </thead>
+                    <tbody class="text-foreground-secondary">
+                        <tr class="border-t border-border align-top">
+                            <td class="px-3 py-2"><code class={inlineCode}>status</code></td>
+                            <td class="px-3 py-2">
+                                <code class={inlineCode}>"success"</code> untuk operasi berhasil,
+                                <code class={inlineCode}>"fail"</code> untuk error 4xx, dan
+                                <code class={inlineCode}>"error"</code> untuk error 5xx.
+                            </td>
+                        </tr>
+                        <tr class="border-t border-border align-top">
+                            <td class="px-3 py-2"><code class={inlineCode}>code</code></td>
+                            <td class="px-3 py-2">Identitas jenis error yang konsisten, misalnya <code class={inlineCode}>VALIDATION_ERROR</code>.</td>
+                        </tr>
+                        <tr class="border-t border-border align-top">
+                            <td class="px-3 py-2"><code class={inlineCode}>message</code></td>
+                            <td class="px-3 py-2">Pesan umum yang aman ditampilkan ke pengguna.</td>
+                        </tr>
+                        <tr class="border-t border-border align-top">
+                            <td class="px-3 py-2"><code class={inlineCode}>errors</code></td>
+                            <td class="px-3 py-2">Rincian kesalahan per field, berisi <code class={inlineCode}>field</code> dan <code class={inlineCode}>message</code>.</td>
+                        </tr>
+                        <tr class="border-t border-border align-top">
+                            <td class="px-3 py-2"><code class={inlineCode}>requestId</code></td>
+                            <td class="px-3 py-2">ID permintaan untuk menghubungkan pesan pengguna dengan log server. Nilai yang sama dikirim di header <code class={inlineCode}>X-Request-Id</code>.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <p class="mt-3 text-foreground-secondary leading-relaxed">
+                Di Hands-on 2, semua endpoint memakai bentuk yang sama. Controller tidak menulis
+                <code class={inlineCode}>try/catch</code> sendiri; error dilempar ke Express lalu diolah
+                <code class={inlineCode}>errorHandler</code> di backend. Hands-on 1 memakai bentuk dasar
+                yang sama tanpa <code class={inlineCode}>requestId</code>; Hands-on 2 menambahkan
+                middleware request ID agar pesan pengguna bisa dilacak ke log server.
+            </p>
+            <CodeBlock
+                code={s6ErrorContract}
+                language="json"
+                filename="Contoh error response: 409 MENU_NAME_TAKEN"
+                compact
+            />
+            <p class="mt-3 text-foreground-secondary leading-relaxed">
+                Di frontend Hands-on 2, <code class={inlineCode}>toApiError</code> membaca bentuk ini dan
+                mengubahnya menjadi satu kelas <code class={inlineCode}>ApiError</code>. Implementasinya ada
+                di bagian <strong>errors.ts dan http.ts</strong>.
+            </p>
+
+            <h4 class="mt-5 mb-2 font-semibold text-foreground">3. Pemetaan Status HTTP ke Kode Aplikasi</h4>
+            <div class="mt-4 overflow-x-auto rounded-lg border border-border">
+                <table class="w-full border-collapse text-left text-sm md:text-base">
+                    <thead>
+                        <tr class="bg-muted text-foreground">
+                            <th class="px-3 py-2 font-semibold">Status HTTP</th>
+                            <th class="px-3 py-2 font-semibold">Kode aplikasi</th>
+                            <th class="px-3 py-2 font-semibold">Kapan dipakai</th>
+                        </tr>
+                    </thead>
+                    <tbody class="text-foreground-secondary">
+                        <tr class="border-t border-border align-top">
+                            <td class="px-3 py-2 font-mono">400</td>
+                            <td class="px-3 py-2"><code class={inlineCode}>VALIDATION_ERROR</code>, <code class={inlineCode}>INVALID_JSON</code></td>
+                            <td class="px-3 py-2">Payload gagal schema zod, field asing, atau body bukan JSON valid</td>
+                        </tr>
+                        <tr class="border-t border-border align-top">
+                            <td class="px-3 py-2 font-mono">401</td>
+                            <td class="px-3 py-2"><code class={inlineCode}>UNAUTHORIZED</code></td>
+                            <td class="px-3 py-2">Belum login, cookie tidak ada, atau sesi kedaluwarsa</td>
+                        </tr>
+                        <tr class="border-t border-border align-top">
+                            <td class="px-3 py-2 font-mono">403</td>
+                            <td class="px-3 py-2"><code class={inlineCode}>FORBIDDEN</code>, <code class={inlineCode}>STALL_FORBIDDEN</code>, <code class={inlineCode}>MENU_FORBIDDEN</code></td>
+                            <td class="px-3 py-2">Role tidak berhak, atau owner mengakses warung/menu milik owner lain</td>
+                        </tr>
+                        <tr class="border-t border-border align-top">
+                            <td class="px-3 py-2 font-mono">404</td>
+                            <td class="px-3 py-2"><code class={inlineCode}>MENU_NOT_FOUND</code>, <code class={inlineCode}>STALL_NOT_FOUND</code>, <code class={inlineCode}>ORDER_NOT_FOUND</code>, <code class={inlineCode}>ROUTE_NOT_FOUND</code></td>
+                            <td class="px-3 py-2">Menu, warung, pesanan, atau route yang diminta tidak tersedia</td>
+                        </tr>
+                        <tr class="border-t border-border align-top">
+                            <td class="px-3 py-2 font-mono">409</td>
+                            <td class="px-3 py-2"><code class={inlineCode}>EMAIL_TAKEN</code>, <code class={inlineCode}>MENU_NAME_TAKEN</code>, <code class={inlineCode}>MENU_UNAVAILABLE</code>, <code class={inlineCode}>ORDER_STATUS_FINAL</code></td>
+                            <td class="px-3 py-2">Email atau nama menu duplikat, menu habis, status pesanan sudah final, atau konflik data lain</td>
+                        </tr>
+                        <tr class="border-t border-border align-top">
+                            <td class="px-3 py-2 font-mono">500</td>
+                            <td class="px-3 py-2"><code class={inlineCode}>INTERNAL_ERROR</code></td>
+                            <td class="px-3 py-2">Kesalahan tak terduga di server; detail hanya masuk log, bukan respons</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <h4 class="mt-5 mb-2 font-semibold text-foreground">4. Prinsip Penerapan</h4>
+            <ul class="text-foreground-secondary leading-relaxed space-y-1.5 list-disc list-inside">
+                <li>Gunakan nama properti yang konsisten pada setiap endpoint.</li>
+                <li>Bedakan pesan umum (<code class={inlineCode}>message</code>) dengan rincian kesalahan (<code class={inlineCode}>errors</code>).</li>
+                <li>Gunakan HTTP status code sesuai jenis kegagalan.</li>
+                <li>Gunakan kode error aplikasi yang stabil, seperti <code class={inlineCode}>VALIDATION_ERROR</code> atau <code class={inlineCode}>RESOURCE_NOT_FOUND</code>.</li>
+                <li>Hindari mengirimkan detail internal, stack trace, atau informasi sensitif ke frontend.</li>
+            </ul>
+
+            <div class="mt-4 p-4 rounded-lg bg-accent/5 dark:bg-accent/10 border-2 border-dashed border-accent">
+                <span class="flex items-center gap-2 font-bold text-accent">
+                    <BookOpen class="w-4 h-4" />
+                    Bacaan Lanjutan
+                </span>
+                <ul class="text-base text-foreground-secondary mt-2 space-y-1 list-disc list-inside">
+                    <li>
+                        <a href="https://www.rfc-editor.org/rfc/rfc9457.html" target="_blank" rel="noopener noreferrer" class="text-primary hover:underline">RFC 9457: Problem Details for HTTP APIs</a>
+                        : standar format error response untuk API.
+                    </li>
+                    <li>
+                        <a href="https://learn.microsoft.com/en-us/azure/architecture/best-practices/api-design" target="_blank" rel="noopener noreferrer" class="text-primary hover:underline">Microsoft: API design best practices</a>
+                        : konsistensi respons dan penanganan error.
+                    </li>
+                    <li>
+                        <a href="https://jsonapi.org/format/#errors" target="_blank" rel="noopener noreferrer" class="text-primary hover:underline">JSON:API: Errors</a>
+                        : contoh struktur error yang konsisten.
+                    </li>
+                </ul>
+            </div>
+        </Step>
+
+        <!-- ===== SLIDE 7 ===== -->
+
+        <Step id="s7" diagram="/diagrams/08/slide-7.webp">
+            <StepHeader title="Protected Route & Access Control" tone="accent" />
+
+            <p class="text-foreground-secondary leading-relaxed">
+                <strong>Protected Route</strong> adalah mekanisme pada frontend untuk membatasi akses ke
+                halaman tertentu berdasarkan status autentikasi atau hak akses pengguna.{' '}
+                <strong>Access Control</strong> adalah mekanisme untuk menentukan sumber daya atau fitur apa
+                saja yang boleh diakses oleh pengguna berdasarkan peran atau izin yang dimiliki.
+            </p>
+
+            <h4 class="mt-5 mb-2 font-semibold text-foreground">1. Contoh pada Aplikasi Kantin</h4>
+            <ul class="text-foreground-secondary leading-relaxed space-y-1.5 list-disc list-inside">
+                <li><code class={inlineCode}>customer</code>: melihat katalog menu dan membuat pesanan.</li>
+                <li><code class={inlineCode}>owner</code>: mengelola menu dan melihat tiket pesanan warungnya, tetapi tidak dapat mengubah status pesanan.</li>
+                <li><code class={inlineCode}>admin</code>: membaca data lintas warung dan memproses status pesanan <code class={inlineCode}>confirmed</code> menjadi <code class={inlineCode}>completed</code> atau <code class={inlineCode}>cancelled</code>, tanpa mengubah menu atau isi pesanan.</li>
+                <li>Pengunjung tanpa sesi tetap dapat melihat katalog, tetapi tidak dapat checkout.</li>
+            </ul>
+
+            <h4 class="mt-5 mb-2 font-semibold text-foreground">2. Authentication vs Authorization</h4>
+            <div class="mt-4 overflow-x-auto rounded-lg border border-border">
+                <table class="w-full border-collapse text-left text-sm md:text-base">
+                    <thead>
+                        <tr class="bg-muted text-foreground">
+                            <th class="px-3 py-2 font-semibold">Aspek</th>
+                            <th class="px-3 py-2 font-semibold">Authentication</th>
+                            <th class="px-3 py-2 font-semibold">Authorization</th>
+                        </tr>
+                    </thead>
+                    <tbody class="text-foreground-secondary">
+                        <tr class="border-t border-border align-top">
+                            <td class="px-3 py-2 font-semibold text-foreground">Tujuan</td>
+                            <td class="px-3 py-2">Memastikan identitas pengguna</td>
+                            <td class="px-3 py-2">Memastikan hak akses pengguna</td>
+                        </tr>
+                        <tr class="border-t border-border align-top">
+                            <td class="px-3 py-2 font-semibold text-foreground">Pertanyaan</td>
+                            <td class="px-3 py-2">Siapa pengguna ini?</td>
+                            <td class="px-3 py-2">Apa yang boleh dilakukan pengguna ini?</td>
+                        </tr>
+                        <tr class="border-t border-border align-top">
+                            <td class="px-3 py-2 font-semibold text-foreground">Contoh</td>
+                            <td class="px-3 py-2">Login dengan email dan password</td>
+                            <td class="px-3 py-2">Hanya admin yang boleh menghapus akun</td>
+                        </tr>
+                        <tr class="border-t border-border align-top">
+                            <td class="px-3 py-2 font-semibold text-foreground">Jika gagal</td>
+                            <td class="px-3 py-2">Pengguna belum login</td>
+                            <td class="px-3 py-2">Pengguna tidak memiliki izin</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <h4 class="mt-5 mb-2 font-semibold text-foreground">3. Frontend Bukan Satu-satunya Lapisan Keamanan</h4>
+            <p class="text-foreground-secondary leading-relaxed">
+                Protected Route di frontend tidak cukup untuk mengamankan aplikasi. Pengguna dapat mencoba
+                memanggil API secara langsung tanpa melewati antarmuka frontend. Karena itu, backend tetap
+                harus memeriksa autentikasi dan otorisasi pada setiap endpoint yang membutuhkan perlindungan.
+            </p>
+            <div class="mt-4 overflow-x-auto rounded-lg border border-border">
+                <table class="w-full border-collapse text-left text-sm md:text-base">
+                    <thead>
+                        <tr class="bg-muted text-foreground">
+                            <th class="px-3 py-2 font-semibold">Lapisan</th>
+                            <th class="px-3 py-2 font-semibold">Tanggung jawab</th>
+                        </tr>
+                    </thead>
+                    <tbody class="text-foreground-secondary">
+                        <tr class="border-t border-border align-top">
+                            <td class="px-3 py-2 font-semibold text-foreground">Frontend</td>
+                            <td class="px-3 py-2">Mengatur navigasi dan menyembunyikan fitur yang tidak boleh diakses</td>
+                        </tr>
+                        <tr class="border-t border-border align-top">
+                            <td class="px-3 py-2 font-semibold text-foreground">Backend</td>
+                            <td class="px-3 py-2">Memvalidasi identitas, role, dan izin sebelum memproses permintaan</td>
+                        </tr>
+                        <tr class="border-t border-border align-top">
+                            <td class="px-3 py-2 font-semibold text-foreground">Database</td>
+                            <td class="px-3 py-2">Menjaga aturan akses data sesuai rancangan sistem</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="mt-4 p-3 rounded-lg bg-warning/5 dark:bg-warning/10 border-l-4 border-warning">
+                <span class="font-bold text-warning">Login saja tidak cukup</span>
+                <p class="text-sm md:text-base text-foreground-secondary mt-1">
+                    Ketika tenant mengubah menu, backend harus memastikan bahwa tenant tersebut memang memiliki
+                    menu yang akan diubah, bukan hanya memastikan bahwa pengguna sudah login. Pemeriksaan
+                    kepemilikan data adalah bagian dari authorization, bukan sekadar authentication.
+                </p>
+                <p class="mt-2 text-sm md:text-base text-foreground-secondary">
+                    Implementasi nyatanya ada di bagian <strong>Protected Route dan RBAC</strong>:{' '}
+                    <code class={inlineCode}>ProtectedRoute.tsx</code> menjaga navigasi di frontend,
+                    sementara <code class={inlineCode}>authorize()</code> dan
+                    <code class={inlineCode}>canManageStall()</code> menjaga endpoint di backend.
+                    Route guard di frontend membantu pengalaman pengguna, tetapi keputusan akhir tetap
+                    diambil backend.
+                </p>
+            </div>
+
+            <div class="mt-4 p-4 rounded-lg bg-accent/5 dark:bg-accent/10 border-2 border-dashed border-accent">
+                <span class="flex items-center gap-2 font-bold text-accent">
+                    <BookOpen class="w-4 h-4" />
+                    Bacaan Lanjutan
+                </span>
+                <ul class="text-base text-foreground-secondary mt-2 space-y-1 list-disc list-inside">
+                    <li>
+                        <a href="https://cheatsheetseries.owasp.org/cheatsheets/Authorization_Cheat_Sheet.html" target="_blank" rel="noopener noreferrer" class="text-primary hover:underline">OWASP: Authorization Cheat Sheet</a>
+                        : prinsip dan pola pemeriksaan hak akses.
+                    </li>
+                    <li>
+                        <a href="https://owasp.org/Top10/A01_2021-Broken_Access_Control/" target="_blank" rel="noopener noreferrer" class="text-primary hover:underline">OWASP Top 10: Broken Access Control</a>
+                        : risiko keamanan ketika otorisasi tidak diperiksa dengan benar.
+                    </li>
+                    <li>
+                        <a href="https://reactrouter.com/start/library/route" target="_blank" rel="noopener noreferrer" class="text-primary hover:underline">React Router: Route</a>
+                        : dasar pemetaan halaman dan navigasi di React.
+                    </li>
+                </ul>
+            </div>
+        </Step>
+
+        <!-- ===== HANDS-ON 1 ===== -->
+
+        <Step id="h1" diagram="/diagrams/08/slide-3.webp">
+            <SectionDivider label="Hands-on 1: Validasi Form & Fetch API" />
+            <StepHeader title="Ambil Starter dan Kenali TODO" tone="success" />
+
+            <p class="text-foreground-secondary leading-relaxed">
+                Pertemuan ini punya dua hands-on yang dibangun di folder terpisah:
+            </p>
+            <ul class="mt-2 text-foreground-secondary leading-relaxed space-y-1.5 list-disc list-inside">
+                <li>
+                    <strong>Hands-on 1</strong>: login Owner, validasi form menu, ownership check,
+                    dan Fetch API. Backend berjalan di port <code class={inlineCode}>3001</code>,
+                    frontend di <code class={inlineCode}>5173</code>.
+                </li>
+                <li>
+                    <strong>Hands-on 2</strong>: register customer, RBAC, CRUD owner, checkout,
+                    admin memantau dan memproses status pesanan, Axios, dan error terpusat. Backend
+                    di port <code class={inlineCode}>3002</code>, frontend di{' '}
+                    <code class={inlineCode}>5174</code>.
+                </li>
+            </ul>
+            <p class="mt-3 text-foreground-secondary leading-relaxed">
+                Hands-on 2 tidak mengubah source Hands-on 1. Keduanya memakai database Pertemuan 3
+                yang sudah ditambah migrasi Pertemuan 8. Prasyarat: Node.js 22.18 atau lebih baru, SQL Server aktif,
+                database <code class={inlineCode}>review_kantin</code> sudah dibuat, dan port{' '}
+                <code class={inlineCode}>3001</code>, <code class={inlineCode}>3002</code>,{' '}
+                <code class={inlineCode}>5173</code>, serta <code class={inlineCode}>5174</code>{' '}
+                kosong.
+            </p>
+
+            <TerminalBlock code={cloneStarter} title="Terminal: Clone branch starter Pertemuan 08" />
+            <CodeBlock code={folderTree} language="bash" filename="Isi folder setelah clone" compact />
+
+            <div class="mt-4 p-3 rounded-lg bg-warning/5 dark:bg-warning/10 border-l-4 border-warning">
+                <span class="font-bold text-warning">Siapkan database</span>
+                <p class="mt-1 text-sm md:text-base text-foreground-secondary leading-relaxed">
+                    Setelah clone, buka SSMS dan jalankan enam script <code class={inlineCode}>db/01</code>
+                    sampai <code class={inlineCode}>db/06</code> secara berurutan. Gunakan akun yang
+                    punya hak DDL, bukan <code class={inlineCode}>praktikum_user</code>. Detail dan
+                    query verifikasi ada di README starter.
+                </p>
+            </div>
+
+            <div class="mt-4 overflow-x-auto rounded-lg border border-border">
+                <table class="w-full border-collapse text-left text-sm md:text-base">
+                    <thead>
+                        <tr class="bg-muted text-foreground">
+                            <th class="px-3 py-2 font-semibold">File di Hands-on 1</th>
+                            <th class="px-3 py-2 font-semibold">Stub yang harus diisi</th>
+                            <th class="px-3 py-2 font-semibold">Langkah</th>
+                        </tr>
+                    </thead>
+                    <tbody class="text-foreground-secondary">
+                        <tr class="border-t border-border align-top">
+                            <td class="px-3 py-2"><code class={inlineCode}>frontend/src/lib/validation.ts</code></td>
+                            <td class="px-3 py-2"><code class={inlineCode}>validateMenuForm</code>, <code class={inlineCode}>validateLoginForm</code></td>
+                            <td class="px-3 py-2">Validasi form</td>
+                        </tr>
+                        <tr class="border-t border-border align-top">
+                            <td class="px-3 py-2"><code class={inlineCode}>frontend/src/lib/api.ts</code></td>
+                            <td class="px-3 py-2">
+                                <code class={inlineCode}>getMenus</code>, <code class={inlineCode}>getStalls</code>,
+                                <code class={inlineCode}>getMyStalls</code>, <code class={inlineCode}>createMenu</code>,
+                                <code class={inlineCode}>login</code>, <code class={inlineCode}>getCurrentUser</code>,
+                                <code class={inlineCode}>logout</code>
+                            </td>
+                            <td class="px-3 py-2">Fetch API</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <h4 class="mt-5 mb-2 font-semibold text-foreground">Akun Hands-on 1</h4>
+            <p class="text-foreground-secondary leading-relaxed">
+                Hands-on 1 hanya menerima role Owner. Gunakan akun berikut untuk login. Akun
+                customer dipakai pada uji "login customer ditolak" di bagian Uji Hands-on 1.
+            </p>
+            <div class="mt-3 overflow-x-auto rounded-lg border border-border">
+                <table class="w-full border-collapse text-left text-sm md:text-base">
+                    <thead>
+                        <tr class="bg-muted text-foreground">
+                            <th class="px-3 py-2 font-semibold">Role</th>
+                            <th class="px-3 py-2 font-semibold">Email</th>
+                            <th class="px-3 py-2 font-semibold">Password</th>
+                        </tr>
+                    </thead>
+                    <tbody class="text-foreground-secondary">
+                        <tr class="border-t border-border align-top">
+                            <td class="px-3 py-2">Owner</td>
+                            <td class="px-3 py-2 font-mono">tini@kantin.test</td>
+                            <td class="px-3 py-2 font-mono">rahasia123</td>
+                        </tr>
+                        <tr class="border-t border-border align-top">
+                            <td class="px-3 py-2">Customer</td>
+                            <td class="px-3 py-2 font-mono">bagas@student.test</td>
+                            <td class="px-3 py-2 font-mono">rahasia123</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="mt-4 p-3 rounded-lg bg-warning/5 dark:bg-warning/10 border-l-4 border-warning">
+                <span class="font-bold text-warning">Sebelum menjalankan backend</span>
+                <p class="mt-1 text-sm md:text-base text-foreground-secondary leading-relaxed">
+                    Salin <code class={inlineCode}>.env.example</code> menjadi{' '}
+                    <code class={inlineCode}>.env</code> di folder backend, lalu sesuaikan
+                    kredensial database dan <code class={inlineCode}>JWT_SECRET</code>. Nilai
+                    <code class={inlineCode}>DB_PASSWORD</code> harus sama dengan password database
+                    yang kamu buat di Pertemuan 3.
+                </p>
+            </div>
+            <CodeBlock code={h1EnvBackend} language="ini" filename="backend/.env (Hands-on 1)" compact />
+            <p class="mt-3 text-foreground-secondary leading-relaxed">
+                Ganti <code class={inlineCode}>JWT_SECRET</code> dengan nilai acak. Jangan pakai
+                contoh di atas untuk aplikasi nyata. Salah satu cara membuatnya:
+            </p>
+            <CodeBlock
+                code={`node -e "console.log(require('node:crypto').randomBytes(32).toString('hex'))"`}
+                language="bash"
+                filename="Membuat JWT secret acak"
+                compact
+            />
+            <p class="mt-3 text-foreground-secondary leading-relaxed">
+                Frontend Hands-on 1 hanya butuh alamat API:
+            </p>
+            <CodeBlock code={h1EnvFrontend} language="ini" filename="frontend/.env (Hands-on 1)" compact />
+
+            <TerminalBlock code={runHo1Backend} title="Terminal: Backend Hands-on 1" />
+            <TerminalBlock code={runHo1Frontend} title="Terminal: Frontend Hands-on 1" />
+
+            <a href={ho1Url}
+               target="_blank" rel="noopener noreferrer"
+               class="my-3 inline-flex items-center gap-2 text-sm font-medium text-primary hover:underline">
+                <img src="/icons/github.svg" alt="" aria-hidden="true" class="w-4 h-4 invert-0 dark:invert" />
+                Versi lengkap Hands-on 1 di GitHub
+            </a>
+        </Step>
+
+        <Step id="h2" diagram="/diagrams/08/slide-3.webp">
+            <StepHeader title="Validasi Form (validation.ts)" tone="success" />
+
+            <p class="text-foreground-secondary leading-relaxed">
+                Form React dikendalikan state. Setiap perubahan input memperbarui objek
+                <code class={inlineCode}>values</code>, lalu fungsi validasi murni mengembalikan
+                error per field. Komponen hanya menampilkan hasilnya, sehingga aturan validasi bisa
+                diuji tanpa merender UI.
+            </p>
+
+            <p class="mt-3 text-foreground-secondary leading-relaxed">
+                Ganti <strong>seluruh isi</strong>{' '}
+                <code class={inlineCode}>frontend/src/lib/validation.ts</code> dengan versi lengkap
+                berikut. Tipe, konstanta, dan urutan field tetap sama; yang berubah hanya isi
+                <code class={inlineCode}>validateMenuForm</code> dan{' '}
+                <code class={inlineCode}>validateLoginForm</code>.
+            </p>
+            <CodeBlock
+                code={h1Validation}
+                language="ts"
+                filename="frontend/src/lib/validation.ts"
+            />
+
+            <h4 class="mt-5 mb-2 font-semibold text-foreground">Aturan yang dipakai</h4>
+            <div class="mt-4 overflow-x-auto rounded-lg border border-border">
+                <table class="w-full border-collapse text-left text-sm md:text-base">
+                    <thead>
+                        <tr class="bg-muted text-foreground">
+                            <th class="px-3 py-2 font-semibold">Field</th>
+                            <th class="px-3 py-2 font-semibold">Aturan frontend</th>
+                            <th class="px-3 py-2 font-semibold">Pesan contoh</th>
+                        </tr>
+                    </thead>
+                    <tbody class="text-foreground-secondary">
+                        <tr class="border-t border-border align-top">
+                            <td class="px-3 py-2 font-mono">stallId</td>
+                            <td class="px-3 py-2">Wajib dipilih, bilangan bulat positif</td>
+                            <td class="px-3 py-2">Pilih warung terlebih dahulu.</td>
+                        </tr>
+                        <tr class="border-t border-border align-top">
+                            <td class="px-3 py-2 font-mono">name</td>
+                            <td class="px-3 py-2">Wajib, 2 sampai 100 karakter setelah <code class={inlineCode}>trim()</code></td>
+                            <td class="px-3 py-2">Nama menu minimal 2 karakter.</td>
+                        </tr>
+                        <tr class="border-t border-border align-top">
+                            <td class="px-3 py-2 font-mono">category</td>
+                            <td class="px-3 py-2"><code class={inlineCode}>makanan</code>, <code class={inlineCode}>minuman</code>, atau <code class={inlineCode}>camilan</code></td>
+                            <td class="px-3 py-2">Pilih kategori menu.</td>
+                        </tr>
+                        <tr class="border-t border-border align-top">
+                            <td class="px-3 py-2 font-mono">price</td>
+                            <td class="px-3 py-2">Wajib, bilangan bulat 1 sampai 1.000.000</td>
+                            <td class={inlineCode + ' text-sm'}>Harga maksimal Rp1.000.000.</td>
+                        </tr>
+                        <tr class="border-t border-border align-top">
+                            <td class="px-3 py-2 font-mono">description</td>
+                            <td class="px-3 py-2">Opsional, maksimal 255 karakter</td>
+                            <td class="px-3 py-2">Deskripsi maksimal 255 karakter.</td>
+                        </tr>
+                        <tr class="border-t border-border align-top">
+                            <td class="px-3 py-2 font-mono">email</td>
+                            <td class="px-3 py-2">Wajib, format email, maksimal 150 karakter</td>
+                            <td class="px-3 py-2">Format email tidak valid.</td>
+                        </tr>
+                        <tr class="border-t border-border align-top">
+                            <td class="px-3 py-2 font-mono">password</td>
+                            <td class="px-3 py-2">Wajib, 8 sampai 72 karakter</td>
+                            <td class="px-3 py-2">Password minimal 8 karakter.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <p class="mt-3 text-foreground-secondary leading-relaxed">
+                Perhatikan <code class={inlineCode}>isPositiveIntegerText</code>. Nilai harga
+                disimpan sebagai string karena berasal dari input teks, tetapi validasi menolak
+                <code class={inlineCode}>"10.000"</code>, <code class={inlineCode}>"1,5"</code>,
+                dan tanda minus. Konversi ke angka baru dilakukan di
+                <code class={inlineCode}>toMenuPayload</code> setelah semua field lolos.
+            </p>
+            <p class="mt-3 text-foreground-secondary leading-relaxed">
+                <code class={inlineCode}>firstErrorField</code> memakai
+                <code class={inlineCode}>FIELD_ORDER</code> supaya fokus berpindah ke field pertama
+                yang salah, bukan ke urutan objek JavaScript. <code class={inlineCode}>MenuForm</code>{' '}
+                memanggil <code class={inlineCode}>validateMenuForm</code> saat submit, lalu
+                memetakan <code class={inlineCode}>error.details</code> dari backend ke field yang
+                sama bila server menolak payload.
+            </p>
+
+            <a href={ho1File('frontend/src/lib/validation.ts')}
+               target="_blank" rel="noopener noreferrer"
+               class="my-3 inline-flex items-center gap-2 text-sm font-medium text-primary hover:underline">
+                <img src="/icons/github.svg" alt="" aria-hidden="true" class="w-4 h-4 invert-0 dark:invert" />
+                Lihat validation.ts di branch lengkap
+            </a>
+        </Step>
+
+        <Step id="h3" diagram="/diagrams/08/slide-4-5.webp">
+            <StepHeader title="Fetch API (api.ts)" tone="success" />
+
+            <p class="text-foreground-secondary leading-relaxed">
+                <code class={inlineCode}>request&lt;T&gt;</code>, kelas{' '}
+                <code class={inlineCode}>ApiError</code>, dan helper{' '}
+                <code class={inlineCode}>toDetails</code> sudah disediakan starter. Fungsi itu
+                mengirim cookie dengan <code class={inlineCode}>credentials: 'include'</code>,
+                membaca envelope <code class={inlineCode}>{'{ status, data, message }'}</code>, dan
+                melempar <code class={inlineCode}>ApiError</code> saat respons bukan 2xx. Kamu hanya
+                perlu mengisi fungsi endpoint.
+            </p>
+
+            <p class="mt-3 text-foreground-secondary leading-relaxed">
+                Ganti empat stub data di <code class={inlineCode}>frontend/src/lib/api.ts</code>:
+                <code class={inlineCode}>getMenus</code>, <code class={inlineCode}>getStalls</code>,
+                <code class={inlineCode}>getMyStalls</code>, dan{' '}
+                <code class={inlineCode}>createMenu</code>.
+            </p>
+            <CodeBlock
+                code={h1ApiData}
+                language="ts"
+                filename="frontend/src/lib/api.ts (ganti empat stub data)"
+            />
+
+            <p class="mt-3 text-foreground-secondary leading-relaxed">
+                Lalu ganti tiga stub autentikasi: <code class={inlineCode}>login</code>,{' '}
+                <code class={inlineCode}>getCurrentUser</code>, dan{' '}
+                <code class={inlineCode}>logout</code>.
+            </p>
+            <CodeBlock
+                code={h1ApiAuth}
+                language="ts"
+                filename="frontend/src/lib/api.ts (ganti tiga stub auth)"
+            />
+
+            <div class="mt-4 p-3 rounded-lg bg-primary/5 dark:bg-primary/10 border-l-4 border-primary">
+                <span class="font-bold text-primary">Kenapa respons dicek lagi?</span>
+                <p class="text-sm md:text-base text-foreground-secondary mt-1">
+                    <code class={inlineCode}>fetch</code> tidak melempar error pada status 4xx/5xx.
+                    Karena itu <code class={inlineCode}>request&lt;T&gt;</code> memeriksa{' '}
+                    <code class={inlineCode}>response.ok</code>, membaca{' '}
+                    <code class={inlineCode}>code</code>/<code class={inlineCode}>message</code>/
+                    <code class={inlineCode}>errors</code> dari body, lalu melempar{' '}
+                    <code class={inlineCode}>ApiError</code>. Tanpa langkah ini, respons 400 akan
+                    dianggap sukses dan form menampilkan data kosong.
+                </p>
+            </div>
+
+            <p class="mt-3 text-foreground-secondary leading-relaxed">
+                <code class={inlineCode}>getMenus</code> dan <code class={inlineCode}>getStalls</code>{' '}
+                juga memeriksa apakah <code class={inlineCode}>response.data</code> benar-benar
+                array. Kalau backend mengubah bentuk respons, frontend gagal cepat dengan kode{' '}
+                <code class={inlineCode}>INVALID_RESPONSE</code>, bukan merender{' '}
+                <code class={inlineCode}>undefined</code>.
+            </p>
+
+            <a href={ho1File('frontend/src/lib/api.ts')}
+               target="_blank" rel="noopener noreferrer"
+               class="my-3 inline-flex items-center gap-2 text-sm font-medium text-primary hover:underline">
+                <img src="/icons/github.svg" alt="" aria-hidden="true" class="w-4 h-4 invert-0 dark:invert" />
+                Lihat api.ts di branch lengkap
+            </a>
+        </Step>
+
+        <Step id="h4" diagram="/diagrams/08/slide-2.webp">
+            <StepHeader title="Backend Memvalidasi Ulang" tone="success" />
+
+            <p class="text-foreground-secondary leading-relaxed">
+                Validasi frontend bisa dilewati: pengguna dapat mengirim request langsung dengan{' '}
+                <code class={inlineCode}>curl</code> atau Postman. Karena itu backend memakai zod
+                untuk memeriksa ulang payload sebelum menyentuh database. Schema di bawah sudah
+                lengkap di starter; kamu tidak perlu menyalinnya, cukup membaca dan memastikan
+                aturannya sama dengan validasi frontend.
+            </p>
+            <CodeBlock
+                code={h1MenuSchema}
+                language="ts"
+                filename="backend/src/schemas/menuSchema.ts (sudah lengkap)"
+            />
+            <CodeBlock
+                code={h1AuthSchema}
+                language="ts"
+                filename="backend/src/schemas/authSchema.ts (sudah lengkap)"
+            />
+
+            <h4 class="mt-5 mb-2 font-semibold text-foreground">Yang perlu diperhatikan</h4>
+            <ul class="text-foreground-secondary leading-relaxed space-y-1.5 list-disc list-inside">
+                <li>
+                    <code class={inlineCode}>.strict()</code> menolak field asing. Body berisi{' '}
+                    <code class={inlineCode}>role</code> atau <code class={inlineCode}>total</code>{' '}
+                    akan gagal dengan <code class={inlineCode}>VALIDATION_ERROR</code>.
+                </li>
+                <li>
+                    <code class={inlineCode}>.trim()</code> dijalankan sebelum panjang dicek,
+                    sehingga <code class={inlineCode}>"  A  "</code> dihitung sebagai satu karakter
+                    dan ditolak.
+                </li>
+                <li>
+                    <code class={inlineCode}>price</code> wajib <code class={inlineCode}>.int()</code>{' '}
+                    dan <code class={inlineCode}>.positive()</code>. Angka desimal atau negatif tidak
+                    pernah sampai ke database.
+                </li>
+                <li>
+                    <code class={inlineCode}>parseCreateMenuInput</code> mengubah{' '}
+                    <code class={inlineCode}>issue.path</code> menjadi nama field, lalu melempar{' '}
+                    <code class={inlineCode}>ValidationError</code>. Error handler mengubahnya
+                    menjadi respons <code class={inlineCode}>400 VALIDATION_ERROR</code>.
+                </li>
+                <li>
+                    Pesan backend dan frontend sengaja dibuat mirip, tetapi tetap independen.
+                    Mengubah teks di frontend tidak melemahkan aturan backend.
+                </li>
+            </ul>
+
+            <div class="mt-4 p-3 rounded-lg bg-warning/5 dark:bg-warning/10 border-l-4 border-warning">
+                <span class="font-bold text-warning">Satu sumber aturan, dua lapisan</span>
+                <p class="mt-1 text-sm md:text-base text-foreground-secondary">
+                    Frontend memvalidasi untuk pengalaman pengguna: pesan cepat, fokus field, dan
+                    tombol submit yang tidak mengirim data jelas salah. Backend memvalidasi untuk
+                    integritas data: tidak peduli request datang dari UI mana pun. Keduanya harus
+                    ada.
+                </p>
+            </div>
+        </Step>
+
+        <Step id="h5" diagram="/diagrams/08/slide-8.webp">
+            <StepHeader title="Uji Hands-on 1" tone="success" />
+
+            <p class="text-foreground-secondary leading-relaxed">
+                Branch starter tidak menyertakan folder <code class={inlineCode}>tests/</code>,
+                jadi verifikasi Hands-on 1 dilakukan manual di browser dan lewat build frontend.
+                Pastikan backend serta frontend masih berjalan.
+            </p>
+            <div class="mt-4 p-3 rounded-lg bg-primary/5 dark:bg-primary/10 border-l-4 border-primary">
+                <span class="font-bold text-primary">Akun untuk uji</span>
+                <p class="mt-1 text-sm md:text-base text-foreground-secondary leading-relaxed">
+                    Login owner memakai <code class={inlineCode}>tini@kantin.test</code> /
+                    <code class={inlineCode}>rahasia123</code>. Untuk uji login customer yang
+                    ditolak, gunakan <code class={inlineCode}>bagas@student.test</code> /
+                    <code class={inlineCode}>rahasia123</code>.
+                </p>
+            </div>
+            <TerminalBlock
+                code={`cd praktikum-pert-8/${ho1Path}/frontend
+npm run lint
+npm run build`}
+                title="Terminal: Cek frontend Hands-on 1"
+            />
+
+            <div class="mt-4 overflow-x-auto rounded-lg border border-border">
+                <table class="w-full border-collapse text-left text-sm md:text-base">
+                    <thead>
+                        <tr class="bg-muted text-foreground">
+                            <th class="px-3 py-2 font-semibold">Skenario</th>
+                            <th class="px-3 py-2 font-semibold">Hasil yang benar</th>
+                        </tr>
+                    </thead>
+                    <tbody class="text-foreground-secondary">
+                        <tr class="border-t border-border align-top">
+                            <td class="px-3 py-2">Submit form menu kosong</td>
+                            <td class="px-3 py-2">Error muncul di warung, nama, kategori, dan harga; fokus pindah ke field pertama</td>
+                        </tr>
+                        <tr class="border-t border-border align-top">
+                            <td class="px-3 py-2">Nama menu satu karakter</td>
+                            <td class="px-3 py-2">Ditolak sebelum request dikirim</td>
+                        </tr>
+                        <tr class="border-t border-border align-top">
+                            <td class="px-3 py-2">Harga <code class={inlineCode}>0</code>, negatif, atau desimal</td>
+                            <td class="px-3 py-2">Pesan harga tampil, tidak ada request ke backend</td>
+                        </tr>
+                        <tr class="border-t border-border align-top">
+                            <td class="px-3 py-2">Nama menu duplikat di warung yang sama</td>
+                            <td class="px-3 py-2">Backend membalas <code class={inlineCode}>409 MENU_NAME_TAKEN</code>; pesan tampil di field nama</td>
+                        </tr>
+                        <tr class="border-t border-border align-top">
+                            <td class="px-3 py-2">Login dengan password salah</td>
+                            <td class="px-3 py-2">Pesan “Email atau password tidak sesuai.”, bukan stack trace</td>
+                        </tr>
+                        <tr class="border-t border-border align-top">
+                            <td class="px-3 py-2">Login dengan akun customer</td>
+                            <td class="px-3 py-2">Ditolak karena halaman ini khusus Owner</td>
+                        </tr>
+                        <tr class="border-t border-border align-top">
+                            <td class="px-3 py-2">Backend dimatikan lalu form dikirim</td>
+                            <td class="px-3 py-2">Muncul pesan koneksi, bukan layar putih</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="mt-4 p-3 rounded-lg bg-primary/5 dark:bg-primary/10 border-l-4 border-primary">
+                <span class="font-bold text-primary">Kalau build gagal</span>
+                <p class="text-sm md:text-base text-foreground-secondary mt-1">
+                    Biasanya ada tipe yang tidak cocok: <code class={inlineCode}>response.data</code>{' '}
+                    dianggap <code class={inlineCode}>unknown</code>, atau nama field salah.
+                    Periksa pesan TypeScript, lalu bandingkan file-mu dengan tautan GitHub di bagian
+                    sebelumnya.
+                </p>
+            </div>
+        </Step>
+
+        <!-- ===== HANDS-ON 2 ===== -->
+
+        <Step id="b1" diagram="/diagrams/08/slide-6.webp">
+            <SectionDivider label="Hands-on 2: Error Terpusat & RBAC" />
+            <StepHeader title="Starter, Env, dan Akun Demo" tone="primary" />
+
+            <p class="text-foreground-secondary leading-relaxed">
+                Hands-on 2 berada di folder terpisah dan memakai port sendiri. Jangan menyalin
+                folder Hands-on 1; cukup buka folder kedua dari clone yang sama. Backend,
+                middleware, schema order, dan seed akun demo sudah lengkap. Yang kosong hanya
+                frontend.
+            </p>
+
+            <div class="mt-4 p-3 rounded-lg bg-warning/5 dark:bg-warning/10 border-l-4 border-warning">
+                <span class="font-bold text-warning">Env Hands-on 2</span>
+                <p class="mt-1 text-sm md:text-base text-foreground-secondary leading-relaxed">
+                    Salin <code class={inlineCode}>.env.example</code> menjadi{' '}
+                    <code class={inlineCode}>.env</code> di backend dan frontend. Nama cookie
+                    sengaja dibedakan agar sesi Hands-on 1 dan Hands-on 2 tidak saling menimpa di
+                    browser yang sama. Sesuaikan juga{' '}
+                    <code class={inlineCode}>CORS_ORIGIN</code> dengan port frontend Hands-on 2.
+                </p>
+            </div>
+            <CodeBlock code={h2EnvBackend} language="ini" filename="backend/.env (Hands-on 2)" compact />
+            <p class="mt-3 text-foreground-secondary leading-relaxed">
+                Ganti <code class={inlineCode}>JWT_SECRET</code> dengan nilai acak, jangan memakai
+                contoh di atas. Kalau perlu membuat nilai baru:
+            </p>
+            <CodeBlock
+                code={`node -e "console.log(require('node:crypto').randomBytes(32).toString('hex'))"`}
+                language="bash"
+                filename="Membuat JWT secret acak"
+                compact
+            />
+            <CodeBlock code={h2EnvFrontend} language="ini" filename="frontend/.env (Hands-on 2)" compact />
+
+            <TerminalBlock code={runHo2Backend} title="Terminal: Backend Hands-on 2" />
+            <TerminalBlock code={runHo2Frontend} title="Terminal: Frontend Hands-on 2" />
+
+            <h4 class="mt-5 mb-2 font-semibold text-foreground">Akun demo dari seed</h4>
+            <div class="mt-4 overflow-x-auto rounded-lg border border-border">
+                <table class="w-full border-collapse text-left text-sm md:text-base">
+                    <thead>
+                        <tr class="bg-muted text-foreground">
+                            <th class="px-3 py-2 font-semibold">Email</th>
+                            <th class="px-3 py-2 font-semibold">Password</th>
+                            <th class="px-3 py-2 font-semibold">Role</th>
+                            <th class="px-3 py-2 font-semibold">Dipakai untuk</th>
+                        </tr>
+                    </thead>
+                    <tbody class="text-foreground-secondary">
+                        <tr class="border-t border-border align-top">
+                            <td class="px-3 py-2 font-mono">admin@kantin.test</td>
+                            <td class="px-3 py-2 font-mono">admin123</td>
+                            <td class="px-3 py-2">admin</td>
+                            <td class="px-3 py-2">Melihat semua pesanan dan memproses status <code class={inlineCode}>confirmed</code></td>
+                        </tr>
+                        <tr class="border-t border-border align-top">
+                            <td class="px-3 py-2 font-mono">tini@kantin.test</td>
+                            <td class="px-3 py-2 font-mono">rahasia123</td>
+                            <td class="px-3 py-2">owner</td>
+                            <td class="px-3 py-2">Mengelola menu dan pesanan warungnya</td>
+                        </tr>
+                        <tr class="border-t border-border align-top">
+                            <td class="px-3 py-2 font-mono">bagas@student.test</td>
+                            <td class="px-3 py-2 font-mono">rahasia123</td>
+                            <td class="px-3 py-2">customer</td>
+                            <td class="px-3 py-2">Checkout dan riwayat pesanan</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <h4 class="mt-5 mb-2 font-semibold text-foreground">File yang harus diisi</h4>
+            <div class="mt-4 overflow-x-auto rounded-lg border border-border">
+                <table class="w-full border-collapse text-left text-sm md:text-base">
+                    <thead>
+                        <tr class="bg-muted text-foreground">
+                            <th class="px-3 py-2 font-semibold">File</th>
+                            <th class="px-3 py-2 font-semibold">Stub</th>
+                            <th class="px-3 py-2 font-semibold">Langkah</th>
+                        </tr>
+                    </thead>
+                    <tbody class="text-foreground-secondary">
+                        <tr class="border-t border-border align-top">
+                            <td class="px-3 py-2"><code class={inlineCode}>frontend/src/lib/errors.ts</code></td>
+                            <td class="px-3 py-2"><code class={inlineCode}>toApiError</code>, <code class={inlineCode}>getFieldErrors</code></td>
+                            <td class="px-3 py-2">errors.ts dan http.ts</td>
+                        </tr>
+                        <tr class="border-t border-border align-top">
+                            <td class="px-3 py-2"><code class={inlineCode}>frontend/src/lib/http.ts</code></td>
+                            <td class="px-3 py-2">Response interceptor 401</td>
+                            <td class="px-3 py-2">errors.ts dan http.ts</td>
+                        </tr>
+                        <tr class="border-t border-border align-top">
+                            <td class="px-3 py-2"><code class={inlineCode}>frontend/src/lib/api.ts</code></td>
+                            <td class="px-3 py-2">CRUD menu, register, order, update status</td>
+                            <td class="px-3 py-2">API Axios</td>
+                        </tr>
+                        <tr class="border-t border-border align-top">
+                            <td class="px-3 py-2"><code class={inlineCode}>frontend/src/lib/validation.ts</code></td>
+                            <td class="px-3 py-2"><code class={inlineCode}>passwordChecks</code>, <code class={inlineCode}>validateRegisterForm</code>, <code class={inlineCode}>validateCheckoutForm</code></td>
+                            <td class="px-3 py-2">Validasi register dan checkout</td>
+                        </tr>
+                        <tr class="border-t border-border align-top">
+                            <td class="px-3 py-2"><code class={inlineCode}>frontend/src/components/ProtectedRoute.tsx</code></td>
+                            <td class="px-3 py-2">Guard sesi dan role</td>
+                            <td class="px-3 py-2">Protected Route dan RBAC</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <p class="mt-3 text-foreground-secondary leading-relaxed">
+                Fungsi <code class={inlineCode}>getMenus</code>,{' '}
+                <code class={inlineCode}>getStalls</code>, <code class={inlineCode}>getMyStalls</code>,{' '}
+                <code class={inlineCode}>login</code>, <code class={inlineCode}>getCurrentUser</code>,{' '}
+                <code class={inlineCode}>logout</code>, <code class={inlineCode}>getAllOrders</code>,{' '}
+                <code class={inlineCode}>getOrderDetail</code>, dan{' '}
+                <code class={inlineCode}>getMyOrders</code> sudah lengkap di starter. Kamu hanya
+                mengisi stub yang ditandai <code class={inlineCode}>TODO</code>.
+            </p>
+
+            <a href={ho2Url}
+               target="_blank" rel="noopener noreferrer"
+               class="my-3 inline-flex items-center gap-2 text-sm font-medium text-primary hover:underline">
+                <img src="/icons/github.svg" alt="" aria-hidden="true" class="w-4 h-4 invert-0 dark:invert" />
+                Versi lengkap Hands-on 2 di GitHub
+            </a>
+        </Step>
+
+        <Step id="b2" diagram="/diagrams/08/slide-6.webp">
+            <StepHeader title="errors.ts dan http.ts" tone="primary" />
+
+            <p class="text-foreground-secondary leading-relaxed">
+                Hands-on 2 memakai Axios. Berbeda dari Fetch, Axios otomatis melempar error untuk
+                status 4xx/5xx, tetapi bentuk error-nya bermacam-macam: ada{' '}
+                <code class={inlineCode}>response</code>, ada yang timeout, ada yang gagal sebelum
+                request terkirim. Tugas <code class={inlineCode}>toApiError</code> adalah
+                menyeragamkan semuanya menjadi satu kelas <code class={inlineCode}>ApiError</code>.
+            </p>
+
+            <p class="mt-3 text-foreground-secondary leading-relaxed">
+                Ganti <strong>seluruh isi</strong>{' '}
+                <code class={inlineCode}>frontend/src/lib/errors.ts</code> dengan versi berikut.
+            </p>
+            <CodeBlock
+                code={h2Errors}
+                language="ts"
+                filename="frontend/src/lib/errors.ts"
+            />
+
+            <div class="mt-4 overflow-x-auto rounded-lg border border-border">
+                <table class="w-full border-collapse text-left text-sm md:text-base">
+                    <thead>
+                        <tr class="bg-muted text-foreground">
+                            <th class="px-3 py-2 font-semibold">Kondisi</th>
+                            <th class="px-3 py-2 font-semibold">status</th>
+                            <th class="px-3 py-2 font-semibold">code</th>
+                        </tr>
+                    </thead>
+                    <tbody class="text-foreground-secondary">
+                        <tr class="border-t border-border align-top">
+                            <td class="px-3 py-2">Respons 4xx/5xx dengan envelope</td>
+                            <td class="px-3 py-2"><code class={inlineCode}>response.status</code></td>
+                            <td class="px-3 py-2">Diambil dari body, mis. <code class={inlineCode}>VALIDATION_ERROR</code></td>
+                        </tr>
+                        <tr class="border-t border-border align-top">
+                            <td class="px-3 py-2">Timeout</td>
+                            <td class="px-3 py-2"><code class={inlineCode}>0</code></td>
+                            <td class="px-3 py-2"><code class={inlineCode}>TIMEOUT</code></td>
+                        </tr>
+                        <tr class="border-t border-border align-top">
+                            <td class="px-3 py-2">Tidak ada koneksi</td>
+                            <td class="px-3 py-2"><code class={inlineCode}>0</code></td>
+                            <td class="px-3 py-2"><code class={inlineCode}>NETWORK_ERROR</code></td>
+                        </tr>
+                        <tr class="border-t border-border align-top">
+                            <td class="px-3 py-2">Error lain</td>
+                            <td class="px-3 py-2"><code class={inlineCode}>0</code></td>
+                            <td class="px-3 py-2"><code class={inlineCode}>UNKNOWN_ERROR</code></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <p class="mt-3 text-foreground-secondary leading-relaxed">
+                <code class={inlineCode}>getFieldErrors</code> mengambil kemunculan pertama untuk
+                setiap field dari <code class={inlineCode}>details</code>. Bentuk ini cocok dengan
+                state error form, sehingga komponen tidak perlu mengulang logika pemetaan.
+            </p>
+
+            <h4 class="mt-5 mb-2 font-semibold text-foreground">Interceptor 401</h4>
+            <p class="text-foreground-secondary leading-relaxed">
+                Buka <code class={inlineCode}>frontend/src/lib/http.ts</code>. Tambahkan{' '}
+                <code class={inlineCode}>import &#123; toApiError &#125; from './errors'</code> di
+                bagian atas file, lalu ganti komentar{' '}
+                <code class={inlineCode}>TODO</code> di bagian bawah dengan interceptor berikut.
+            </p>
+            <CodeBlock
+                code={h2Http}
+                language="ts"
+                filename="frontend/src/lib/http.ts (interceptor pengganti TODO)"
+            />
+
+            <p class="mt-3 text-foreground-secondary leading-relaxed">
+                Interceptor melempar kembali <code class={inlineCode}>ApiError</code>, bukan error
+                Axios mentah. Endpoint <code class={inlineCode}>/auth/me</code>,{' '}
+                <code class={inlineCode}>/auth/login</code>, dan{' '}
+                <code class={inlineCode}>/auth/register</code> dikecualikan karena 401 di sana
+                berarti “belum login”, bukan “sesi habis”. Untuk endpoint lain, event{' '}
+                <code class={inlineCode}>auth:unauthorized</code> memberi tahu{' '}
+                <code class={inlineCode}>AuthProvider</code> agar membersihkan state user.
+            </p>
+
+            <h4 class="mt-5 mb-2 font-semibold text-foreground">Sisi backend: errorHandler</h4>
+            <p class="text-foreground-secondary leading-relaxed">
+                Kontrak yang dibaca <code class={inlineCode}>toApiError</code> dihasilkan oleh satu
+                middleware. File ini sudah lengkap di starter dan hanya untuk dibaca:
+            </p>
+            <CodeBlock
+                code={h2ErrorHandler}
+                language="ts"
+                filename="backend/src/middlewares/errorHandler.ts (sudah lengkap)"
+            />
+            <ul class="mt-3 text-foreground-secondary leading-relaxed space-y-1.5 list-disc list-inside">
+                <li>JSON rusak ditangkap lebih dulu sebagai <code class={inlineCode}>400 INVALID_JSON</code>.</li>
+                <li><code class={inlineCode}>ZodError</code> dan <code class={inlineCode}>ValidationError</code> menjadi <code class={inlineCode}>400 VALIDATION_ERROR</code> dengan daftar field.</li>
+                <li>Error database unik atau foreign key menjadi <code class={inlineCode}>409 CONFLICT</code>.</li>
+                <li>Error tak terduga menjadi <code class={inlineCode}>500 INTERNAL_ERROR</code>; detail asli hanya masuk log server.</li>
+                <li><code class={inlineCode}>status</code> bernilai <code class={inlineCode}>"fail"</code> untuk 4xx dan <code class={inlineCode}>"error"</code> untuk 5xx.</li>
+            </ul>
+        </Step>
+
+        <Step id="b3" diagram="/diagrams/08/slide-4-5.webp">
+            <StepHeader title="API Axios (api.ts)" tone="primary" />
+
+            <p class="text-foreground-secondary leading-relaxed">
+                Helper <code class={inlineCode}>getResult&lt;T&gt;</code> sudah disediakan. Ia
+                menunggu promise Axios, mengambil <code class={inlineCode}>data</code>, dan memakai
+                pesan default bila backend tidak mengirim <code class={inlineCode}>message</code>.
+                Semua fungsi di bawah mengembalikan bentuk yang konsisten:{' '}
+                <code class={inlineCode}>{'{ message, data }'}</code>.
+            </p>
+
+            <p class="mt-3 text-foreground-secondary leading-relaxed">
+                Ganti stub CRUD menu di <code class={inlineCode}>frontend/src/lib/api.ts</code>:
+                <code class={inlineCode}>createMenu</code>, <code class={inlineCode}>updateMenu</code>,
+                dan <code class={inlineCode}>deleteMenu</code>.
+            </p>
+            <CodeBlock
+                code={h2ApiMenu}
+                language="ts"
+                filename="frontend/src/lib/api.ts (createMenu, updateMenu, deleteMenu)"
+            />
+
+            <p class="mt-3 text-foreground-secondary leading-relaxed">
+                Lalu stub register. Perhatikan bahwa payload tidak pernah mengirim{' '}
+                <code class={inlineCode}>role</code>; role customer ditentukan backend.
+            </p>
+            <CodeBlock
+                code={h2ApiRegister}
+                language="ts"
+                filename="frontend/src/lib/api.ts (register)"
+            />
+
+            <p class="mt-3 text-foreground-secondary leading-relaxed">
+                Stub checkout. Total tidak dikirim dari client karena server menghitungnya dari
+                harga menu dan kuantitas:
+            </p>
+            <CodeBlock
+                code={h2ApiOrder}
+                language="ts"
+                filename="frontend/src/lib/api.ts (createOrder)"
+            />
+
+            <p class="mt-3 text-foreground-secondary leading-relaxed">
+                Terakhir, stub perubahan status pesanan oleh admin. Admin hanya boleh memproses
+                pesanan berstatus <code class={inlineCode}>confirmed</code> menjadi{' '}
+                <code class={inlineCode}>completed</code> atau <code class={inlineCode}>cancelled</code>;
+                tipe <code class={inlineCode}>Exclude&lt;OrderStatus, 'confirmed'&gt;</code> menjaga
+                agar status awal tidak dikirim ulang dari client.
+            </p>
+            <CodeBlock
+                code={h2ApiOrderStatus}
+                language="ts"
+                filename="frontend/src/lib/api.ts (updateOrderStatus)"
+            />
+
+            <div class="mt-4 p-3 rounded-lg bg-primary/5 dark:bg-primary/10 border-l-4 border-primary">
+                <span class="font-bold text-primary">Kenapa total tidak dikirim?</span>
+                <p class="text-sm md:text-base text-foreground-secondary mt-1">
+                    Kalau client mengirim total, pengguna bisa memanipulasi harga lewat DevTools.
+                    Backend membaca harga dari database, menghitung subtotal per baris, lalu
+                    menyimpan total hasil hitungannya sendiri. Field asing juga ditolak schema yang
+                    memakai <code class={inlineCode}>.strict()</code>.
+                </p>
+            </div>
+        </Step>
+
+        <Step id="b4" diagram="/diagrams/08/slide-3.webp">
+            <StepHeader title="Validasi Register & Checkout" tone="primary" />
+
+            <p class="text-foreground-secondary leading-relaxed">
+                Di Hands-on 2, <code class={inlineCode}>validateMenuForm</code> dan{' '}
+                <code class={inlineCode}>validateLoginForm</code> sudah terisi di starter karena
+                aturan menu dan login-nya sama dengan Hands-on 1. Yang masih kosong adalah validasi
+                register customer dan checkout.
+            </p>
+
+            <h4 class="mt-5 mb-2 font-semibold text-foreground">Aturan register</h4>
+            <div class="mt-4 overflow-x-auto rounded-lg border border-border">
+                <table class="w-full border-collapse text-left text-sm md:text-base">
+                    <thead>
+                        <tr class="bg-muted text-foreground">
+                            <th class="px-3 py-2 font-semibold">Field</th>
+                            <th class="px-3 py-2 font-semibold">Aturan</th>
+                        </tr>
+                    </thead>
+                    <tbody class="text-foreground-secondary">
+                        <tr class="border-t border-border align-top">
+                            <td class="px-3 py-2 font-mono">name</td>
+                            <td class="px-3 py-2">Wajib, 2 sampai 100 karakter setelah <code class={inlineCode}>trim()</code></td>
+                        </tr>
+                        <tr class="border-t border-border align-top">
+                            <td class="px-3 py-2 font-mono">email</td>
+                            <td class="px-3 py-2">Wajib, maksimal 150 karakter, cocok dengan <code class={inlineCode}>EMAIL_PATTERN</code></td>
+                        </tr>
+                        <tr class="border-t border-border align-top">
+                            <td class="px-3 py-2 font-mono">password</td>
+                            <td class="px-3 py-2">8 sampai 72 karakter, mengandung huruf dan angka</td>
+                        </tr>
+                        <tr class="border-t border-border align-top">
+                            <td class="px-3 py-2 font-mono">confirmPassword</td>
+                            <td class="px-3 py-2">Wajib sama dengan <code class={inlineCode}>password</code></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <p class="mt-3 text-foreground-secondary leading-relaxed">
+                Ganti blok mulai dari <code class={inlineCode}>export interface PasswordCheck</code>{' '}
+                sampai akhir <code class={inlineCode}>validateRegisterForm</code> dengan blok
+                berikut. <code class={inlineCode}>passwordChecks</code> dipakai untuk checklist
+                langsung di bawah input, sedangkan{' '}
+                <code class={inlineCode}>validateRegisterForm</code> menjadi penentu akhir saat
+                submit.
+            </p>
+            <CodeBlock
+                code={h2ValidationRegister}
+                language="ts"
+                filename="frontend/src/lib/validation.ts (passwordChecks + validateRegisterForm)"
+            />
+
+            <h4 class="mt-5 mb-2 font-semibold text-foreground">Aturan checkout</h4>
+            <div class="mt-4 overflow-x-auto rounded-lg border border-border">
+                <table class="w-full border-collapse text-left text-sm md:text-base">
+                    <thead>
+                        <tr class="bg-muted text-foreground">
+                            <th class="px-3 py-2 font-semibold">Field</th>
+                            <th class="px-3 py-2 font-semibold">Aturan</th>
+                        </tr>
+                    </thead>
+                    <tbody class="text-foreground-secondary">
+                        <tr class="border-t border-border align-top">
+                            <td class="px-3 py-2 font-mono">customerName</td>
+                            <td class="px-3 py-2">Wajib, 2 sampai 80 karakter</td>
+                        </tr>
+                        <tr class="border-t border-border align-top">
+                            <td class="px-3 py-2 font-mono">phone</td>
+                            <td class="px-3 py-2">Wajib, 9 sampai 15 digit setelah <code class={inlineCode}>normalizePhone</code></td>
+                        </tr>
+                        <tr class="border-t border-border align-top">
+                            <td class="px-3 py-2 font-mono">paymentMethod</td>
+                            <td class="px-3 py-2">Salah satu dari <code class={inlineCode}>cash</code>, <code class={inlineCode}>qris</code>, <code class={inlineCode}>transfer</code></td>
+                        </tr>
+                        <tr class="border-t border-border align-top">
+                            <td class="px-3 py-2 font-mono">note</td>
+                            <td class="px-3 py-2">Opsional, maksimal 200 karakter</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <p class="mt-3 text-foreground-secondary leading-relaxed">
+                Ganti stub <code class={inlineCode}>validateCheckoutForm</code> dengan:
+            </p>
+            <CodeBlock
+                code={h2ValidationCheckout}
+                language="ts"
+                filename="frontend/src/lib/validation.ts (validateCheckoutForm)"
+            />
+
+            <p class="mt-3 text-foreground-secondary leading-relaxed">
+                <code class={inlineCode}>normalizePhone</code> membuang semua karakter non-digit,
+                sehingga <code class={inlineCode}>0812-3456-7890</code> dihitung sebagai 12 digit.
+                Validasi ini membantu pengguna, tetapi backend tetap memeriksa ulang panjang dan
+                format nomor.
+            </p>
+        </Step>
+
+        <Step id="b5" diagram="/diagrams/08/slide-7.webp">
+            <StepHeader title="Protected Route & RBAC" tone="primary" />
+
+            <p class="text-foreground-secondary leading-relaxed">
+                Guard frontend memutuskan halaman mana yang boleh dibuka. Ia menunggu sesi selesai
+                diperiksa, mengarahkan pengguna yang belum login ke{' '}
+                <code class={inlineCode}>/login</code>, dan menolak role yang tidak berhak. Ganti{' '}
+                <strong>seluruh isi</strong>{' '}
+                <code class={inlineCode}>frontend/src/components/ProtectedRoute.tsx</code> dengan:
+            </p>
+            <CodeBlock
+                code={h2ProtectedRoute}
+                language="tsx"
+                filename="frontend/src/components/ProtectedRoute.tsx"
+            />
+
+            <div class="mt-4 p-3 rounded-lg bg-warning/5 dark:bg-warning/10 border-l-4 border-warning">
+                <span class="font-bold text-warning">Refresh setelah menempel</span>
+                <p class="mt-1 text-sm md:text-base text-foreground-secondary leading-relaxed">
+                    Kalau setelah menempel file ini muncul error
+                    <code class={inlineCode}>useAuth harus dipakai di dalam AuthProvider</code>,
+                    refresh halaman penuh. Itu efek hot reload Vite, bukan kesalahan kode.
+                </p>
+            </div>
+
+            <ul class="mt-3 text-foreground-secondary leading-relaxed space-y-1.5 list-disc list-inside">
+                <li><code class={inlineCode}>isReady === false</code>: tampilkan status “Memeriksa sesi login...”, jangan langsung redirect.</li>
+                <li><code class={inlineCode}>user === null</code>: redirect ke <code class={inlineCode}>/login</code> sambil menyimpan halaman asal di <code class={inlineCode}>state.from</code>.</li>
+                <li>Role tidak cocok: redirect ke <code class={inlineCode}>/forbidden</code>, bukan ke login.</li>
+                <li>Semua lolos: render <code class={inlineCode}>&lt;Outlet /&gt;</code> untuk halaman anak.</li>
+            </ul>
+
+            <h4 class="mt-5 mb-2 font-semibold text-foreground">Backend tetap penjaga terakhir</h4>
+            <p class="text-foreground-secondary leading-relaxed">
+                Route guard hanya mengatur navigasi. Penyerang bisa memanggil API langsung, jadi
+                setiap endpoint terlindungi menjalankan <code class={inlineCode}>authenticate</code>{' '}
+                lalu <code class={inlineCode}>authorize</code>. Kedua file berikut sudah lengkap di
+                starter:
+            </p>
+            <CodeBlock
+                code={h2Authorize}
+                language="ts"
+                filename="backend/src/middlewares/authorize.ts (sudah lengkap)"
+            />
+            <CodeBlock
+                code={h2Ownership}
+                language="ts"
+                filename="backend/src/services/menuOwnership.ts (sudah lengkap)"
+            />
+
+            <p class="mt-3 text-foreground-secondary leading-relaxed">
+                <code class={inlineCode}>authorize('owner')</code> hanya memeriksa role. Itu belum
+                cukup: owner A tidak boleh mengubah menu milik owner B. Karena itu service memanggil{' '}
+                <code class={inlineCode}>canManageStall(stall.ownerId, user)</code> sebelum menulis.
+                Admin sengaja tidak otomatis mendapat izin tulis menu; prinsipnya least privilege.
+            </p>
+
+            <div class="mt-4 overflow-x-auto rounded-lg border border-border">
+                <table class="w-full border-collapse text-left text-sm md:text-base">
+                    <thead>
+                        <tr class="bg-muted text-foreground">
+                            <th class="px-3 py-2 font-semibold">Aksi</th>
+                            <th class="px-3 py-2 font-semibold">customer</th>
+                            <th class="px-3 py-2 font-semibold">owner</th>
+                            <th class="px-3 py-2 font-semibold">admin</th>
+                        </tr>
+                    </thead>
+                    <tbody class="text-foreground-secondary">
+                        <tr class="border-t border-border align-top">
+                            <td class="px-3 py-2">Lihat katalog menu</td>
+                            <td class="px-3 py-2">Ya</td>
+                            <td class="px-3 py-2">Ya</td>
+                            <td class="px-3 py-2">Ya</td>
+                        </tr>
+                        <tr class="border-t border-border align-top">
+                            <td class="px-3 py-2">Buat pesanan</td>
+                            <td class="px-3 py-2">Ya</td>
+                            <td class="px-3 py-2">Tidak</td>
+                            <td class="px-3 py-2">Tidak</td>
+                        </tr>
+                        <tr class="border-t border-border align-top">
+                            <td class="px-3 py-2">CRUD menu warung sendiri</td>
+                            <td class="px-3 py-2">Tidak</td>
+                            <td class="px-3 py-2">Ya</td>
+                            <td class="px-3 py-2">Tidak</td>
+                        </tr>
+                        <tr class="border-t border-border align-top">
+                            <td class="px-3 py-2">Ubah status pesanan</td>
+                            <td class="px-3 py-2">Tidak</td>
+                            <td class="px-3 py-2">Tidak</td>
+                            <td class="px-3 py-2">Ya, <code class={inlineCode}>confirmed</code> → <code class={inlineCode}>completed</code>/<code class={inlineCode}>cancelled</code></td>
+                        </tr>
+                        <tr class="border-t border-border align-top">
+                            <td class="px-3 py-2">Lihat semua pesanan</td>
+                            <td class="px-3 py-2">Tidak</td>
+                            <td class="px-3 py-2">Tidak</td>
+                            <td class="px-3 py-2">Ya</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <p class="mt-3 text-foreground-secondary leading-relaxed">
+                Bedakan <code class={inlineCode}>401 Unauthorized</code> dan{' '}
+                <code class={inlineCode}>403 Forbidden</code>. 401 berarti identitas belum dikenal
+                atau sesi habis; 403 berarti identitas jelas tetapi tidak punya izin. Frontend
+                memakai perbedaan ini untuk memilih pesan dan halaman tujuan.
+            </p>
+
+            <a href={ho2File('frontend/src/components/ProtectedRoute.tsx')}
+               target="_blank" rel="noopener noreferrer"
+               class="my-3 inline-flex items-center gap-2 text-sm font-medium text-primary hover:underline">
+                <img src="/icons/github.svg" alt="" aria-hidden="true" class="w-4 h-4 invert-0 dark:invert" />
+                Lihat ProtectedRoute.tsx di branch lengkap
+            </a>
+        </Step>
+
+        <Step id="b6" diagram="/diagrams/08/slide-8.webp">
+            <StepHeader title="Uji Hands-on 2" tone="primary" />
+
+            <p class="text-foreground-secondary leading-relaxed">
+                Sama seperti Hands-on 1, branch starter tidak menyertakan folder{' '}
+                <code class={inlineCode}>tests/</code>. Jalankan build frontend, lalu uji alur
+                berikut di browser dengan akun demo.
+            </p>
+            <TerminalBlock
+                code={`cd praktikum-pert-8/${ho2Path}/frontend
+npm run lint
+npm run build`}
+                title="Terminal: Cek frontend Hands-on 2"
+            />
+
+            <div class="mt-4 overflow-x-auto rounded-lg border border-border">
+                <table class="w-full border-collapse text-left text-sm md:text-base">
+                    <thead>
+                        <tr class="bg-muted text-foreground">
+                            <th class="px-3 py-2 font-semibold">Skenario</th>
+                            <th class="px-3 py-2 font-semibold">Hasil yang benar</th>
+                        </tr>
+                    </thead>
+                    <tbody class="text-foreground-secondary">
+                        <tr class="border-t border-border align-top">
+                            <td class="px-3 py-2">Buka dashboard tanpa login</td>
+                            <td class="px-3 py-2">Diarahkan ke <code class={inlineCode}>/login</code>, lalu kembali ke halaman asal setelah login</td>
+                        </tr>
+                        <tr class="border-t border-border align-top">
+                            <td class="px-3 py-2">Customer membuka halaman owner</td>
+                            <td class="px-3 py-2">Diarahkan ke <code class={inlineCode}>/forbidden</code>; API juga menolak dengan 403</td>
+                        </tr>
+                        <tr class="border-t border-border align-top">
+                            <td class="px-3 py-2">Register dengan email yang sudah ada</td>
+                            <td class="px-3 py-2">Pesan <code class={inlineCode}>409 EMAIL_TAKEN</code> tampil di field email</td>
+                        </tr>
+                        <tr class="border-t border-border align-top">
+                            <td class="px-3 py-2">Password tanpa angka</td>
+                            <td class="px-3 py-2">Checklist password menandai aturan yang belum terpenuhi; submit ditahan</td>
+                        </tr>
+                        <tr class="border-t border-border align-top">
+                            <td class="px-3 py-2">Owner mencoba mengubah menu warung lain lewat Swagger atau curl</td>
+                            <td class="px-3 py-2">Backend membalas <code class={inlineCode}>403 MENU_FORBIDDEN</code>, bukan sukses</td>
+                        </tr>
+                        <tr class="border-t border-border align-top">
+                            <td class="px-3 py-2">Checkout menu yang sedang habis</td>
+                            <td class="px-3 py-2">Pesan <code class={inlineCode}>409 MENU_UNAVAILABLE</code> muncul di ringkasan pesanan</td>
+                        </tr>
+                        <tr class="border-t border-border align-top">
+                            <td class="px-3 py-2">Admin mengubah pesanan yang statusnya sudah final</td>
+                            <td class="px-3 py-2">Pesan <code class={inlineCode}>409 ORDER_STATUS_FINAL</code>, data tidak berubah</td>
+                        </tr>
+                        <tr class="border-t border-border align-top">
+                            <td class="px-3 py-2">Hapus cookie sesi, lalu buka halaman terlindungi</td>
+                            <td class="px-3 py-2">Diarahkan ke login; <code class={inlineCode}>AuthProvider</code> membersihkan state user</td>
+                        </tr>
+                        <tr class="border-t border-border align-top">
+                            <td class="px-3 py-2">Matikan backend saat halaman memuat data</td>
+                            <td class={inlineCode + ' px-3 py-2 text-sm'}>ApiError dengan status 0 dan code NETWORK_ERROR</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="mt-4 p-3 rounded-lg bg-primary/5 dark:bg-primary/10 border-l-4 border-primary">
+                <span class="font-bold text-primary">Uji 403 owner vs owner</span>
+                <p class="mt-1 text-sm md:text-base text-foreground-secondary leading-relaxed">
+                    Dashboard owner hanya menampilkan menu miliknya, jadi uji ini tidak bisa
+                    dilakukan lewat UI. Login sebagai <code class={inlineCode}>tini@kantin.test</code>
+                    di Swagger <code class={inlineCode}>http://localhost:3002/api-docs</code>, lalu
+                    coba <code class={inlineCode}>PUT /api/menu/&#123;id menu warung lain&#125;</code>
+                    dengan body menu yang valid. Backend harus membalas
+                    <code class={inlineCode}>403 MENU_FORBIDDEN</code>, bukan 400 validasi.
+                </p>
+            </div>
+
+        </Step>
+
+        <!-- ===== PENUTUP ===== -->
+
+        <Step id="c1" diagram="/diagrams/08/slide-8.webp">
+            <SectionDivider label="Penutup" />
+            <StepHeader title="Checklist & Rangkuman" tone="primary" />
+
+            <p class="text-foreground-secondary leading-relaxed">
+                Sebelum menutup praktikum, pastikan semua stub sudah terisi. Checklist berikut
+                memetakan setiap file ke bagian yang menyediakan kodenya.
+            </p>
+            <CodeBlock
+                code={c1Checklist}
+                language="text"
+                filename="Checklist TODO Pertemuan 08"
+                compact
+            />
+
+            <h4 class="mt-5 mb-2 font-semibold text-foreground">Yang sudah kamu bangun</h4>
+            <ul class="text-foreground-secondary leading-relaxed space-y-1.5 list-disc list-inside">
+                <li>Validasi form terpisah dari komponen, dengan error per field dan fokus otomatis.</li>
+                <li>Fetch API yang memeriksa <code class={inlineCode}>response.ok</code> dan melempar <code class={inlineCode}>ApiError</code>.</li>
+                <li>Schema zod di backend yang memvalidasi ulang dan menolak field asing.</li>
+                <li>Normalisasi error Axios ke satu bentuk, plus interceptor 401.</li>
+                <li>Validasi register dan checkout yang konsisten dengan aturan backend.</li>
+                <li>Protected route di frontend dan RBAC serta ownership check di backend.</li>
+                <li>Verifikasi manual untuk alur sukses, gagal validasi, konflik data, dan akses terlarang.</li>
+            </ul>
+
+            <div class="mt-4 p-3 rounded-lg bg-primary/5 dark:bg-primary/10 border-l-4 border-primary">
+                <span class="font-bold text-primary">Rangkuman</span>
+                <p class="text-sm md:text-base text-foreground-secondary mt-1">
+                    Validasi frontend adalah untuk pengalaman pengguna, validasi backend adalah
+                    untuk integritas data. Error handling yang baik membuat kegagalan bisa
+                    diprediksi: satu bentuk respons, satu kelas error, satu tempat menampilkannya.
+                    Access control harus diperiksa di backend, karena frontend hanya mengatur
+                    navigasi. Testing memastikan semua lapisan itu bekerja bersama, termasuk saat
+                    input salah.
+                </p>
+            </div>
+
+            <div class="mt-4 flex flex-wrap gap-3">
+                <a href={ho1Url}
+                   target="_blank" rel="noopener noreferrer"
+                   class="inline-flex items-center gap-2 text-sm font-medium text-primary hover:underline">
+                    <img src="/icons/github.svg" alt="" aria-hidden="true" class="w-4 h-4 invert-0 dark:invert" />
+                    Hands-on 1 lengkap
+                </a>
+                <a href={ho2Url}
+                   target="_blank" rel="noopener noreferrer"
+                   class="inline-flex items-center gap-2 text-sm font-medium text-primary hover:underline">
+                    <img src="/icons/github.svg" alt="" aria-hidden="true" class="w-4 h-4 invert-0 dark:invert" />
+                    Hands-on 2 lengkap
+                </a>
+                <a href={starterUrl}
+                   target="_blank" rel="noopener noreferrer"
+                   class="inline-flex items-center gap-2 text-sm font-medium text-primary hover:underline">
+                    <img src="/icons/github.svg" alt="" aria-hidden="true" class="w-4 h-4 invert-0 dark:invert" />
+                    Branch starter Pertemuan 08
+                </a>
+            </div>
+        </Step>
+
+    </ScrollyLayout>
+
+    <ScrollyTOC sections={tocSections} />
+</ScrollySection>
+
+<script>
+    import { initScrolly } from '../../lib/scrollyClient';
+    initScrolly();
+</script>

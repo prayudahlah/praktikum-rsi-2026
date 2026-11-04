@@ -1,0 +1,9 @@
+export function updateOrderStatus(
+  id: number,
+  status: Exclude<OrderStatus, 'confirmed'>,
+): Promise<{ message: string; data: Order }> {
+  return getResult<Order>(
+    http.patch(`/orders/${id}/status`, { status }),
+    'Status pesanan berhasil diperbarui.',
+  )
+}

@@ -1,0 +1,42 @@
+export async function getMenus(): Promise<MenuItem[]> {
+  const response = await request<MenuItem[]>('/menu')
+
+  if (!Array.isArray(response.data)) {
+    throw new ApiError(200, 'INVALID_RESPONSE', 'Daftar menu tidak valid.')
+  }
+
+  return response.data
+}
+
+export async function getStalls(): Promise<Stall[]> {
+  const response = await request<Stall[]>('/stalls')
+
+  if (!Array.isArray(response.data)) {
+    throw new ApiError(200, 'INVALID_RESPONSE', 'Daftar warung tidak valid.')
+  }
+
+  return response.data
+}
+
+/** Hanya warung yang boleh dikelola user yang sedang login. */
+export async function getMyStalls(): Promise<Stall[]> {
+  const response = await request<Stall[]>('/stalls/mine')
+
+  if (!Array.isArray(response.data)) {
+    throw new ApiError(200, 'INVALID_RESPONSE', 'Daftar warung tidak valid.')
+  }
+
+  return response.data
+}
+
+export async function createMenu(payload: MenuPayload): Promise<CreateMenuResult> {
+  const response = await request<MenuItem>('/menu', {
+    method: 'POST',
+    body: JSON.stringify(payload),
+  })
+
+  return {
+    message: response.message ?? 'Menu berhasil ditambahkan.',
+    data: response.data,
+  }
+}

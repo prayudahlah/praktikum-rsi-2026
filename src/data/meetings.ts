@@ -66,9 +66,9 @@ export const meetings: Meeting[] = [
     slug: "08-validation-error-handling",
     title: "Validasi & Error Handling",
     description:
-      "Validasi input di frontend dan backend, konsistensi format error, error handling lintas layer, menampilkan error ke user.",
+      "Validasi frontend dan backend, HTTP status code, error handling frontend, konsistensi error response, protected route, serta integration dan testing.",
     order: 8,
-    published: false,
+    published: true,
   },
   {
         slug: "09-audit-log",

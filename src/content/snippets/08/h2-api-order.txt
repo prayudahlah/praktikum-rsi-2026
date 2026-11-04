@@ -1,0 +1,8 @@
+export function createOrder(
+  payload: CreateOrderPayload,
+): Promise<{ message: string; data: Order }> {
+  return getResult<Order>(
+    http.post('/orders', payload),
+    'Pesanan berhasil dibuat.',
+  )
+}

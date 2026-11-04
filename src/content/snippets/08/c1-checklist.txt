@@ -1,0 +1,14 @@
+TODO frontend Hands-on 1
+------------------------
+[ ] frontend/src/lib/validation.ts  -> bagian Validasi Form
+[ ] frontend/src/lib/api.ts          -> bagian Fetch API (auth + data)
+
+TODO frontend Hands-on 2
+------------------------
+[ ] frontend/src/lib/errors.ts                   -> bagian errors.ts dan http.ts
+[ ] frontend/src/lib/http.ts                     -> bagian errors.ts dan http.ts
+[ ] frontend/src/lib/api.ts                      -> bagian API Axios
+[ ] frontend/src/lib/validation.ts               -> bagian Validasi Register dan Checkout
+[ ] frontend/src/components/ProtectedRoute.tsx   -> bagian Protected Route dan RBAC
+
+Backend dan seed tersedia di branch starter.

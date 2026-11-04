@@ -1,0 +1,19 @@
+http.interceptors.response.use(
+  (response) => response,
+  (error: unknown) => {
+    const apiError = toApiError(error)
+    const config = axios.isAxiosError(error) ? error.config : undefined
+    const url = config?.url ?? ''
+    const isAuthProbe =
+      url.includes('/auth/me') ||
+      url.includes('/auth/login') ||
+      url.includes('/auth/register')
+
+    // Sesi habis saat memakai endpoint terlindungi: beri tahu AuthProvider.
+    if (apiError.status === 401 && !isAuthProbe) {
+      window.dispatchEvent(new Event('auth:unauthorized'))
+    }
+
+    return Promise.reject(apiError)
+  },
+)
