@@ -37,7 +37,6 @@ import h2Authorize from '../snippets/08/h2-authorize.txt?raw';
 import h2Ownership from '../snippets/08/h2-ownership.txt?raw';
 import h2ErrorHandler from '../snippets/08/h2-error-handler.txt?raw';
 
-import c1Testing from '../snippets/08/c1-testing.txt?raw';
 import c1Checklist from '../snippets/08/c1-checklist.txt?raw';
 
 const inlineCode = 'font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded';
@@ -133,10 +132,6 @@ const tocSections: TOCSection[] = [
             { id: 's6', title: 'Konsistensi Error Response' },
             { id: 's7', title: 'Protected Route & Access Control' },
         ],
-    },
-    {
-        label: 'Integration & Testing',
-        items: [{ id: 's8', title: 'Integration & Testing' }],
     },
     {
         label: 'Hands-on 1: Form & Fetch',
@@ -443,7 +438,7 @@ const tocSections: TOCSection[] = [
                     Aturan validasi dipisahkan dari komponen form di
                     <code class={inlineCode}>frontend/src/lib/validation.ts</code>. Implementasi lengkap
                     <code class={inlineCode}>validateMenuForm</code> dan
-                    <code class={inlineCode}>validateLoginForm</code> dibahas di Step <strong>h2</strong>,
+                    <code class={inlineCode}>validateLoginForm</code> dibahas di bagian <strong>Validasi Form</strong>,
                     lalu dipakai oleh <code class={inlineCode}>MenuForm</code> dan
                     <code class={inlineCode}>LoginPage</code>.
                 </p>
@@ -460,7 +455,7 @@ const tocSections: TOCSection[] = [
                         : contoh validasi form dengan JavaScript.
                     </li>
                     <li>
-                        <a href="https://web.dev/learn/forms/validation" target="_blank" rel="noopener noreferrer" class="text-primary hover:underline">web.dev: Learn Forms — Validation</a>
+                        <a href="https://web.dev/learn/forms/validation" target="_blank" rel="noopener noreferrer" class="text-primary hover:underline">web.dev: Learn Forms: Validation</a>
                         : praktik validasi form yang ramah pengguna.
                     </li>
                     <li>
@@ -737,9 +732,9 @@ const tocSections: TOCSection[] = [
                 <p class="text-sm md:text-base text-foreground-secondary mt-1">
                     Hands-on 1 memakai Fetch API dengan helper
                     <code class={inlineCode}>request&lt;T&gt;</code> yang sudah disediakan starter
-                    (Step <strong>h3</strong>). Hands-on 2 memakai Axios dan memusatkan normalisasi error di
+                    (bagian <strong>Fetch API</strong>). Hands-on 2 memakai Axios dan memusatkan normalisasi error di
                     <code class={inlineCode}>errors.ts</code> serta interceptor
-                    <code class={inlineCode}>http.ts</code> (Step <strong>b2</strong>).
+                    <code class={inlineCode}>http.ts</code> (bagian <strong>errors.ts dan http.ts</strong>).
                 </p>
                 <p class="mt-2 text-sm md:text-base text-foreground-secondary">
                     Ingat: <code class={inlineCode}>fetch</code> tidak otomatis melempar error pada status
@@ -853,7 +848,7 @@ const tocSections: TOCSection[] = [
             <p class="mt-3 text-foreground-secondary leading-relaxed">
                 Di frontend Hands-on 2, <code class={inlineCode}>toApiError</code> membaca bentuk ini dan
                 mengubahnya menjadi satu kelas <code class={inlineCode}>ApiError</code>. Implementasinya ada
-                di Step <strong>b2</strong>.
+                di bagian <strong>errors.ts dan http.ts</strong>.
             </p>
 
             <h4 class="mt-5 mb-2 font-semibold text-foreground">3. Pemetaan Status HTTP ke Kode Aplikasi</h4>
@@ -1026,7 +1021,7 @@ const tocSections: TOCSection[] = [
                     kepemilikan data adalah bagian dari authorization, bukan sekadar authentication.
                 </p>
                 <p class="mt-2 text-sm md:text-base text-foreground-secondary">
-                    Implementasi nyatanya ada di Step <strong>b5</strong>:{' '}
+                    Implementasi nyatanya ada di bagian <strong>Protected Route dan RBAC</strong>:{' '}
                     <code class={inlineCode}>ProtectedRoute.tsx</code> menjaga navigasi di frontend,
                     sementara <code class={inlineCode}>authorize()</code> dan
                     <code class={inlineCode}>canManageStall()</code> menjaga endpoint di backend.
@@ -1057,124 +1052,6 @@ const tocSections: TOCSection[] = [
             </div>
         </Step>
 
-        <!-- ===== SLIDE 8 ===== -->
-
-        <Step id="s8" diagram="/diagrams/08/slide-8.webp">
-            <SectionDivider label="Integration & Testing" />
-            <StepHeader title="Integration & Testing" tone="success" />
-
-            <h4 class="mt-5 mb-2 font-semibold text-foreground">1. Integration dan Testing</h4>
-            <p class="text-foreground-secondary leading-relaxed">
-                <strong>Integration</strong> adalah proses menghubungkan berbagai bagian aplikasi agar dapat
-                bekerja bersama, seperti frontend, backend, API, dan database. <strong>Testing</strong> adalah
-                proses menguji aplikasi untuk memastikan setiap bagian maupun alur yang terhubung berjalan
-                sesuai kebutuhan, termasuk ketika terjadi kesalahan.
-            </p>
-            <p class="mt-3 text-foreground-secondary leading-relaxed">
-                Dalam konteks validasi dan error handling, integration &amp; testing memastikan bahwa data yang
-                dikirim dari frontend divalidasi kembali oleh backend, respons API ditangani dengan benar, dan
-                pesan kesalahan ditampilkan secara konsisten kepada pengguna.
-            </p>
-
-            <h4 class="mt-5 mb-2 font-semibold text-foreground">2. Jenis Testing</h4>
-            <div class="mt-4 overflow-x-auto rounded-lg border border-border">
-                <table class="w-full border-collapse text-left text-sm md:text-base">
-                    <thead>
-                        <tr class="bg-muted text-foreground">
-                            <th class="px-3 py-2 font-semibold">Jenis Testing</th>
-                            <th class="px-3 py-2 font-semibold">Tujuan</th>
-                            <th class="px-3 py-2 font-semibold">Contoh</th>
-                        </tr>
-                    </thead>
-                    <tbody class="text-foreground-secondary">
-                        <tr class="border-t border-border align-top">
-                            <td class="px-3 py-2 font-semibold text-foreground">Unit Testing</td>
-                            <td class="px-3 py-2">Menguji satu fungsi atau komponen secara terpisah</td>
-                            <td class="px-3 py-2">Memastikan fungsi validasi harga menolak nilai negatif</td>
-                        </tr>
-                        <tr class="border-t border-border align-top">
-                            <td class="px-3 py-2 font-semibold text-foreground">Integration Testing</td>
-                            <td class="px-3 py-2">Menguji interaksi antarbagian sistem</td>
-                            <td class="px-3 py-2">Memastikan form React menerima dan menangani respons API</td>
-                        </tr>
-                        <tr class="border-t border-border align-top">
-                            <td class="px-3 py-2 font-semibold text-foreground">End-to-End (E2E) Testing</td>
-                            <td class="px-3 py-2">Menguji alur aplikasi dari awal hingga akhir</td>
-                            <td class="px-3 py-2">Pengguna mengisi form, mengirim data, lalu melihat hasilnya</td>
-                        </tr>
-                        <tr class="border-t border-border align-top">
-                            <td class="px-3 py-2 font-semibold text-foreground">Negative Testing</td>
-                            <td class="px-3 py-2">Menguji perilaku saat input atau kondisi tidak valid</td>
-                            <td class="px-3 py-2">Mengirim form kosong atau menggunakan token yang tidak valid</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-
-            <h4 class="mt-5 mb-2 font-semibold text-foreground">3. Prinsip Integration &amp; Testing yang Baik</h4>
-            <ul class="text-foreground-secondary leading-relaxed space-y-1.5 list-disc list-inside">
-                <li>Uji alur sukses dan gagal. Jangan hanya memastikan data valid berhasil dikirim.</li>
-                <li>Uji validasi di dua sisi. Frontend membantu pengguna, sedangkan backend menjaga integritas data.</li>
-                <li>Pastikan format error konsisten. Frontend harus dapat membaca respons kesalahan dari berbagai endpoint.</li>
-                <li>Uji akses pengguna. Pastikan pengguna tanpa izin tidak dapat menjalankan operasi yang dilindungi.</li>
-                <li>Lakukan regresi. Setelah ada perubahan kode, pastikan fungsi yang sebelumnya berjalan tetap berfungsi.</li>
-            </ul>
-
-            <div class="mt-4 p-3 rounded-lg bg-primary/5 dark:bg-primary/10 border-l-4 border-primary">
-                <span class="font-bold text-primary">Perintah uji dari repo lengkap</span>
-                <p class="text-sm md:text-base text-foreground-secondary mt-1">
-                    Script <code class={inlineCode}>test</code> dan folder <code class={inlineCode}>tests/</code>{' '}
-                    hanya ada di branch <code class={inlineCode}>{featBranch}</code>. Di branch starter,
-                    verifikasi dilakukan manual di browser mengikuti checklist Step <strong>b6</strong>.
-                </p>
-            </div>
-            <CodeBlock
-                code={c1Testing}
-                language="bash"
-                filename="Perintah verifikasi (branch lengkap)"
-                compact
-            />
-
-            <div class="mt-4 p-3 rounded-lg bg-primary/5 dark:bg-primary/10 border-l-4 border-primary">
-                <span class="font-bold text-primary">Inti Integration &amp; Testing</span>
-                <p class="text-sm md:text-base text-foreground-secondary mt-1">
-                    Validasi menjaga agar data yang masuk sesuai aturan. Error handling menjaga agar kegagalan
-                    tidak membuat aplikasi kehilangan kendali. Konsistensi error response memudahkan frontend
-                    membaca kesalahan. Protected route mengatur akses di antarmuka, tetapi backend tetap menjadi
-                    penjaga terakhir. Testing memastikan seluruh lapisan itu benar-benar bekerja bersama.
-                </p>
-            </div>
-
-            <div class="mt-4 p-4 rounded-lg bg-accent/5 dark:bg-accent/10 border-2 border-dashed border-accent">
-                <span class="flex items-center gap-2 font-bold text-accent">
-                    <BookOpen class="w-4 h-4" />
-                    Bacaan Lanjutan
-                </span>
-                <ul class="text-base text-foreground-secondary mt-2 space-y-1 list-disc list-inside">
-                    <li>
-                        <a href="https://katalon.com/resources-center/blog/unit-testing-integration-testing" target="_blank" rel="noopener noreferrer" class="text-primary hover:underline">Katalon: Unit Testing vs Integration Testing</a>
-                        : perbandingan jenis pengujian dan tujuannya.
-                    </li>
-                    <li>
-                        <a href="https://martinfowler.com/articles/practical-test-pyramid.html" target="_blank" rel="noopener noreferrer" class="text-primary hover:underline">Martin Fowler: The Practical Test Pyramid</a>
-                        : komposisi unit, integration, dan UI test.
-                    </li>
-                    <li>
-                        <a href="https://vitest.dev/guide/" target="_blank" rel="noopener noreferrer" class="text-primary hover:underline">Vitest</a>
-                        : framework pengujian JavaScript/TypeScript.
-                    </li>
-                    <li>
-                        <a href="https://github.com/ladjs/supertest" target="_blank" rel="noopener noreferrer" class="text-primary hover:underline">Supertest</a>
-                        : pengujian endpoint HTTP di Node.js.
-                    </li>
-                    <li>
-                        <a href="https://playwright.dev/docs/intro" target="_blank" rel="noopener noreferrer" class="text-primary hover:underline">Playwright</a>
-                        : pengujian end-to-end di browser.
-                    </li>
-                </ul>
-            </div>
-        </Step>
-
         <!-- ===== HANDS-ON 1 ===== -->
 
         <Step id="h1" diagram="/diagrams/08/slide-3.webp">
@@ -1198,8 +1075,8 @@ const tocSections: TOCSection[] = [
                 </li>
             </ul>
             <p class="mt-3 text-foreground-secondary leading-relaxed">
-                Hands-on 2 tidak mengubah source Hands-on 1. Keduanya memakai database dan seed
-                dari Pertemuan 3. Prasyarat: Node.js 22.18 atau lebih baru, SQL Server aktif,
+                Hands-on 2 tidak mengubah source Hands-on 1. Keduanya memakai database Pertemuan 3
+                yang sudah ditambah migrasi Pertemuan 8. Prasyarat: Node.js 22.18 atau lebih baru, SQL Server aktif,
                 database <code class={inlineCode}>review_kantin</code> sudah dibuat, dan port{' '}
                 <code class={inlineCode}>3001</code>, <code class={inlineCode}>3002</code>,{' '}
                 <code class={inlineCode}>5173</code>, serta <code class={inlineCode}>5174</code>{' '}
@@ -1209,14 +1086,13 @@ const tocSections: TOCSection[] = [
             <TerminalBlock code={cloneStarter} title="Terminal: Clone branch starter Pertemuan 08" />
             <CodeBlock code={folderTree} language="bash" filename="Isi folder setelah clone" compact />
 
-            <div class="mt-4 p-3 rounded-lg bg-primary/5 dark:bg-primary/10 border-l-4 border-primary">
-                <span class="font-bold text-primary">Cara mengerjakan</span>
-                <p class="text-sm md:text-base text-foreground-secondary mt-1">
-                    Backend, schema, seed, dan konfigurasi sudah lengkap di branch starter. Yang
-                    kosong hanya tujuh file frontend. Setiap Step hands-on menunjukkan file yang
-                    harus diganti dan menyediakan blok kode lengkap dari branch{' '}
-                    <code class={inlineCode}>{featBranch}</code>. Salin blok itu, jangan menulis
-                    ulang dari nol.
+            <div class="mt-4 p-3 rounded-lg bg-warning/5 dark:bg-warning/10 border-l-4 border-warning">
+                <span class="font-bold text-warning">Siapkan database</span>
+                <p class="mt-1 text-sm md:text-base text-foreground-secondary leading-relaxed">
+                    Setelah clone, buka SSMS dan jalankan enam script <code class={inlineCode}>db/01</code>
+                    sampai <code class={inlineCode}>db/06</code> secara berurutan. Gunakan akun yang
+                    punya hak DDL, bukan <code class={inlineCode}>praktikum_user</code>. Detail dan
+                    query verifikasi ada di README starter.
                 </p>
             </div>
 
@@ -1226,14 +1102,14 @@ const tocSections: TOCSection[] = [
                         <tr class="bg-muted text-foreground">
                             <th class="px-3 py-2 font-semibold">File di Hands-on 1</th>
                             <th class="px-3 py-2 font-semibold">Stub yang harus diisi</th>
-                            <th class="px-3 py-2 font-semibold">Step</th>
+                            <th class="px-3 py-2 font-semibold">Langkah</th>
                         </tr>
                     </thead>
                     <tbody class="text-foreground-secondary">
                         <tr class="border-t border-border align-top">
                             <td class="px-3 py-2"><code class={inlineCode}>frontend/src/lib/validation.ts</code></td>
                             <td class="px-3 py-2"><code class={inlineCode}>validateMenuForm</code>, <code class={inlineCode}>validateLoginForm</code></td>
-                            <td class="px-3 py-2 font-mono">h2</td>
+                            <td class="px-3 py-2">Validasi form</td>
                         </tr>
                         <tr class="border-t border-border align-top">
                             <td class="px-3 py-2"><code class={inlineCode}>frontend/src/lib/api.ts</code></td>
@@ -1243,7 +1119,36 @@ const tocSections: TOCSection[] = [
                                 <code class={inlineCode}>login</code>, <code class={inlineCode}>getCurrentUser</code>,
                                 <code class={inlineCode}>logout</code>
                             </td>
-                            <td class="px-3 py-2 font-mono">h3</td>
+                            <td class="px-3 py-2">Fetch API</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <h4 class="mt-5 mb-2 font-semibold text-foreground">Akun Hands-on 1</h4>
+            <p class="text-foreground-secondary leading-relaxed">
+                Hands-on 1 hanya menerima role Owner. Gunakan akun berikut untuk login. Akun
+                customer dipakai pada uji "login customer ditolak" di bagian Uji Hands-on 1.
+            </p>
+            <div class="mt-3 overflow-x-auto rounded-lg border border-border">
+                <table class="w-full border-collapse text-left text-sm md:text-base">
+                    <thead>
+                        <tr class="bg-muted text-foreground">
+                            <th class="px-3 py-2 font-semibold">Role</th>
+                            <th class="px-3 py-2 font-semibold">Email</th>
+                            <th class="px-3 py-2 font-semibold">Password</th>
+                        </tr>
+                    </thead>
+                    <tbody class="text-foreground-secondary">
+                        <tr class="border-t border-border align-top">
+                            <td class="px-3 py-2">Owner</td>
+                            <td class="px-3 py-2 font-mono">tini@kantin.test</td>
+                            <td class="px-3 py-2 font-mono">rahasia123</td>
+                        </tr>
+                        <tr class="border-t border-border align-top">
+                            <td class="px-3 py-2">Customer</td>
+                            <td class="px-3 py-2 font-mono">bagas@student.test</td>
+                            <td class="px-3 py-2 font-mono">rahasia123</td>
                         </tr>
                     </tbody>
                 </table>
@@ -1260,6 +1165,16 @@ const tocSections: TOCSection[] = [
                 </p>
             </div>
             <CodeBlock code={h1EnvBackend} language="ini" filename="backend/.env (Hands-on 1)" compact />
+            <p class="mt-3 text-foreground-secondary leading-relaxed">
+                Ganti <code class={inlineCode}>JWT_SECRET</code> dengan nilai acak. Jangan pakai
+                contoh di atas untuk aplikasi nyata. Salah satu cara membuatnya:
+            </p>
+            <CodeBlock
+                code={`node -e "console.log(require('node:crypto').randomBytes(32).toString('hex'))"`}
+                language="bash"
+                filename="Membuat JWT secret acak"
+                compact
+            />
             <p class="mt-3 text-foreground-secondary leading-relaxed">
                 Frontend Hands-on 1 hanya butuh alamat API:
             </p>
@@ -1317,7 +1232,7 @@ const tocSections: TOCSection[] = [
                         </tr>
                         <tr class="border-t border-border align-top">
                             <td class="px-3 py-2 font-mono">name</td>
-                            <td class="px-3 py-2">Wajib, 2–100 karakter setelah <code class={inlineCode}>trim()</code></td>
+                            <td class="px-3 py-2">Wajib, 2 sampai 100 karakter setelah <code class={inlineCode}>trim()</code></td>
                             <td class="px-3 py-2">Nama menu minimal 2 karakter.</td>
                         </tr>
                         <tr class="border-t border-border align-top">
@@ -1327,7 +1242,7 @@ const tocSections: TOCSection[] = [
                         </tr>
                         <tr class="border-t border-border align-top">
                             <td class="px-3 py-2 font-mono">price</td>
-                            <td class="px-3 py-2">Wajib, bilangan bulat 1–1.000.000</td>
+                            <td class="px-3 py-2">Wajib, bilangan bulat 1 sampai 1.000.000</td>
                             <td class={inlineCode + ' text-sm'}>Harga maksimal Rp1.000.000.</td>
                         </tr>
                         <tr class="border-t border-border align-top">
@@ -1342,7 +1257,7 @@ const tocSections: TOCSection[] = [
                         </tr>
                         <tr class="border-t border-border align-top">
                             <td class="px-3 py-2 font-mono">password</td>
-                            <td class="px-3 py-2">Wajib, 8–72 karakter</td>
+                            <td class="px-3 py-2">Wajib, 8 sampai 72 karakter</td>
                             <td class="px-3 py-2">Password minimal 8 karakter.</td>
                         </tr>
                     </tbody>
@@ -1507,6 +1422,15 @@ const tocSections: TOCSection[] = [
                 jadi verifikasi Hands-on 1 dilakukan manual di browser dan lewat build frontend.
                 Pastikan backend serta frontend masih berjalan.
             </p>
+            <div class="mt-4 p-3 rounded-lg bg-primary/5 dark:bg-primary/10 border-l-4 border-primary">
+                <span class="font-bold text-primary">Akun untuk uji</span>
+                <p class="mt-1 text-sm md:text-base text-foreground-secondary leading-relaxed">
+                    Login owner memakai <code class={inlineCode}>tini@kantin.test</code> /
+                    <code class={inlineCode}>rahasia123</code>. Untuk uji login customer yang
+                    ditolak, gunakan <code class={inlineCode}>bagas@student.test</code> /
+                    <code class={inlineCode}>rahasia123</code>.
+                </p>
+            </div>
             <TerminalBlock
                 code={`cd praktikum-pert-8/${ho1Path}/frontend
 npm run lint
@@ -1560,7 +1484,7 @@ npm run build`}
                 <p class="text-sm md:text-base text-foreground-secondary mt-1">
                     Biasanya ada tipe yang tidak cocok: <code class={inlineCode}>response.data</code>{' '}
                     dianggap <code class={inlineCode}>unknown</code>, atau nama field salah.
-                    Periksa pesan TypeScript, lalu bandingkan file-mu dengan tautan GitHub di Step
+                    Periksa pesan TypeScript, lalu bandingkan file-mu dengan tautan GitHub di bagian
                     sebelumnya.
                 </p>
             </div>
@@ -1590,6 +1514,16 @@ npm run build`}
                 </p>
             </div>
             <CodeBlock code={h2EnvBackend} language="ini" filename="backend/.env (Hands-on 2)" compact />
+            <p class="mt-3 text-foreground-secondary leading-relaxed">
+                Ganti <code class={inlineCode}>JWT_SECRET</code> dengan nilai acak, jangan memakai
+                contoh di atas. Kalau perlu membuat nilai baru:
+            </p>
+            <CodeBlock
+                code={`node -e "console.log(require('node:crypto').randomBytes(32).toString('hex'))"`}
+                language="bash"
+                filename="Membuat JWT secret acak"
+                compact
+            />
             <CodeBlock code={h2EnvFrontend} language="ini" filename="frontend/.env (Hands-on 2)" compact />
 
             <TerminalBlock code={runHo2Backend} title="Terminal: Backend Hands-on 2" />
@@ -1636,34 +1570,34 @@ npm run build`}
                         <tr class="bg-muted text-foreground">
                             <th class="px-3 py-2 font-semibold">File</th>
                             <th class="px-3 py-2 font-semibold">Stub</th>
-                            <th class="px-3 py-2 font-semibold">Step</th>
+                            <th class="px-3 py-2 font-semibold">Langkah</th>
                         </tr>
                     </thead>
                     <tbody class="text-foreground-secondary">
                         <tr class="border-t border-border align-top">
                             <td class="px-3 py-2"><code class={inlineCode}>frontend/src/lib/errors.ts</code></td>
-                            <td class="px-3 py-2"><code class={inlineCode}>toApiError</code></td>
-                            <td class="px-3 py-2 font-mono">b2</td>
+                            <td class="px-3 py-2"><code class={inlineCode}>toApiError</code>, <code class={inlineCode}>getFieldErrors</code></td>
+                            <td class="px-3 py-2">errors.ts dan http.ts</td>
                         </tr>
                         <tr class="border-t border-border align-top">
                             <td class="px-3 py-2"><code class={inlineCode}>frontend/src/lib/http.ts</code></td>
                             <td class="px-3 py-2">Response interceptor 401</td>
-                            <td class="px-3 py-2 font-mono">b2</td>
+                            <td class="px-3 py-2">errors.ts dan http.ts</td>
                         </tr>
                         <tr class="border-t border-border align-top">
                             <td class="px-3 py-2"><code class={inlineCode}>frontend/src/lib/api.ts</code></td>
                             <td class="px-3 py-2">CRUD menu, register, order, update status</td>
-                            <td class="px-3 py-2 font-mono">b3</td>
+                            <td class="px-3 py-2">API Axios</td>
                         </tr>
                         <tr class="border-t border-border align-top">
                             <td class="px-3 py-2"><code class={inlineCode}>frontend/src/lib/validation.ts</code></td>
                             <td class="px-3 py-2"><code class={inlineCode}>passwordChecks</code>, <code class={inlineCode}>validateRegisterForm</code>, <code class={inlineCode}>validateCheckoutForm</code></td>
-                            <td class="px-3 py-2 font-mono">b4</td>
+                            <td class="px-3 py-2">Validasi register dan checkout</td>
                         </tr>
                         <tr class="border-t border-border align-top">
                             <td class="px-3 py-2"><code class={inlineCode}>frontend/src/components/ProtectedRoute.tsx</code></td>
                             <td class="px-3 py-2">Guard sesi dan role</td>
-                            <td class="px-3 py-2 font-mono">b5</td>
+                            <td class="px-3 py-2">Protected Route dan RBAC</td>
                         </tr>
                     </tbody>
                 </table>
@@ -1750,14 +1684,15 @@ npm run build`}
 
             <h4 class="mt-5 mb-2 font-semibold text-foreground">Interceptor 401</h4>
             <p class="text-foreground-secondary leading-relaxed">
-                Buka <code class={inlineCode}>frontend/src/lib/http.ts</code>. Tambahkan import{' '}
-                <code class={inlineCode}>toApiError</code> di bagian atas file, lalu ganti komentar{' '}
+                Buka <code class={inlineCode}>frontend/src/lib/http.ts</code>. Tambahkan{' '}
+                <code class={inlineCode}>import &#123; toApiError &#125; from './errors'</code> di
+                bagian atas file, lalu ganti komentar{' '}
                 <code class={inlineCode}>TODO</code> di bagian bawah dengan interceptor berikut.
             </p>
             <CodeBlock
                 code={h2Http}
                 language="ts"
-                filename="frontend/src/lib/http.ts (import di atas + interceptor pengganti TODO)"
+                filename="frontend/src/lib/http.ts (interceptor pengganti TODO)"
             />
 
             <p class="mt-3 text-foreground-secondary leading-relaxed">
@@ -1877,7 +1812,7 @@ npm run build`}
                     <tbody class="text-foreground-secondary">
                         <tr class="border-t border-border align-top">
                             <td class="px-3 py-2 font-mono">name</td>
-                            <td class="px-3 py-2">Wajib, 2–100 karakter setelah <code class={inlineCode}>trim()</code></td>
+                            <td class="px-3 py-2">Wajib, 2 sampai 100 karakter setelah <code class={inlineCode}>trim()</code></td>
                         </tr>
                         <tr class="border-t border-border align-top">
                             <td class="px-3 py-2 font-mono">email</td>
@@ -1885,7 +1820,7 @@ npm run build`}
                         </tr>
                         <tr class="border-t border-border align-top">
                             <td class="px-3 py-2 font-mono">password</td>
-                            <td class="px-3 py-2">8–72 karakter, mengandung huruf dan angka</td>
+                            <td class="px-3 py-2">8 sampai 72 karakter, mengandung huruf dan angka</td>
                         </tr>
                         <tr class="border-t border-border align-top">
                             <td class="px-3 py-2 font-mono">confirmPassword</td>
@@ -1921,11 +1856,11 @@ npm run build`}
                     <tbody class="text-foreground-secondary">
                         <tr class="border-t border-border align-top">
                             <td class="px-3 py-2 font-mono">customerName</td>
-                            <td class="px-3 py-2">Wajib, 2–80 karakter</td>
+                            <td class="px-3 py-2">Wajib, 2 sampai 80 karakter</td>
                         </tr>
                         <tr class="border-t border-border align-top">
                             <td class="px-3 py-2 font-mono">phone</td>
-                            <td class="px-3 py-2">Wajib, 9–15 digit setelah <code class={inlineCode}>normalizePhone</code></td>
+                            <td class="px-3 py-2">Wajib, 9 sampai 15 digit setelah <code class={inlineCode}>normalizePhone</code></td>
                         </tr>
                         <tr class="border-t border-border align-top">
                             <td class="px-3 py-2 font-mono">paymentMethod</td>
@@ -1971,6 +1906,15 @@ npm run build`}
                 language="tsx"
                 filename="frontend/src/components/ProtectedRoute.tsx"
             />
+
+            <div class="mt-4 p-3 rounded-lg bg-warning/5 dark:bg-warning/10 border-l-4 border-warning">
+                <span class="font-bold text-warning">Refresh setelah menempel</span>
+                <p class="mt-1 text-sm md:text-base text-foreground-secondary leading-relaxed">
+                    Kalau setelah menempel file ini muncul error
+                    <code class={inlineCode}>useAuth harus dipakai di dalam AuthProvider</code>,
+                    refresh halaman penuh. Itu efek hot reload Vite, bukan kesalahan kode.
+                </p>
+            </div>
 
             <ul class="mt-3 text-foreground-secondary leading-relaxed space-y-1.5 list-disc list-inside">
                 <li><code class={inlineCode}>isReady === false</code>: tampilkan status “Memeriksa sesi login...”, jangan langsung redirect.</li>
@@ -2105,7 +2049,7 @@ npm run build`}
                             <td class="px-3 py-2">Checklist password menandai aturan yang belum terpenuhi; submit ditahan</td>
                         </tr>
                         <tr class="border-t border-border align-top">
-                            <td class="px-3 py-2">Owner mengubah menu owner lain lewat URL langsung</td>
+                            <td class="px-3 py-2">Owner mencoba mengubah menu warung lain lewat Swagger atau curl</td>
                             <td class="px-3 py-2">Backend membalas <code class={inlineCode}>403 MENU_FORBIDDEN</code>, bukan sukses</td>
                         </tr>
                         <tr class="border-t border-border align-top">
@@ -2118,7 +2062,7 @@ npm run build`}
                         </tr>
                         <tr class="border-t border-border align-top">
                             <td class="px-3 py-2">Hapus cookie sesi, lalu buka halaman terlindungi</td>
-                            <td class="px-3 py-2">Event <code class={inlineCode}>auth:unauthorized</code> membersihkan user dan mengarahkan ke login</td>
+                            <td class="px-3 py-2">Diarahkan ke login; <code class={inlineCode}>AuthProvider</code> membersihkan state user</td>
                         </tr>
                         <tr class="border-t border-border align-top">
                             <td class="px-3 py-2">Matikan backend saat halaman memuat data</td>
@@ -2129,14 +2073,17 @@ npm run build`}
             </div>
 
             <div class="mt-4 p-3 rounded-lg bg-primary/5 dark:bg-primary/10 border-l-4 border-primary">
-                <span class="font-bold text-primary">Kalau ingin menjalankan automated test</span>
-                <p class="text-sm md:text-base text-foreground-secondary mt-1">
-                    Pindah ke branch lengkap dengan{' '}
-                    <code class={inlineCode}>git switch {featBranch}</code>, lalu jalankan perintah
-                    di Step <strong>c1</strong>. Folder <code class={inlineCode}>tests/</code> dan
-                    script <code class={inlineCode}>npm test</code> hanya ada di branch itu.
+                <span class="font-bold text-primary">Uji 403 owner vs owner</span>
+                <p class="mt-1 text-sm md:text-base text-foreground-secondary leading-relaxed">
+                    Dashboard owner hanya menampilkan menu miliknya, jadi uji ini tidak bisa
+                    dilakukan lewat UI. Login sebagai <code class={inlineCode}>tini@kantin.test</code>
+                    di Swagger <code class={inlineCode}>http://localhost:3002/api-docs</code>, lalu
+                    coba <code class={inlineCode}>PUT /api/menu/&#123;id menu warung lain&#125;</code>
+                    dengan body menu yang valid. Backend harus membalas
+                    <code class={inlineCode}>403 MENU_FORBIDDEN</code>, bukan 400 validasi.
                 </p>
             </div>
+
         </Step>
 
         <!-- ===== PENUTUP ===== -->
@@ -2147,7 +2094,7 @@ npm run build`}
 
             <p class="text-foreground-secondary leading-relaxed">
                 Sebelum menutup praktikum, pastikan semua stub sudah terisi. Checklist berikut
-                memetakan setiap file ke Step yang menyediakan kodenya.
+                memetakan setiap file ke bagian yang menyediakan kodenya.
             </p>
             <CodeBlock
                 code={c1Checklist}
@@ -2178,14 +2125,6 @@ npm run build`}
                     input salah.
                 </p>
             </div>
-
-            <h4 class="mt-5 mb-2 font-semibold text-foreground">Kalau ingin menjalankan test otomatis</h4>
-            <p class="text-foreground-secondary leading-relaxed">
-                Branch lengkap menyertakan unit dan integration test untuk backend serta test
-                validasi frontend. Perintah lengkapnya ada di Step <strong>s8</strong>; pindah ke
-                branch <code class={inlineCode}>{featBranch}</code> terlebih dahulu karena folder
-                <code class={inlineCode}>tests/</code> tidak ada di branch starter.
-            </p>
 
             <div class="mt-4 flex flex-wrap gap-3">
                 <a href={ho1Url}

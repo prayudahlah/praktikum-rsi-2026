@@ -1,5 +1,3 @@
-import { toApiError } from './errors'
-
 http.interceptors.response.use(
   (response) => response,
   (error: unknown) => {
