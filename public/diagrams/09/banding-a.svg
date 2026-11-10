@@ -1,0 +1,54 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 760" font-family="ui-sans-serif, system-ui, sans-serif">
+  <rect width="1200" height="760" fill="#ffffff"/>
+  <text x="60" y="70" font-size="30" font-weight="700" fill="#18181b">Dua catatan, dua tujuan</text>
+  <text x="60" y="102" font-size="15" fill="#71717a">Audit log dan application log disimpan terpisah.</text>
+
+  <rect x="60" y="140" width="520" height="490" rx="14" fill="#eff6ff" stroke="#93c5fd" stroke-width="2"/>
+  <text x="88" y="184" font-size="21" font-weight="700" fill="#1d4ed8">Audit log</text>
+  <text x="88" y="212" font-size="14" fill="#475569">menjawab siapa melakukan apa</text>
+
+  <text x="88" y="268" font-size="12" font-weight="700" fill="#64748b">TUJUAN</text>
+  <text x="88" y="292" font-size="15" fill="#0f172a">Investigasi dan bukti</text>
+  <line x1="88" y1="314" x2="552" y2="314" stroke="#bfdbfe"/>
+
+  <text x="88" y="346" font-size="12" font-weight="700" fill="#64748b">ISI</text>
+  <text x="88" y="370" font-size="15" fill="#0f172a">Pelaku, aksi, target, waktu</text>
+  <line x1="88" y1="392" x2="552" y2="392" stroke="#bfdbfe"/>
+
+  <text x="88" y="424" font-size="12" font-weight="700" fill="#64748b">SIFAT</text>
+  <text x="88" y="448" font-size="15" fill="#0f172a">Append-only, tidak diubah</text>
+  <line x1="88" y1="470" x2="552" y2="470" stroke="#bfdbfe"/>
+
+  <text x="88" y="502" font-size="12" font-weight="700" fill="#64748b">AKSES</text>
+  <text x="88" y="526" font-size="15" fill="#0f172a">Admin dan auditor</text>
+  <line x1="88" y1="548" x2="552" y2="548" stroke="#bfdbfe"/>
+
+  <text x="88" y="580" font-size="12" font-weight="700" fill="#64748b">RETENSI</text>
+  <text x="88" y="604" font-size="15" fill="#0f172a">Lama, mengikuti kebijakan</text>
+
+  <rect x="620" y="140" width="520" height="490" rx="14" fill="#f8fafc" stroke="#cbd5e1" stroke-width="2"/>
+  <text x="648" y="184" font-size="21" font-weight="700" fill="#334155">Application log</text>
+  <text x="648" y="212" font-size="14" fill="#64748b">menjawab sistem sedang apa</text>
+
+  <text x="648" y="268" font-size="12" font-weight="700" fill="#64748b">TUJUAN</text>
+  <text x="648" y="292" font-size="15" fill="#0f172a">Debug dan monitoring</text>
+  <line x1="648" y1="314" x2="1112" y2="314" stroke="#e2e8f0"/>
+
+  <text x="648" y="346" font-size="12" font-weight="700" fill="#64748b">ISI</text>
+  <text x="648" y="370" font-size="15" fill="#0f172a">Error, stack trace, performa</text>
+  <line x1="648" y1="392" x2="1112" y2="392" stroke="#e2e8f0"/>
+
+  <text x="648" y="424" font-size="12" font-weight="700" fill="#64748b">SIFAT</text>
+  <text x="648" y="448" font-size="15" fill="#0f172a">Boleh dirotasi dan dihapus</text>
+  <line x1="648" y1="470" x2="1112" y2="470" stroke="#e2e8f0"/>
+
+  <text x="648" y="502" font-size="12" font-weight="700" fill="#64748b">AKSES</text>
+  <text x="648" y="526" font-size="15" fill="#0f172a">Developer dan operasional</text>
+  <line x1="648" y1="548" x2="1112" y2="548" stroke="#e2e8f0"/>
+
+  <text x="648" y="580" font-size="12" font-weight="700" fill="#64748b">RETENSI</text>
+  <text x="648" y="604" font-size="15" fill="#0f172a">Pendek, biasanya harian</text>
+
+  <line x1="60" y1="670" x2="1140" y2="670" stroke="#e2e8f0" stroke-width="1"/>
+  <text x="60" y="702" font-size="14" font-weight="700" fill="#0f172a">Kalau digabung, pembersihan log lama bisa ikut menghapus bukti.</text>
+</svg>

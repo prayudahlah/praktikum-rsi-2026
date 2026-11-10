@@ -1,0 +1,57 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 760" font-family="ui-sans-serif, system-ui, sans-serif">
+  <rect width="1200" height="760" fill="#ffffff"/>
+  <text x="60" y="70" font-size="30" font-weight="700" fill="#18181b">Menyiapkan hands-on</text>
+  <text x="60" y="102" font-size="15" fill="#71717a">Empat langkah sebelum halaman audit dikerjakan.</text>
+
+  <rect x="50" y="200" width="240" height="200" rx="14" fill="#f8fafc" stroke="#cbd5e1" stroke-width="2"/>
+  <circle cx="82" cy="234" r="16" fill="#2563eb"/>
+  <text x="82" y="240" font-size="14" font-weight="700" fill="#ffffff" text-anchor="middle">1</text>
+  <text x="112" y="240" font-size="17" font-weight="700" fill="#0f172a">Clone starter</text>
+  <text x="72" y="282" font-size="13" fill="#475569">branch</text>
+  <text x="72" y="302" font-size="12" fill="#1d4ed8">starter/pertemuan-09</text>
+  <text x="72" y="330" font-size="13" fill="#475569">folder</text>
+  <text x="72" y="350" font-size="12" fill="#1d4ed8">praktikum-pert-9</text>
+  <text x="72" y="378" font-size="12" fill="#64748b">hanya berisi Pertemuan 9</text>
+
+  <rect x="340" y="200" width="240" height="200" rx="14" fill="#f8fafc" stroke="#cbd5e1" stroke-width="2"/>
+  <circle cx="372" cy="234" r="16" fill="#2563eb"/>
+  <text x="372" y="240" font-size="14" font-weight="700" fill="#ffffff" text-anchor="middle">2</text>
+  <text x="402" y="240" font-size="17" font-weight="700" fill="#0f172a">Siapkan database</text>
+  <text x="362" y="282" font-size="13" fill="#475569">jalankan lewat SSMS</text>
+  <text x="362" y="304" font-size="12" fill="#1d4ed8">01-audit-log-schema.sql</text>
+  <text x="362" y="324" font-size="12" fill="#1d4ed8">02-audit-seed.sql</text>
+  <text x="362" y="354" font-size="13" fill="#475569">database review_kantin</text>
+  <text x="362" y="376" font-size="12" fill="#64748b">dari Pertemuan 8</text>
+
+  <rect x="630" y="200" width="240" height="200" rx="14" fill="#f8fafc" stroke="#cbd5e1" stroke-width="2"/>
+  <circle cx="662" cy="234" r="16" fill="#2563eb"/>
+  <text x="662" y="240" font-size="14" font-weight="700" fill="#ffffff" text-anchor="middle">3</text>
+  <text x="692" y="240" font-size="17" font-weight="700" fill="#0f172a">Isi env</text>
+  <text x="652" y="282" font-size="13" fill="#475569">salin .env.example</text>
+  <text x="652" y="304" font-size="12" fill="#1d4ed8">DB_USER, DB_PASSWORD</text>
+  <text x="652" y="324" font-size="12" fill="#1d4ed8">JWT_SECRET</text>
+  <text x="652" y="354" font-size="13" fill="#475569">backend dan frontend</text>
+
+  <rect x="920" y="200" width="240" height="200" rx="14" fill="#f8fafc" stroke="#cbd5e1" stroke-width="2"/>
+  <circle cx="952" cy="234" r="16" fill="#2563eb"/>
+  <text x="952" y="240" font-size="14" font-weight="700" fill="#ffffff" text-anchor="middle">4</text>
+  <text x="982" y="240" font-size="17" font-weight="700" fill="#0f172a">Jalankan</text>
+  <text x="942" y="282" font-size="13" fill="#475569">npm install</text>
+  <text x="942" y="304" font-size="12" fill="#1d4ed8">npm run dev</text>
+  <text x="942" y="334" font-size="13" fill="#475569">backend</text>
+  <text x="1006" y="334" font-size="12" fill="#15803d">3002</text>
+  <text x="942" y="356" font-size="13" fill="#475569">frontend</text>
+  <text x="1006" y="356" font-size="12" fill="#15803d">5174</text>
+
+  <line x1="292" y1="300" x2="334" y2="300" stroke="#94a3b8" stroke-width="2"/>
+  <path d="M334 300 l-11 -6 v12 z" fill="#94a3b8"/>
+  <line x1="582" y1="300" x2="624" y2="300" stroke="#94a3b8" stroke-width="2"/>
+  <path d="M624 300 l-11 -6 v12 z" fill="#94a3b8"/>
+  <line x1="872" y1="300" x2="914" y2="300" stroke="#94a3b8" stroke-width="2"/>
+  <path d="M914 300 l-11 -6 v12 z" fill="#94a3b8"/>
+
+  <line x1="60" y1="500" x2="1140" y2="500" stroke="#e2e8f0" stroke-width="1"/>
+  <text x="60" y="540" font-size="14" font-weight="700" fill="#0f172a">Halaman audit masih berupa placeholder setelah langkah ini.</text>
+  <text x="60" y="566" font-size="13" fill="#64748b">Itu bagian yang harus dikerjakan pada langkah berikutnya.</text>
+  <text x="60" y="604" font-size="13" fill="#64748b">Akun uji: admin@kantin.test dengan password admin123.</text>
+</svg>
