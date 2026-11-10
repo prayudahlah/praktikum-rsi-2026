@@ -157,9 +157,9 @@ const tocSections: TOCSection[] = [
 ---
 
 <ScrollySection className="meeting-relaxed">
-    <ScrollyLayout defaultSrc="/diagrams/09/alur.svg">
+    <ScrollyLayout defaultSrc="/diagrams/09/hook.webp" placeholder>
 
-        <Step id="s1" diagram="/diagrams/09/alur.svg">
+        <Step id="s1" diagram="/diagrams/09/hook.webp">
             <SectionDivider label="Audit Log System" />
             <StepHeader title="Kenapa Audit Log?" tone="primary" />
 
@@ -172,26 +172,34 @@ const tocSections: TOCSection[] = [
 
             <p class="mt-3 text-foreground-secondary leading-relaxed">
                 Audit log menjawab pertanyaan itu. Setiap aktivitas penting disimpan sebagai satu
-                baris berisi pelaku, aksi, data yang disentuh, dan waktu kejadian. Audit log ini
-                hanya tambahan (append-only), tidak diubah atau dihapus dari aplikasi, sehingga
-                bisa dipakai saat ada masalah yang perlu ditelusuri.
+                baris berisi <strong>pelaku</strong>, <strong>aksi</strong>,
+                <strong>data yang disentuh</strong>, dan <strong>waktu kejadian</strong>. Audit log
+                ini hanya mendukung penambahan (<strong>append-only</strong>), tidak diubah atau
+                dihapus dari aplikasi, sehingga bisa dipakai saat ada masalah yang perlu
+                ditelusuri.
             </p>
 
             <p class="mt-3 text-foreground-secondary leading-relaxed">
-                Log ini dipakai untuk menelusuri perubahan, menyelidiki data yang hilang,
-                mendeteksi akses mencurigakan, membantu debug, dan memenuhi kebutuhan kepatuhan.
+                Log ini dipakai untuk:
             </p>
+            <ul class="mt-2 text-foreground-secondary leading-relaxed space-y-1.5 list-disc list-inside">
+                <li>Menelusuri <strong>perubahan data</strong> dan siapa yang melakukannya.</li>
+                <li>Menyelidiki <strong>data hilang atau berubah</strong> tanpa izin.</li>
+                <li>Mendeteksi <strong>akses mencurigakan</strong>.</li>
+                <li>Membantu <strong>debug</strong> saat data berubah tanpa penjelasan.</li>
+                <li>Memenuhi <strong>kebutuhan kepatuhan</strong> dan audit internal.</li>
+            </ul>
 
             <div class="mt-4 p-3 rounded-lg bg-primary/5 dark:bg-primary/10 border-l-4 border-primary">
                 <span class="font-bold text-primary">Pegangan utama</span>
                 <p class="text-sm md:text-base text-foreground-secondary mt-1">
                     Kalau catatan audit masih bisa diubah atau dihapus dari aplikasi, catatan itu
-                    tidak bisa dipakai sebagai bukti.
+                    <strong>tidak bisa dipakai sebagai bukti</strong>.
                 </p>
             </div>
         </Step>
 
-        <Step id="s2" diagram="/diagrams/09/banding.svg">
+        <Step id="s2" diagram="/diagrams/09/app-log-vs-audit-log.webp">
             <StepHeader title="Audit Log vs Application Log" tone="primary" />
 
             <p class="text-foreground-secondary leading-relaxed">
@@ -246,7 +254,7 @@ const tocSections: TOCSection[] = [
             </p>
         </Step>
 
-        <Step id="s3" diagram="/diagrams/09/anatomi.svg">
+        <Step id="s3" diagram="/diagrams/09/audit-log-example.webp">
             <StepHeader title="Prinsip dan Anatomi" tone="primary" />
 
             <p class="text-foreground-secondary leading-relaxed">
@@ -327,20 +335,20 @@ const tocSections: TOCSection[] = [
             <div class="mt-4 p-3 rounded-lg bg-warning/5 dark:bg-warning/10 border-l-4 border-warning">
                 <span class="font-bold text-warning">Jangan simpan data sensitif</span>
                 <p class="mt-1 text-sm md:text-base text-foreground-secondary leading-relaxed">
-                    Metadata tidak boleh memuat password, hash password, token JWT, isi cookie,
-                    atau header otorisasi. Tulis hanya data yang memang perlu untuk menjelaskan
+                    Metadata tidak boleh memuat <strong>password</strong>, hash password,
+                    <strong>token JWT</strong>, <strong>cookie</strong>, atau header otorisasi. Tulis hanya data yang memang perlu untuk menjelaskan
                     perubahan.
                 </p>
             </div>
         </Step>
 
-        <Step id="s4" diagram="/diagrams/09/skema.svg">
+        <Step id="s4">
             <StepHeader title="Skema dan Index" tone="primary" />
 
             <p class="text-foreground-secondary leading-relaxed">
-                Tabel audit sudah dibuat pada Pertemuan 3, tepatnya di skema
+                Tabel audit sudah dibuat pada <strong>Pertemuan 3</strong>, tepatnya di skema
                 <code class={inlineCode}>review_kantin</code>. Kolomnya sedikit. Yang menentukan
-                adalah apakah catatannya bisa dipercaya.
+                adalah apakah catatannya <strong>bisa dipercaya</strong>.
             </p>
 
             <CodeBlock
@@ -367,7 +375,7 @@ const tocSections: TOCSection[] = [
 
             <p class="mt-3 text-foreground-secondary leading-relaxed">
                 Index tidak mengubah hasil query, hanya cara database mencarinya. Tanpa index,
-                query riwayat memindai seluruh tabel. Dengan data praktikum mungkin tidak terasa,
+                query riwayat <strong>memindai seluruh tabel</strong>. Dengan data praktikum mungkin tidak terasa,
                 tetapi kebiasaan ini penting saat data bertambah.
             </p>
 
@@ -382,7 +390,7 @@ const tocSections: TOCSection[] = [
             </div>
         </Step>
 
-        <Step id="s5" diagram="/diagrams/09/atomik.svg">
+        <Step id="s5">
             <StepHeader title="Mutasi dan Audit Atomik" tone="primary" />
 
             <p class="text-foreground-secondary leading-relaxed">
@@ -393,8 +401,8 @@ const tocSections: TOCSection[] = [
             </p>
 
             <p class="mt-3 text-foreground-secondary leading-relaxed">
-                Solusinya satu transaksi. Mutasi dan insert audit memakai objek transaksi yang
-                sama, lalu di-commit bersama atau di-rollback bersama.
+                Solusinya <strong>satu transaksi</strong>. Mutasi dan insert audit memakai objek transaksi
+                yang sama, lalu <strong>di-commit bersama</strong> atau <strong>di-rollback bersama</strong>.
             </p>
 
             <CodeBlock
@@ -432,12 +440,12 @@ const tocSections: TOCSection[] = [
             </ul>
         </Step>
 
-        <Step id="s6" diagram="/diagrams/09/alur.svg">
+        <Step id="s6">
             <StepHeader title="Endpoint Riwayat dan RBAC" tone="primary" />
 
             <p class="text-foreground-secondary leading-relaxed">
-                Riwayat audit bukan data publik. Hanya admin yang boleh membacanya, dan backend
-                yang harus memastikan itu. Menyembunyikan menu di frontend tidak cukup, karena
+                Riwayat audit bukan data publik. Hanya <strong>admin</strong> yang boleh membacanya, dan
+                <strong>backend</strong> yang harus memastikan itu. Menyembunyikan menu di frontend tidak cukup, karena
                 endpoint tetap bisa dipanggil langsung.
             </p>
 
@@ -541,11 +549,11 @@ const tocSections: TOCSection[] = [
             </p>
         </Step>
 
-        <Step id="s7" diagram="/diagrams/09/ui.svg">
+        <Step id="s7" diagram="/diagrams/09/audit-log-example.webp">
             <StepHeader title="Halaman Riwayat" tone="primary" />
 
             <p class="text-foreground-secondary leading-relaxed">
-                Riwayat audit perlu bisa dibaca tanpa membuka database. Halaman riwayat
+                Riwayat audit perlu bisa dibaca <strong>tanpa membuka database</strong>. Halaman riwayat
                 menyediakan tabel yang bisa difilter, halaman yang bisa dipindah, dan detail
                 metadata untuk satu catatan.
             </p>
@@ -587,14 +595,14 @@ const tocSections: TOCSection[] = [
             </div>
         </Step>
 
-        <Step id="h1" diagram="/diagrams/09/alur.svg">
+        <Step id="h1">
             <SectionDivider label="Hands-on 1: Audit Log" />
             <StepHeader title="Ambil Starter dan Kenali TODO" tone="success" />
 
             <p class="text-foreground-secondary leading-relaxed">
                 Hands-on Pertemuan 9 hanya satu, yaitu menambahkan lapisan audit ke aplikasi
                 Maem Bolo dan menampilkan riwayatnya. Backend dan API client sudah lengkap.
-                Yang kosong hanya satu halaman frontend.
+                Yang kosong hanya <strong>satu halaman frontend</strong>.
             </p>
 
             <p class="mt-3 text-foreground-secondary leading-relaxed">
@@ -612,7 +620,7 @@ const tocSections: TOCSection[] = [
                     Sekarang buka SSMS, connect ke <code class={inlineCode}>review_kantin</code>,
                     lalu jalankan <code class={inlineCode}>db/01-audit-log-schema.sql</code> dan
                     <code class={inlineCode}>db/02-audit-seed.sql</code> berurutan dengan F5.
-                    Gunakan akun yang punya hak DDL, bukan{' '}
+                    Gunakan akun yang punya <strong>hak DDL</strong>, bukan{' '}
                     <code class={inlineCode}>praktikum_user</code>.
                 </p>
             </div>
@@ -707,7 +715,7 @@ const tocSections: TOCSection[] = [
             </p>
         </Step>
 
-        <Step id="h2" diagram="/diagrams/09/ui.svg">
+        <Step id="h2">
             <StepHeader title="Halaman Riwayat Audit" tone="success" />
 
             <p class="text-foreground-secondary leading-relaxed">
@@ -760,7 +768,7 @@ const tocSections: TOCSection[] = [
             </div>
         </Step>
 
-        <Step id="h3" diagram="/diagrams/09/atomik.svg">
+        <Step id="h3">
             <StepHeader title="Uji Hands-on 9" tone="success" />
 
             <p class="text-foreground-secondary leading-relaxed">
@@ -843,7 +851,7 @@ const tocSections: TOCSection[] = [
             </div>
         </Step>
 
-        <Step id="c1" diagram="/diagrams/09/skema.svg">
+        <Step id="c1">
             <SectionDivider label="Penutup" />
             <StepHeader title="Checklist & Rangkuman" tone="primary" />
 
@@ -859,11 +867,11 @@ const tocSections: TOCSection[] = [
 
             <h4 class="mt-5 mb-2 font-semibold text-foreground">Yang sudah dikerjakan</h4>
             <ul class="text-foreground-secondary leading-relaxed space-y-1.5 list-disc list-inside">
-                <li>Halaman riwayat audit yang hanya bisa dibuka admin.</li>
+                <li>Halaman riwayat audit yang hanya bisa dibuka <strong>admin</strong>.</li>
                 <li>Filter aksi, target, dan rentang tanggal yang diterapkan terpisah dari draft.</li>
-                <li>Pagination 20 baris dengan total dan nomor halaman.</li>
-                <li>Modal detail metadata JSON yang mudah dibaca.</li>
-                <li>State loading, kosong, dan error yang jelas.</li>
+                <li><strong>Pagination</strong> 20 baris dengan total dan nomor halaman.</li>
+                <li><strong>Modal detail</strong> metadata JSON yang mudah dibaca.</li>
+                <li><strong>State</strong> loading, kosong, dan error yang jelas.</li>
                 <li>Pemahaman bahwa audit ditulis di transaksi yang sama dengan mutasi bisnis.</li>
             </ul>
 
