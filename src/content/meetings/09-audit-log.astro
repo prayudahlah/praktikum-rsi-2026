@@ -10,7 +10,6 @@ import {
 import type { TOCSection } from '../../components/scrolly';
 import CodeBlock from '../../components/ui/CodeBlock.astro';
 import TerminalBlock from '../../components/ui/TerminalBlock.astro';
-import { BookOpen } from '@lucide/astro';
 
 import h1EnvBackend from '../snippets/09/h1-env-backend.txt?raw';
 import h1EnvFrontend from '../snippets/09/h1-env-frontend.txt?raw';
@@ -29,9 +28,6 @@ const featBranch = 'feat/pertemuan-9';
 const starterBranch = 'starter/pertemuan-09';
 const ho1Path = 'pertemuan-09-audit-log-system/hands-on-1-audit-log';
 const ho1Url = `${repoUrl}/tree/${featBranch}/${ho1Path}`;
-const starterUrl = `${repoUrl}/tree/${starterBranch}/pertemuan-09-audit-log-system`;
-const ghFile = (path: string, branch = featBranch) => `${repoUrl}/blob/${branch}/${path}`;
-const ho1File = (file: string) => ghFile(`${ho1Path}/${file}`);
 
 const cloneStarter = `git clone --single-branch --branch ${starterBranch} ${repoUrl}.git praktikum-pert-9`;
 
@@ -891,18 +887,6 @@ const tocSections: TOCSection[] = [
                    class="inline-flex items-center gap-2 text-sm font-medium text-primary hover:underline">
                     <img src="/icons/github.svg" alt="" aria-hidden="true" class="w-4 h-4 invert-0 dark:invert" />
                     Versi lengkap Hands-on 9
-                </a>
-                <a href={starterUrl}
-                   target="_blank" rel="noopener noreferrer"
-                   class="inline-flex items-center gap-2 text-sm font-medium text-primary hover:underline">
-                    <img src="/icons/github.svg" alt="" aria-hidden="true" class="w-4 h-4 invert-0 dark:invert" />
-                    Branch starter Pertemuan 09
-                </a>
-                <a href={ho1File('README.md')}
-                   target="_blank" rel="noopener noreferrer"
-                   class="inline-flex items-center gap-2 text-sm font-medium text-primary hover:underline">
-                    <BookOpen class="w-4 h-4" />
-                    README hands-on
                 </a>
             </div>
         </Step>
