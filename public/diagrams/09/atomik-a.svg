@@ -1,0 +1,55 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 760" font-family="ui-sans-serif, system-ui, sans-serif">
+  <rect width="1200" height="760" fill="#ffffff"/>
+  <text x="60" y="70" font-size="30" font-weight="700" fill="#18181b">Satu transaksi untuk dua penulisan</text>
+  <text x="60" y="102" font-size="15" fill="#71717a">Mutasi dan audit disimpan bersama, atau batal bersama.</text>
+
+  <rect x="60" y="150" width="270" height="100" rx="12" fill="#f8fafc" stroke="#cbd5e1" stroke-width="2"/>
+  <text x="82" y="188" font-size="17" font-weight="700" fill="#0f172a">Request pengguna</text>
+  <text x="82" y="214" font-size="13" fill="#64748b">POST, PUT, atau DELETE</text>
+
+  <rect x="370" y="150" width="300" height="100" rx="12" fill="#f8fafc" stroke="#cbd5e1" stroke-width="2"/>
+  <text x="392" y="188" font-size="17" font-weight="700" fill="#0f172a">Service</text>
+  <text x="392" y="214" font-size="13" fill="#64748b">validasi dan aturan bisnis</text>
+
+  <rect x="720" y="128" width="420" height="340" rx="16" fill="#eff6ff" stroke="#93c5fd" stroke-width="2"/>
+  <text x="742" y="164" font-size="16" font-weight="700" fill="#1d4ed8">withTransaction</text>
+
+  <rect x="742" y="182" width="376" height="82" rx="10" fill="#ffffff" stroke="#10b981" stroke-width="2"/>
+  <text x="762" y="214" font-size="16" font-weight="700" fill="#0f172a">Mutasi bisnis</text>
+  <text x="762" y="240" font-size="13" fill="#475569">menu, order, atau status pesanan</text>
+
+  <line x1="930" y1="264" x2="930" y2="296" stroke="#94a3b8" stroke-width="2"/>
+  <path d="M930 296 l-6 -11 h12 z" fill="#94a3b8"/>
+
+  <rect x="742" y="300" width="376" height="82" rx="10" fill="#ffffff" stroke="#8b5cf6" stroke-width="2"/>
+  <text x="762" y="332" font-size="16" font-weight="700" fill="#0f172a">INSERT AUDIT_LOGS</text>
+  <text x="762" y="358" font-size="13" fill="#475569">pelaku, aksi, target, waktu</text>
+
+  <text x="742" y="414" font-size="13" fill="#1e3a8a">Kedua query memakai objek transaksi yang sama.</text>
+
+  <line x1="330" y1="200" x2="364" y2="200" stroke="#94a3b8" stroke-width="2"/>
+  <path d="M364 200 l-10 -6 v12 z" fill="#94a3b8"/>
+  <line x1="670" y1="200" x2="714" y2="200" stroke="#94a3b8" stroke-width="2"/>
+  <path d="M714 200 l-10 -6 v12 z" fill="#94a3b8"/>
+
+  <line x1="930" y1="468" x2="930" y2="492" stroke="#94a3b8" stroke-width="2"/>
+  <line x1="820" y1="492" x2="1040" y2="492" stroke="#94a3b8" stroke-width="2"/>
+  <line x1="820" y1="492" x2="820" y2="506" stroke="#94a3b8" stroke-width="2"/>
+  <path d="M820 506 l-6 -11 h12 z" fill="#94a3b8"/>
+  <line x1="1040" y1="492" x2="1040" y2="506" stroke="#94a3b8" stroke-width="2"/>
+  <path d="M1040 506 l-6 -11 h12 z" fill="#94a3b8"/>
+
+  <rect x="720" y="512" width="200" height="104" rx="12" fill="#f0fdf4" stroke="#16a34a" stroke-width="2"/>
+  <text x="742" y="548" font-size="18" font-weight="700" fill="#15803d">COMMIT</text>
+  <text x="742" y="574" font-size="13" fill="#4b5563">mutasi dan audit tersimpan</text>
+  <text x="742" y="596" font-size="12" fill="#64748b">respons sukses</text>
+
+  <rect x="940" y="512" width="200" height="104" rx="12" fill="#fef2f2" stroke="#dc2626" stroke-width="2"/>
+  <text x="962" y="548" font-size="18" font-weight="700" fill="#b91c1c">ROLLBACK</text>
+  <text x="962" y="574" font-size="13" fill="#4b5563">keduanya dibatalkan</text>
+  <text x="962" y="596" font-size="12" fill="#64748b">respons error</text>
+
+  <line x1="60" y1="644" x2="1140" y2="644" stroke="#e2e8f0" stroke-width="1"/>
+  <text x="60" y="676" font-size="15" font-weight="700" fill="#0f172a">Kalau audit gagal, mutasi ikut dibatalkan.</text>
+  <text x="60" y="702" font-size="14" fill="#64748b">Login memakai pola best-effort: audit gagal tidak menggagalkan login.</text>
+</svg>
