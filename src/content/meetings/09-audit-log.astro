@@ -162,14 +162,14 @@ const tocSections: TOCSection[] = [
             <p class="text-foreground-secondary leading-relaxed">
                 Pada Pertemuan 8, owner bisa menambah, mengubah, dan menghapus menu, sedangkan
                 admin bisa mengubah status pesanan. Begitu aplikasi dipakai, pertanyaan yang
-                muncul biasanya adalah siapa yang mengubah data ini dan kapan. Maka tiap ada
+                muncul biasanya adalah siapa yang mengubah data ini dan kapan. Karena itu, tiap
                 aktivitas harus dicatat dan bisa ditelusuri dengan mudah.
             </p>
 
             <p class="mt-3 text-foreground-secondary leading-relaxed">
                 Audit log menjawab pertanyaan itu. Setiap aktivitas penting disimpan sebagai satu
-                baris berisi <strong>pelaku</strong>, <strong>aksi</strong>,
-                <strong>data yang disentuh</strong>, dan <strong>waktu kejadian</strong>. Audit log
+                baris berisi <strong>pelaku</strong>, aksi,{' '}
+                data yang disentuh, dan waktu kejadian. Audit log
                 ini hanya mendukung penambahan (<strong>append-only</strong>), tidak diubah atau
                 dihapus dari aplikasi, sehingga bisa dipakai saat ada masalah yang perlu
                 ditelusuri.
@@ -189,7 +189,7 @@ const tocSections: TOCSection[] = [
             <div class="mt-4 p-3 rounded-lg bg-primary/5 dark:bg-primary/10 border-l-4 border-primary">
                 <span class="font-bold text-primary">Pegangan utama</span>
                 <p class="text-sm md:text-base text-foreground-secondary mt-1">
-                    Kalau catatan audit masih bisa diubah atau dihapus dari aplikasi, catatan itu
+                    Kalau catatan audit masih bisa diubah atau dihapus dari aplikasi, catatan itu{' '}
                     <strong>tidak bisa dipakai sebagai bukti</strong>.
                 </p>
             </div>
@@ -199,8 +199,8 @@ const tocSections: TOCSection[] = [
             <StepHeader title="Audit Log vs Application Log" tone="primary" />
 
             <p class="text-foreground-secondary leading-relaxed">
-                Keduanya catatan, tetapi menjawab pertanyaan berbeda. Audit log menjawab
-                <strong>siapa melakukan apa</strong>. Application log menjawab
+                Keduanya catatan, tetapi tujuannya berbeda. Audit log menjawab{' '}
+                <strong>siapa melakukan apa</strong>. Application log menjawab{' '}
                 <strong>sistem sedang apa</strong>.
             </p>
 
@@ -263,8 +263,9 @@ const tocSections: TOCSection[] = [
                     atau hapus dari aplikasi.
                 </li>
                 <li>
-                    <strong>Terpusat.</strong> Ditulis di backend, di service layer, bukan di
-                    frontend dan bukan tersebar di banyak controller.
+                    <strong>Terpusat.</strong> Ditulis di backend, tepatnya di service layer.
+                    Frontend hanya mengirim permintaan, dan penulisan tidak tersebar di banyak
+                    controller.
                 </li>
                 <li>
                     <strong>Cukup detail.</strong> Siapa, kapan, apa, target, dan hasilnya.
@@ -331,7 +332,7 @@ const tocSections: TOCSection[] = [
             <div class="mt-4 p-3 rounded-lg bg-warning/5 dark:bg-warning/10 border-l-4 border-warning">
                 <span class="font-bold text-warning">Jangan simpan data sensitif</span>
                 <p class="mt-1 text-sm md:text-base text-foreground-secondary leading-relaxed">
-                    Metadata tidak boleh memuat <strong>password</strong>, hash password,
+                    Metadata tidak boleh memuat <strong>password</strong>, hash password,{' '}
                     <strong>token JWT</strong>, <strong>cookie</strong>, atau header otorisasi. Tulis hanya data yang memang perlu untuk menjelaskan
                     perubahan.
                 </p>
@@ -342,7 +343,7 @@ const tocSections: TOCSection[] = [
             <StepHeader title="Skema dan Index" tone="primary" />
 
             <p class="text-foreground-secondary leading-relaxed">
-                Tabel audit sudah dibuat pada <strong>Pertemuan 3</strong>, tepatnya di skema
+                Tabel audit sudah dibuat pada <strong>Pertemuan 3</strong>, tepatnya di skema{' '}
                 <code class={inlineCode}>review_kantin</code>. Kolomnya sedikit. Yang menentukan
                 adalah apakah catatannya <strong>bisa dipercaya</strong>.
             </p>
@@ -378,7 +379,7 @@ const tocSections: TOCSection[] = [
             <div class="mt-4 p-3 rounded-lg bg-primary/5 dark:bg-primary/10 border-l-4 border-primary">
                 <span class="font-bold text-primary">Soal waktu</span>
                 <p class="text-sm md:text-base text-foreground-secondary mt-1">
-                    Kolom <code class={inlineCode}>created_at</code> memakai
+                    Kolom <code class={inlineCode}>created_at</code> memakai{' '}
                     <code class={inlineCode}>SYSUTCDATETIME()</code>, jadi waktu disimpan dalam
                     UTC. Frontend menampilkannya dalam zona waktu browser. Cara ini membuat data
                     tetap benar walaupun server dan laptop berada di zona waktu berbeda.
@@ -409,8 +410,8 @@ const tocSections: TOCSection[] = [
 
             <h4 class="mt-5 mb-2 font-semibold text-foreground">Service audit</h4>
             <p class="text-foreground-secondary leading-relaxed">
-                Semua penulisan audit melewati satu service. Mutasi memakai
-                <code class={inlineCode}>record()</code> dengan transaksi. Login memakai
+                Semua penulisan audit melewati satu service. Mutasi memakai{' '}
+                <code class={inlineCode}>record()</code> dengan transaksi. Login memakai{' '}
                 <code class={inlineCode}>recordLogin()</code> yang menangkap error sendiri.
             </p>
 
@@ -440,7 +441,7 @@ const tocSections: TOCSection[] = [
             <StepHeader title="Endpoint Riwayat dan RBAC" tone="primary" />
 
             <p class="text-foreground-secondary leading-relaxed">
-                Riwayat audit bukan data publik. Hanya <strong>admin</strong> yang boleh membacanya, dan
+                Riwayat audit bukan data publik. Hanya <strong>admin</strong> yang boleh membacanya, dan{' '}
                 <strong>backend</strong> yang harus memastikan itu. Menyembunyikan menu di frontend tidak cukup, karena
                 endpoint tetap bisa dipanggil langsung.
             </p>
@@ -536,11 +537,11 @@ const tocSections: TOCSection[] = [
             />
 
             <p class="mt-3 text-foreground-secondary leading-relaxed">
-                Parameter yang tidak dikenal, tanggal yang tidak valid, atau
-                <code class={inlineCode}>from</code> yang melewati
-                <code class={inlineCode}>to</code> ditolak dengan
+                Parameter yang tidak dikenal, tanggal yang tidak valid, atau{' '}
+                <code class={inlineCode}>from</code> yang melewati{' '}
+                <code class={inlineCode}>to</code> ditolak dengan{' '}
                 <code class={inlineCode}>400 VALIDATION_ERROR</code>. Tanpa cookie atau dengan
-                role selain admin, endpoint membalas <code class={inlineCode}>401</code> atau
+                role selain admin, endpoint membalas <code class={inlineCode}>401</code> atau{' '}
                 <code class={inlineCode}>403</code>.
             </p>
         </Step>
@@ -596,7 +597,7 @@ const tocSections: TOCSection[] = [
             <StepHeader title="Ambil Starter dan Kenali TODO" tone="success" />
 
             <p class="text-foreground-secondary leading-relaxed">
-                Hands-on Pertemuan 9 hanya satu, yaitu menambahkan lapisan audit ke aplikasi
+                Hands-on 9 hanya satu, yaitu menambahkan lapisan audit ke aplikasi
                 Maem Bolo dan menampilkan riwayatnya. Backend dan API client sudah lengkap.
                 Yang kosong hanya <strong>satu halaman frontend</strong>.
             </p>
@@ -614,7 +615,7 @@ const tocSections: TOCSection[] = [
                 <p class="mt-1 text-sm md:text-base text-foreground-secondary leading-relaxed">
                     Skema Pertemuan 8 diasumsikan sudah dijalankan pada pertemuan sebelumnya.
                     Sekarang buka SSMS, connect ke <code class={inlineCode}>review_kantin</code>,
-                    lalu jalankan <code class={inlineCode}>db/01-audit-log-schema.sql</code> dan
+                    lalu jalankan <code class={inlineCode}>db/01-audit-log-schema.sql</code> dan{' '}
                     <code class={inlineCode}>db/02-audit-seed.sql</code> berurutan dengan F5.
                     Gunakan akun yang punya <strong>hak DDL</strong>, bukan{' '}
                     <code class={inlineCode}>praktikum_user</code>.
@@ -706,7 +707,7 @@ const tocSections: TOCSection[] = [
 
             <p class="mt-3 text-foreground-secondary leading-relaxed">
                 Sudah tersedia dan tidak perlu ditulis ulang: route{' '}
-                <code class={inlineCode}>/admin/audit-logs</code>, menu Audit di header,
+                <code class={inlineCode}>/admin/audit-logs</code>, menu Audit di header,{' '}
                 <code class={inlineCode}>getAuditLogs</code>, tipe data, dan helper label.
             </p>
         </Step>
@@ -720,11 +721,16 @@ const tocSections: TOCSection[] = [
                 versi berikut:
             </p>
 
-            <CodeBlock
-                code={h1AuditPage}
-                language="tsx"
-                filename="frontend/src/pages/AuditLogPage.tsx"
-            />
+            <details class="mt-4">
+                <summary class="cursor-pointer text-sm font-semibold text-primary hover:underline">
+                    Tampilkan kode lengkap AuditLogPage.tsx
+                </summary>
+                <CodeBlock
+                    code={h1AuditPage}
+                    language="tsx"
+                    filename="frontend/src/pages/AuditLogPage.tsx"
+                />
+            </details>
 
             <h4 class="mt-5 mb-2 font-semibold text-foreground">Cara kerjanya</h4>
             <ul class="text-foreground-secondary leading-relaxed space-y-1.5 list-disc list-inside">
@@ -758,7 +764,7 @@ const tocSections: TOCSection[] = [
                     <code class={inlineCode}>actionLabel</code>,{' '}
                     <code class={inlineCode}>targetLabel</code>,{' '}
                     <code class={inlineCode}>actionTone</code>, dan{' '}
-                    <code class={inlineCode}>formatMetadata</code> sudah ada di
+                    <code class={inlineCode}>formatMetadata</code> sudah ada di{' '}
                     <code class={inlineCode}>lib/audit.ts</code>. Pakai, jangan duplikasi.
                 </p>
             </div>
