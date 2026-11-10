@@ -1,0 +1,919 @@
+---
+import {
+    ScrollySection,
+    Step,
+    StepHeader,
+    SectionDivider,
+    ScrollyLayout,
+    ScrollyTOC,
+} from '../../components/scrolly';
+import type { TOCSection } from '../../components/scrolly';
+import CodeBlock from '../../components/ui/CodeBlock.astro';
+import TerminalBlock from '../../components/ui/TerminalBlock.astro';
+
+import h1EnvBackend from '../snippets/09/h1-env-backend.txt?raw';
+import h1EnvFrontend from '../snippets/09/h1-env-frontend.txt?raw';
+import h1Transaction from '../snippets/09/h1-transaction.txt?raw';
+import h1AuditService from '../snippets/09/h1-audit-service.txt?raw';
+import h1AuditRoute from '../snippets/09/h1-audit-route.txt?raw';
+import h1AuditPage from '../snippets/09/h1-audit-page.txt?raw';
+import h1AuditHelper from '../snippets/09/h1-audit-helper.txt?raw';
+import h1Types from '../snippets/09/h1-types.txt?raw';
+import c1Checklist from '../snippets/09/c1-checklist.txt?raw';
+
+const inlineCode = 'font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded';
+
+const repoUrl = 'https://github.com/rrrambatsigma/praktikum-rsi-2026';
+const featBranch = 'feat/pertemuan-9';
+const starterBranch = 'starter/pertemuan-09';
+const ho1Path = 'pertemuan-09-audit-log-system/hands-on-1-audit-log';
+const ho1Url = `${repoUrl}/tree/${featBranch}/${ho1Path}`;
+
+const cloneStarter = `git clone --single-branch --branch ${starterBranch} ${repoUrl}.git praktikum-pert-9`;
+
+const runBackend = `cd praktikum-pert-9/${ho1Path}/backend
+npm install
+npm run dev`;
+
+const runFrontend = `cd praktikum-pert-9/${ho1Path}/frontend
+npm install
+npm run dev`;
+
+const folderTree = `praktikum-pert-9/
+└─ pertemuan-09-audit-log-system/
+   ├─ db/                              # skema, index, dan seed audit
+   │  ├─ 01-audit-log-schema.sql
+   │  ├─ 02-audit-seed.sql
+   │  └─ 03-audit-samples.sql
+   └─ hands-on-1-audit-log/
+      ├─ backend/                      # Express + mssql, lengkap
+      │  └─ src/ ...                    # transaksi, audit, endpoint
+      └─ frontend/                     # React + Tailwind
+         └─ src/pages/AuditLogPage.tsx  # TODO`;
+
+const createTableSql = `CREATE TABLE dbo.AUDIT_LOGS (
+    id           INT IDENTITY(1,1) NOT NULL
+                 CONSTRAINT PK_AUDIT_LOGS PRIMARY KEY,
+    user_id      INT NOT NULL,
+    action       NVARCHAR(50) NOT NULL,
+    target_table NVARCHAR(50) NOT NULL,
+    target_id    INT NOT NULL,
+    metadata     NVARCHAR(MAX) NULL,
+    created_at   DATETIME2(0) NOT NULL
+                 CONSTRAINT DF_AUDIT_LOGS_created_at
+                 DEFAULT SYSUTCDATETIME(),
+    CONSTRAINT FK_AUDIT_LOGS_USERS
+        FOREIGN KEY (user_id) REFERENCES dbo.USERS (id)
+);`;
+
+const auditExample = `INSERT INTO dbo.AUDIT_LOGS
+    (user_id, action, target_table, target_id, metadata)
+VALUES
+    (3, N'UPDATE_MENU', N'MENU_ITEMS', 7,
+     N'{"before":{"name":"Es Teh"},"after":{"name":"Es Jeruk"}}');`;
+
+const responseExample = `GET /api/audit-logs?action=UPDATE_MENU&page=1&pageSize=20
+Cookie: kantin_session_ho2=...
+
+HTTP/1.1 200 OK
+Content-Type: application/json
+
+{
+  "status": "success",
+  "data": {
+    "items": [
+      {
+        "id": 21,
+        "userId": 3,
+        "userName": "Bu Tini",
+        "userEmail": "tini@kantin.test",
+        "action": "UPDATE_MENU",
+        "targetTable": "MENU_ITEMS",
+        "targetId": 7,
+        "metadata": { "before": {}, "after": {}, "changed": ["name"] },
+        "createdAt": "2026-11-10T09:15:00.000Z"
+      }
+    ],
+    "pagination": {
+      "page": 1,
+      "pageSize": 20,
+      "total": 1,
+      "totalPages": 1
+    }
+  }
+}`;
+
+const verificationSql = `USE review_kantin;
+GO
+
+SELECT TOP (20)
+    a.id,
+    a.created_at,
+    u.email,
+    a.action,
+    a.target_table,
+    a.target_id,
+    a.metadata
+FROM dbo.AUDIT_LOGS a
+LEFT JOIN dbo.USERS u ON u.id = a.user_id
+ORDER BY a.created_at DESC, a.id DESC;
+GO`;
+
+const tocSections: TOCSection[] = [
+    {
+        label: 'Dasar Audit Log',
+        items: [
+            { id: 's1', title: 'Kenapa Audit Log?' },
+            { id: 's2', title: 'Audit Log vs Application Log' },
+            { id: 's3', title: 'Prinsip dan Anatomi' },
+            { id: 's4', title: 'Skema dan Index' },
+        ],
+    },
+    {
+        label: 'Mekanisme',
+        items: [
+            { id: 's5', title: 'Mutasi dan Audit Atomik' },
+            { id: 's6', title: 'Endpoint Riwayat dan RBAC' },
+            { id: 's7', title: 'Halaman Riwayat' },
+        ],
+    },
+    {
+        label: 'Hands-on 1: Audit Log',
+        items: [
+            { id: 'h1', title: 'Ambil Starter & Kenali TODO' },
+            { id: 'h2', title: 'Halaman Riwayat Audit' },
+            { id: 'h3', title: 'Uji Hands-on 9' },
+        ],
+    },
+    {
+        label: 'Penutup',
+        items: [{ id: 'c1', title: 'Checklist & Rangkuman' }],
+    },
+];
+---
+
+<ScrollySection className="meeting-relaxed">
+    <ScrollyLayout defaultSrc="/diagrams/09/hook.webp" placeholder>
+
+        <Step id="s1" diagram="/diagrams/09/hook.webp">
+            <SectionDivider label="Audit Log System" />
+            <StepHeader title="Kenapa Audit Log?" tone="primary" />
+
+            <p class="text-foreground-secondary leading-relaxed">
+                Pada Pertemuan 8, owner bisa menambah, mengubah, dan menghapus menu, sedangkan
+                admin bisa mengubah status pesanan. Begitu aplikasi dipakai, pertanyaan yang
+                muncul biasanya adalah siapa yang mengubah data ini dan kapan. Karena itu, tiap
+                aktivitas harus dicatat dan bisa ditelusuri dengan mudah.
+            </p>
+
+            <p class="mt-3 text-foreground-secondary leading-relaxed">
+                Audit log menjawab pertanyaan itu. Setiap aktivitas penting disimpan sebagai satu
+                baris berisi <strong>pelaku</strong>, aksi,{' '}
+                data yang disentuh, dan waktu kejadian. Audit log
+                ini hanya mendukung penambahan (<strong>append-only</strong>), tidak diubah atau
+                dihapus dari aplikasi, sehingga bisa dipakai saat ada masalah yang perlu
+                ditelusuri.
+            </p>
+
+            <p class="mt-3 text-foreground-secondary leading-relaxed">
+                Log ini dipakai untuk:
+            </p>
+            <ul class="mt-2 text-foreground-secondary leading-relaxed space-y-1.5 list-disc list-inside">
+                <li>Menelusuri <strong>perubahan data</strong> dan siapa yang melakukannya.</li>
+                <li>Menyelidiki <strong>data hilang atau berubah</strong> tanpa izin.</li>
+                <li>Mendeteksi <strong>akses mencurigakan</strong>.</li>
+                <li>Membantu <strong>debug</strong> saat data berubah tanpa penjelasan.</li>
+                <li>Memenuhi <strong>kebutuhan kepatuhan</strong> dan audit internal.</li>
+            </ul>
+
+            <div class="mt-4 p-3 rounded-lg bg-primary/5 dark:bg-primary/10 border-l-4 border-primary">
+                <span class="font-bold text-primary">Pegangan utama</span>
+                <p class="text-sm md:text-base text-foreground-secondary mt-1">
+                    Kalau catatan audit masih bisa diubah atau dihapus dari aplikasi, catatan itu{' '}
+                    <strong>tidak bisa dipakai sebagai bukti</strong>.
+                </p>
+            </div>
+        </Step>
+
+        <Step id="s2" diagram="/diagrams/09/app-log-vs-audit-log.webp">
+            <StepHeader title="Audit Log vs Application Log" tone="primary" />
+
+            <p class="text-foreground-secondary leading-relaxed">
+                Keduanya catatan, tetapi tujuannya berbeda. Audit log menjawab{' '}
+                <strong>siapa melakukan apa</strong>. Application log menjawab{' '}
+                <strong>sistem sedang apa</strong>.
+            </p>
+
+            <div class="mt-4 overflow-x-auto rounded-lg border border-border">
+                <table class="w-full border-collapse text-left text-sm md:text-base">
+                    <thead>
+                        <tr class="bg-muted text-foreground">
+                            <th class="px-3 py-2 font-semibold">Aspek</th>
+                            <th class="px-3 py-2 font-semibold">Audit log</th>
+                            <th class="px-3 py-2 font-semibold">Application log</th>
+                        </tr>
+                    </thead>
+                    <tbody class="text-foreground-secondary">
+                        <tr class="border-t border-border align-top">
+                            <td class="px-3 py-2 font-semibold text-foreground">Tujuan</td>
+                            <td class="px-3 py-2">Investigasi dan bukti</td>
+                            <td class="px-3 py-2">Debug dan monitoring</td>
+                        </tr>
+                        <tr class="border-t border-border align-top">
+                            <td class="px-3 py-2 font-semibold text-foreground">Isi</td>
+                            <td class="px-3 py-2">Aktor, aksi, target, hasil</td>
+                            <td class="px-3 py-2">Error, stack trace, durasi, performa</td>
+                        </tr>
+                        <tr class="border-t border-border align-top">
+                            <td class="px-3 py-2 font-semibold text-foreground">Sifat</td>
+                            <td class="px-3 py-2">Append-only, tidak diubah</td>
+                            <td class="px-3 py-2">Boleh dirotasi dan dihapus</td>
+                        </tr>
+                        <tr class="border-t border-border align-top">
+                            <td class="px-3 py-2 font-semibold text-foreground">Akses</td>
+                            <td class="px-3 py-2">Admin dan auditor</td>
+                            <td class="px-3 py-2">Developer dan operasional</td>
+                        </tr>
+                        <tr class="border-t border-border align-top">
+                            <td class="px-3 py-2 font-semibold text-foreground">Retensi</td>
+                            <td class="px-3 py-2">Lama, mengikuti kebijakan</td>
+                            <td class="px-3 py-2">Pendek, biasanya harian</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <p class="mt-3 text-foreground-secondary leading-relaxed">
+                Keduanya perlu, tetapi disimpan di tempat berbeda. Application log boleh
+                dibersihkan kapan saja, sedangkan audit log tidak. Kalau digabung, pembersihan
+                log lama bisa ikut menghapus bukti.
+            </p>
+        </Step>
+
+        <Step id="s3" diagram="/diagrams/09/audit-log-example.webp">
+            <StepHeader title="Prinsip dan Anatomi" tone="primary" />
+
+            <p class="text-foreground-secondary leading-relaxed">
+                Audit log yang berguna punya empat aturan dasar:
+            </p>
+
+            <ul class="mt-2 text-foreground-secondary leading-relaxed space-y-2 list-disc list-inside">
+                <li>
+                    <strong>Append-only.</strong> Hanya boleh ditambah. Tidak ada endpoint ubah
+                    atau hapus dari aplikasi.
+                </li>
+                <li>
+                    <strong>Terpusat.</strong> Ditulis di backend, tepatnya di service layer.
+                    Frontend hanya mengirim permintaan, dan penulisan tidak tersebar di banyak
+                    controller.
+                </li>
+                <li>
+                    <strong>Cukup detail.</strong> Siapa, kapan, apa, target, dan hasilnya.
+                    Jangan simpan password, token, atau cookie.
+                </li>
+                <li>
+                    <strong>Cepat dibaca.</strong> Ada index, filter, pagination, dan tampilan
+                    yang jelas. Audit yang sulit dibaca sama saja tidak ada.
+                </li>
+            </ul>
+
+            <h4 class="mt-5 mb-2 font-semibold text-foreground">Anatomi satu baris audit</h4>
+            <div class="mt-3 overflow-x-auto rounded-lg border border-border">
+                <table class="w-full border-collapse text-left text-sm md:text-base">
+                    <thead>
+                        <tr class="bg-muted text-foreground">
+                            <th class="px-3 py-2 font-semibold">Field</th>
+                            <th class="px-3 py-2 font-semibold">Arti</th>
+                            <th class="px-3 py-2 font-semibold">Contoh</th>
+                        </tr>
+                    </thead>
+                    <tbody class="text-foreground-secondary">
+                        <tr class="border-t border-border align-top">
+                            <td class="px-3 py-2"><code class={inlineCode}>user_id</code></td>
+                            <td class="px-3 py-2">Pelaku aksi</td>
+                            <td class="px-3 py-2 font-mono">3</td>
+                        </tr>
+                        <tr class="border-t border-border align-top">
+                            <td class="px-3 py-2"><code class={inlineCode}>action</code></td>
+                            <td class="px-3 py-2">Nama aksi</td>
+                            <td class="px-3 py-2 font-mono">UPDATE_MENU</td>
+                        </tr>
+                        <tr class="border-t border-border align-top">
+                            <td class="px-3 py-2"><code class={inlineCode}>target_table</code></td>
+                            <td class="px-3 py-2">Tabel yang disentuh</td>
+                            <td class="px-3 py-2 font-mono">MENU_ITEMS</td>
+                        </tr>
+                        <tr class="border-t border-border align-top">
+                            <td class="px-3 py-2"><code class={inlineCode}>target_id</code></td>
+                            <td class="px-3 py-2">Primary key objek</td>
+                            <td class="px-3 py-2 font-mono">7</td>
+                        </tr>
+                        <tr class="border-t border-border align-top">
+                            <td class="px-3 py-2"><code class={inlineCode}>metadata</code></td>
+                            <td class="px-3 py-2">Konteks tambahan, JSON</td>
+                            <td class="px-3 py-2 font-mono">before, after, changed</td>
+                        </tr>
+                        <tr class="border-t border-border align-top">
+                            <td class="px-3 py-2"><code class={inlineCode}>created_at</code></td>
+                            <td class="px-3 py-2">Waktu kejadian, UTC</td>
+                            <td class="px-3 py-2 font-mono">2026-11-10 09:15:00</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <CodeBlock
+                code={auditExample}
+                language="sql"
+                filename="Contoh isi satu baris audit"
+                compact
+            />
+
+            <div class="mt-4 p-3 rounded-lg bg-warning/5 dark:bg-warning/10 border-l-4 border-warning">
+                <span class="font-bold text-warning">Jangan simpan data sensitif</span>
+                <p class="mt-1 text-sm md:text-base text-foreground-secondary leading-relaxed">
+                    Metadata tidak boleh memuat <strong>password</strong>, hash password,{' '}
+                    <strong>token JWT</strong>, <strong>cookie</strong>, atau header otorisasi. Tulis hanya data yang memang perlu untuk menjelaskan
+                    perubahan.
+                </p>
+            </div>
+        </Step>
+
+        <Step id="s4">
+            <StepHeader title="Skema dan Index" tone="primary" />
+
+            <p class="text-foreground-secondary leading-relaxed">
+                Tabel audit sudah dibuat pada <strong>Pertemuan 3</strong>, tepatnya di skema{' '}
+                <code class={inlineCode}>review_kantin</code>. Kolomnya sedikit. Yang menentukan
+                adalah apakah catatannya <strong>bisa dipercaya</strong>.
+            </p>
+
+            <CodeBlock
+                code={createTableSql}
+                language="sql"
+                filename="dbo.AUDIT_LOGS"
+            />
+
+            <h4 class="mt-5 mb-2 font-semibold text-foreground">Kenapa perlu tiga index</h4>
+            <ul class="text-foreground-secondary leading-relaxed space-y-1.5 list-disc list-inside">
+                <li>
+                    <code class={inlineCode}>created_at DESC, id DESC</code>: halaman riwayat
+                    selalu menampilkan yang terbaru lebih dulu.
+                </li>
+                <li>
+                    <code class={inlineCode}>user_id, created_at DESC</code>: saat menyelidiki
+                    aktivitas satu pengguna.
+                </li>
+                <li>
+                    <code class={inlineCode}>action, target_table, created_at</code>: saat
+                    memfilter aksi tertentu pada target tertentu.
+                </li>
+            </ul>
+
+            <p class="mt-3 text-foreground-secondary leading-relaxed">
+                Index tidak mengubah hasil query, hanya cara database mencarinya. Tanpa index,
+                query riwayat <strong>memindai seluruh tabel</strong>. Dengan data praktikum mungkin tidak terasa,
+                tetapi kebiasaan ini penting saat data bertambah.
+            </p>
+
+            <div class="mt-4 p-3 rounded-lg bg-primary/5 dark:bg-primary/10 border-l-4 border-primary">
+                <span class="font-bold text-primary">Soal waktu</span>
+                <p class="text-sm md:text-base text-foreground-secondary mt-1">
+                    Kolom <code class={inlineCode}>created_at</code> memakai{' '}
+                    <code class={inlineCode}>SYSUTCDATETIME()</code>, jadi waktu disimpan dalam
+                    UTC. Frontend menampilkannya dalam zona waktu browser. Cara ini membuat data
+                    tetap benar walaupun server dan laptop berada di zona waktu berbeda.
+                </p>
+            </div>
+        </Step>
+
+        <Step id="s5">
+            <StepHeader title="Mutasi dan Audit Atomik" tone="primary" />
+
+            <p class="text-foreground-secondary leading-relaxed">
+                Menulis audit relatif mudah. Yang perlu dijaga adalah agar audit dan mutasi
+                bisnis tidak terpisah. Kalau menu berhasil disimpan tetapi audit gagal, jejaknya
+                hilang. Kalau audit berhasil tetapi menu gagal, catatan menggambarkan hal yang
+                tidak pernah terjadi. Keduanya sama-sama salah.
+            </p>
+
+            <p class="mt-3 text-foreground-secondary leading-relaxed">
+                Solusinya <strong>satu transaksi</strong>. Mutasi dan insert audit memakai objek transaksi
+                yang sama, lalu <strong>di-commit bersama</strong> atau <strong>di-rollback bersama</strong>.
+            </p>
+
+            <CodeBlock
+                code={h1Transaction}
+                language="ts"
+                filename="backend/src/db/transaction.ts"
+            />
+
+            <h4 class="mt-5 mb-2 font-semibold text-foreground">Service audit</h4>
+            <p class="text-foreground-secondary leading-relaxed">
+                Semua penulisan audit melewati satu service. Mutasi memakai{' '}
+                <code class={inlineCode}>record()</code> dengan transaksi. Login memakai{' '}
+                <code class={inlineCode}>recordLogin()</code> yang menangkap error sendiri.
+            </p>
+
+            <CodeBlock
+                code={h1AuditService}
+                language="ts"
+                filename="backend/src/services/auditLogService.ts"
+            />
+
+            <ul class="mt-3 text-foreground-secondary leading-relaxed space-y-1.5 list-disc list-inside">
+                <li>
+                    <strong>Audit wajib</strong> untuk create, update, delete menu, checkout, dan
+                    perubahan status pesanan. Gagal audit berarti mutasi dibatalkan.
+                </li>
+                <li>
+                    <strong>Audit best-effort</strong> untuk login. Gagal menulis audit tidak
+                    boleh mengunci pengguna, tetapi error tetap dicatat di log server.
+                </li>
+                <li>
+                    Snapshot <code class={inlineCode}>before</code> diambil dari kondisi data
+                    sebelum diubah, supaya perubahan bisa dipertanggungjawabkan.
+                </li>
+            </ul>
+        </Step>
+
+        <Step id="s6">
+            <StepHeader title="Endpoint Riwayat dan RBAC" tone="primary" />
+
+            <p class="text-foreground-secondary leading-relaxed">
+                Riwayat audit bukan data publik. Hanya <strong>admin</strong> yang boleh membacanya, dan{' '}
+                <strong>backend</strong> yang harus memastikan itu. Menyembunyikan menu di frontend tidak cukup, karena
+                endpoint tetap bisa dipanggil langsung.
+            </p>
+
+            <CodeBlock
+                code={h1AuditRoute}
+                language="ts"
+                filename="backend/src/routes/auditLogRouter.ts"
+            />
+
+            <div class="mt-4 overflow-x-auto rounded-lg border border-border">
+                <table class="w-full border-collapse text-left text-sm md:text-base">
+                    <thead>
+                        <tr class="bg-muted text-foreground">
+                            <th class="px-3 py-2 font-semibold">Method</th>
+                            <th class="px-3 py-2 font-semibold">Path</th>
+                            <th class="px-3 py-2 font-semibold">Akses</th>
+                            <th class="px-3 py-2 font-semibold">Fungsi</th>
+                        </tr>
+                    </thead>
+                    <tbody class="text-foreground-secondary">
+                        <tr class="border-t border-border align-top">
+                            <td class="px-3 py-2 font-mono">GET</td>
+                            <td class="px-3 py-2 font-mono">/api/audit-logs</td>
+                            <td class="px-3 py-2">Admin</td>
+                            <td class="px-3 py-2">Riwayat dengan filter dan pagination</td>
+                        </tr>
+                        <tr class="border-t border-border align-top">
+                            <td class="px-3 py-2 font-mono">POST</td>
+                            <td class="px-3 py-2 font-mono">/api/menu</td>
+                            <td class="px-3 py-2">Owner</td>
+                            <td class="px-3 py-2">Tambah menu, lalu menulis audit</td>
+                        </tr>
+                        <tr class="border-t border-border align-top">
+                            <td class="px-3 py-2 font-mono">PATCH</td>
+                            <td class="px-3 py-2 font-mono">/api/orders/:id/status</td>
+                            <td class="px-3 py-2">Admin</td>
+                            <td class="px-3 py-2">Ubah status pesanan, lalu menulis audit</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <h4 class="mt-5 mb-2 font-semibold text-foreground">Parameter query</h4>
+            <div class="mt-3 overflow-x-auto rounded-lg border border-border">
+                <table class="w-full border-collapse text-left text-sm md:text-base">
+                    <thead>
+                        <tr class="bg-muted text-foreground">
+                            <th class="px-3 py-2 font-semibold">Parameter</th>
+                            <th class="px-3 py-2 font-semibold">Nilai</th>
+                            <th class="px-3 py-2 font-semibold">Keterangan</th>
+                        </tr>
+                    </thead>
+                    <tbody class="text-foreground-secondary">
+                        <tr class="border-t border-border align-top">
+                            <td class="px-3 py-2"><code class={inlineCode}>page</code></td>
+                            <td class="px-3 py-2">integer, minimal 1</td>
+                            <td class="px-3 py-2">Halaman yang diminta</td>
+                        </tr>
+                        <tr class="border-t border-border align-top">
+                            <td class="px-3 py-2"><code class={inlineCode}>pageSize</code></td>
+                            <td class="px-3 py-2">1 sampai 100</td>
+                            <td class="px-3 py-2">Jumlah baris per halaman</td>
+                        </tr>
+                        <tr class="border-t border-border align-top">
+                            <td class="px-3 py-2"><code class={inlineCode}>action</code></td>
+                            <td class="px-3 py-2">teks, maksimal 50</td>
+                            <td class="px-3 py-2">Cocok persis, misalnya LOGIN</td>
+                        </tr>
+                        <tr class="border-t border-border align-top">
+                            <td class="px-3 py-2"><code class={inlineCode}>targetTable</code></td>
+                            <td class="px-3 py-2">teks, maksimal 50</td>
+                            <td class="px-3 py-2">Misalnya MENU_ITEMS</td>
+                        </tr>
+                        <tr class="border-t border-border align-top">
+                            <td class="px-3 py-2"><code class={inlineCode}>from</code></td>
+                            <td class="px-3 py-2">YYYY-MM-DD</td>
+                            <td class="px-3 py-2">Awal hari, inklusif</td>
+                        </tr>
+                        <tr class="border-t border-border align-top">
+                            <td class="px-3 py-2"><code class={inlineCode}>to</code></td>
+                            <td class="px-3 py-2">YYYY-MM-DD</td>
+                            <td class="px-3 py-2">Akhir hari, inklusif</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <CodeBlock
+                code={responseExample}
+                language="http"
+                filename="Contoh respons"
+            />
+
+            <p class="mt-3 text-foreground-secondary leading-relaxed">
+                Parameter yang tidak dikenal, tanggal yang tidak valid, atau{' '}
+                <code class={inlineCode}>from</code> yang melewati{' '}
+                <code class={inlineCode}>to</code> ditolak dengan{' '}
+                <code class={inlineCode}>400 VALIDATION_ERROR</code>. Tanpa cookie atau dengan
+                role selain admin, endpoint membalas <code class={inlineCode}>401</code> atau{' '}
+                <code class={inlineCode}>403</code>.
+            </p>
+        </Step>
+
+        <Step id="s7" diagram="/diagrams/09/audit-log-example.webp">
+            <StepHeader title="Halaman Riwayat" tone="primary" />
+
+            <p class="text-foreground-secondary leading-relaxed">
+                Riwayat audit perlu bisa dibaca <strong>tanpa membuka database</strong>. Halaman riwayat
+                menyediakan tabel yang bisa difilter, halaman yang bisa dipindah, dan detail
+                metadata untuk satu catatan.
+            </p>
+
+            <ul class="mt-2 text-foreground-secondary leading-relaxed space-y-1.5 list-disc list-inside">
+                <li>Filter aksi, target, dan rentang tanggal, lalu tombol terapkan dan reset.</li>
+                <li>Tabel memuat waktu, aksi, target, pengguna, dan ringkasan perubahan.</li>
+                <li>Tombol detail membuka modal berisi metadata JSON lengkap.</li>
+                <li>Pagination 20 baris per halaman, dengan total catatan dan nomor halaman.</li>
+                <li>State loading, kosong, dan error ditangani terpisah.</li>
+            </ul>
+
+            <p class="mt-3 text-foreground-secondary leading-relaxed">
+                Tipe data dan helper sudah disiapkan di starter, jadi halaman tinggal memakai
+                keduanya:
+            </p>
+
+            <CodeBlock
+                code={h1Types}
+                language="ts"
+                filename="frontend/src/types/auditLog.ts"
+                compact
+            />
+
+            <CodeBlock
+                code={h1AuditHelper}
+                language="ts"
+                filename="frontend/src/lib/audit.ts"
+                compact
+            />
+
+            <div class="mt-4 p-3 rounded-lg bg-primary/5 dark:bg-primary/10 border-l-4 border-primary">
+                <span class="font-bold text-primary">Satu sumber data</span>
+                <p class="text-sm md:text-base text-foreground-secondary mt-1">
+                    Halaman hanya perlu satu jalur pemuatan data. Setiap perubahan filter,
+                    halaman, atau tombol Muat ulang memicu satu permintaan. Hasil permintaan lama
+                    diabaikan supaya tidak menimpa hasil yang lebih baru.
+                </p>
+            </div>
+        </Step>
+
+        <Step id="h1">
+            <SectionDivider label="Hands-on 1: Audit Log" />
+            <StepHeader title="Ambil Starter dan Kenali TODO" tone="success" />
+
+            <p class="text-foreground-secondary leading-relaxed">
+                Hands-on 9 hanya satu, yaitu menambahkan lapisan audit ke aplikasi
+                Maem Bolo dan menampilkan riwayatnya. Backend dan API client sudah lengkap.
+                Yang kosong hanya <strong>satu halaman frontend</strong>.
+            </p>
+
+            <p class="mt-3 text-foreground-secondary leading-relaxed">
+                Backend berjalan di port <code class={inlineCode}>3002</code>, frontend di{' '}
+                <code class={inlineCode}>5174</code>, sama seperti Hands-on 2 Pertemuan 8.
+            </p>
+
+            <TerminalBlock code={cloneStarter} title="Terminal: Clone branch starter Pertemuan 09" />
+            <CodeBlock code={folderTree} language="bash" filename="Isi folder setelah clone" compact />
+
+            <div class="mt-4 p-3 rounded-lg bg-warning/5 dark:bg-warning/10 border-l-4 border-warning">
+                <span class="font-bold text-warning">Siapkan database</span>
+                <p class="mt-1 text-sm md:text-base text-foreground-secondary leading-relaxed">
+                    Skema Pertemuan 8 diasumsikan sudah dijalankan pada pertemuan sebelumnya.
+                    Sekarang buka SSMS, connect ke <code class={inlineCode}>review_kantin</code>,
+                    lalu jalankan <code class={inlineCode}>db/01-audit-log-schema.sql</code> dan{' '}
+                    <code class={inlineCode}>db/02-audit-seed.sql</code> berurutan dengan F5.
+                    Gunakan akun yang punya <strong>hak DDL</strong>, bukan{' '}
+                    <code class={inlineCode}>praktikum_user</code>.
+                </p>
+            </div>
+
+            <p class="mt-3 text-foreground-secondary leading-relaxed">
+                <code class={inlineCode}>03-audit-samples.sql</code> bersifat opsional. Isinya
+                hanya query <code class={inlineCode}>SELECT</code> untuk memeriksa isi tabel,
+                tidak mengubah data.
+            </p>
+
+            <h4 class="mt-5 mb-2 font-semibold text-foreground">Akun demo</h4>
+            <div class="mt-3 overflow-x-auto rounded-lg border border-border">
+                <table class="w-full border-collapse text-left text-sm md:text-base">
+                    <thead>
+                        <tr class="bg-muted text-foreground">
+                            <th class="px-3 py-2 font-semibold">Role</th>
+                            <th class="px-3 py-2 font-semibold">Email</th>
+                            <th class="px-3 py-2 font-semibold">Password</th>
+                            <th class="px-3 py-2 font-semibold">Halaman awal</th>
+                        </tr>
+                    </thead>
+                    <tbody class="text-foreground-secondary">
+                        <tr class="border-t border-border align-top">
+                            <td class="px-3 py-2">Admin</td>
+                            <td class="px-3 py-2 font-mono">admin@kantin.test</td>
+                            <td class="px-3 py-2 font-mono">admin123</td>
+                            <td class="px-3 py-2 font-mono">/admin/orders</td>
+                        </tr>
+                        <tr class="border-t border-border align-top">
+                            <td class="px-3 py-2">Owner</td>
+                            <td class="px-3 py-2 font-mono">tini@kantin.test</td>
+                            <td class="px-3 py-2 font-mono">rahasia123</td>
+                            <td class="px-3 py-2 font-mono">/dashboard</td>
+                        </tr>
+                        <tr class="border-t border-border align-top">
+                            <td class="px-3 py-2">Customer</td>
+                            <td class="px-3 py-2 font-mono">bagas@student.test</td>
+                            <td class="px-3 py-2 font-mono">rahasia123</td>
+                            <td class="px-3 py-2 font-mono">/</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <h4 class="mt-5 mb-2 font-semibold text-foreground">Env backend</h4>
+            <p class="text-foreground-secondary leading-relaxed">
+                Salin <code class={inlineCode}>.env.example</code> menjadi{' '}
+                <code class={inlineCode}>.env</code>, lalu isi seperti berikut. Password database
+                sama untuk semua praktikum.
+            </p>
+            <CodeBlock code={h1EnvBackend} language="ini" filename="backend/.env" compact />
+            <p class="mt-3 text-foreground-secondary leading-relaxed">
+                Ganti <code class={inlineCode}>JWT_SECRET</code> dengan nilai acak. Salah satu
+                cara membuatnya:
+            </p>
+            <CodeBlock
+                code={`node -e "console.log(require('node:crypto').randomBytes(32).toString('hex'))"`}
+                language="bash"
+                filename="Membuat JWT secret acak"
+                compact
+            />
+            <CodeBlock code={h1EnvFrontend} language="ini" filename="frontend/.env" compact />
+
+            <TerminalBlock code={runBackend} title="Terminal 1: Backend" />
+            <TerminalBlock code={runFrontend} title="Terminal 2: Frontend" />
+
+            <p class="mt-3 text-foreground-secondary leading-relaxed">
+                Buka <code class={inlineCode}>http://localhost:5174</code>, login sebagai admin,
+                lalu buka menu <strong>Audit</strong>. Halaman itu masih berupa placeholder TODO.
+                Tugasmu mengisinya.
+            </p>
+
+            <h4 class="mt-5 mb-2 font-semibold text-foreground">File yang perlu dikerjakan</h4>
+            <div class="mt-3 overflow-x-auto rounded-lg border border-border">
+                <table class="w-full border-collapse text-left text-sm md:text-base">
+                    <thead>
+                        <tr class="bg-muted text-foreground">
+                            <th class="px-3 py-2 font-semibold">File</th>
+                            <th class="px-3 py-2 font-semibold">Stub yang harus diisi</th>
+                            <th class="px-3 py-2 font-semibold">Langkah</th>
+                        </tr>
+                    </thead>
+                    <tbody class="text-foreground-secondary">
+                        <tr class="border-t border-border align-top">
+                            <td class="px-3 py-2"><code class={inlineCode}>frontend/src/pages/AuditLogPage.tsx</code></td>
+                            <td class="px-3 py-2">
+                                Memuat data, filter, pagination, dan modal detail metadata
+                            </td>
+                            <td class="px-3 py-2">Halaman riwayat audit</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <p class="mt-3 text-foreground-secondary leading-relaxed">
+                Sudah tersedia dan tidak perlu ditulis ulang: route{' '}
+                <code class={inlineCode}>/admin/audit-logs</code>, menu Audit di header,{' '}
+                <code class={inlineCode}>getAuditLogs</code>, tipe data, dan helper label.
+            </p>
+        </Step>
+
+        <Step id="h2">
+            <StepHeader title="Halaman Riwayat Audit" tone="success" />
+
+            <p class="text-foreground-secondary leading-relaxed">
+                Buka <code class={inlineCode}>frontend/src/pages/AuditLogPage.tsx</code>. Stub-nya
+                hanya menampilkan kartu TODO. Ganti <strong>seluruh isi</strong> file dengan
+                versi berikut:
+            </p>
+
+            <details class="mt-4">
+                <summary class="cursor-pointer text-sm font-semibold text-primary hover:underline">
+                    Tampilkan kode lengkap AuditLogPage.tsx
+                </summary>
+                <CodeBlock
+                    code={h1AuditPage}
+                    language="tsx"
+                    filename="frontend/src/pages/AuditLogPage.tsx"
+                />
+            </details>
+
+            <h4 class="mt-5 mb-2 font-semibold text-foreground">Cara kerjanya</h4>
+            <ul class="text-foreground-secondary leading-relaxed space-y-1.5 list-disc list-inside">
+                <li>
+                    Satu <code class={inlineCode}>useEffect</code> memanggil{' '}
+                    <code class={inlineCode}>getAuditLogs</code> setiap filter, halaman, atau
+                    tombol Muat ulang berubah. Flag <code class={inlineCode}>active</code> mencegah
+                    hasil lama menimpa hasil baru.
+                </li>
+                <li>
+                    Filter menyimpan dua state: draft yang diubah di form dan filter yang sudah
+                    diterapkan. Filter baru selalu mengembalikan halaman ke 1.
+                </li>
+                <li>
+                    Pagination memakai 20 baris per halaman. Tombol sebelumnya dan berikutnya
+                    mengikuti <code class={inlineCode}>totalPages</code> dari server.
+                </li>
+                <li>
+                    Modal detail menampilkan metadata sebagai JSON yang sudah diformat, bukan teks
+                    mentah satu baris.
+                </li>
+                <li>
+                    Loading memakai panel, data kosong memakai empty state, dan error memakai
+                    alert dengan tombol coba lagi.
+                </li>
+                <li>
+                    Kartu statistik tetap tampil saat hasil kosong. Saat error, data lama
+                    disembunyikan dan hanya alert yang muncul.
+                </li>
+            </ul>
+
+            <div class="mt-4 p-3 rounded-lg bg-warning/5 dark:bg-warning/10 border-l-4 border-warning">
+                <span class="font-bold text-warning">Jangan menulis ulang helper</span>
+                <p class="mt-1 text-sm md:text-base text-foreground-secondary leading-relaxed">
+                    <code class={inlineCode}>actionLabel</code>,{' '}
+                    <code class={inlineCode}>targetLabel</code>,{' '}
+                    <code class={inlineCode}>actionTone</code>, dan{' '}
+                    <code class={inlineCode}>formatMetadata</code> sudah ada di{' '}
+                    <code class={inlineCode}>lib/audit.ts</code>. Pakai, jangan duplikasi.
+                </p>
+            </div>
+        </Step>
+
+        <Step id="h3">
+            <StepHeader title="Uji Hands-on 9" tone="success" />
+
+            <p class="text-foreground-secondary leading-relaxed">
+                Jalankan alur ini berurutan, lalu kembali ke halaman audit dan tekan tombol Muat ulang di header.
+            </p>
+
+            <div class="mt-4 overflow-x-auto rounded-lg border border-border">
+                <table class="w-full border-collapse text-left text-sm md:text-base">
+                    <thead>
+                        <tr class="bg-muted text-foreground">
+                            <th class="px-3 py-2 font-semibold">Skenario</th>
+                            <th class="px-3 py-2 font-semibold">Hasil yang diharapkan</th>
+                        </tr>
+                    </thead>
+                    <tbody class="text-foreground-secondary">
+                        <tr class="border-t border-border align-top">
+                            <td class="px-3 py-2">Login owner, customer, dan admin</td>
+                            <td class="px-3 py-2">Setiap login menambah baris <code class={inlineCode}>LOGIN</code></td>
+                        </tr>
+                        <tr class="border-t border-border align-top">
+                            <td class="px-3 py-2">Owner menambah menu</td>
+                            <td class="px-3 py-2"><code class={inlineCode}>CREATE_MENU</code> dengan snapshot <code class={inlineCode}>after</code></td>
+                        </tr>
+                        <tr class="border-t border-border align-top">
+                            <td class="px-3 py-2">Owner mengubah menu</td>
+                            <td class="px-3 py-2"><code class={inlineCode}>UPDATE_MENU</code> dengan <code class={inlineCode}>before</code>, <code class={inlineCode}>after</code>, dan <code class={inlineCode}>changed</code></td>
+                        </tr>
+                        <tr class="border-t border-border align-top">
+                            <td class="px-3 py-2">Owner menghapus menu</td>
+                            <td class="px-3 py-2"><code class={inlineCode}>DELETE_MENU</code> dengan snapshot <code class={inlineCode}>before</code></td>
+                        </tr>
+                        <tr class="border-t border-border align-top">
+                            <td class="px-3 py-2">Customer checkout</td>
+                            <td class="px-3 py-2"><code class={inlineCode}>CREATE_ORDER</code> dengan kode order, total, dan jumlah item</td>
+                        </tr>
+                        <tr class="border-t border-border align-top">
+                            <td class="px-3 py-2">Admin mengubah status pesanan</td>
+                            <td class="px-3 py-2"><code class={inlineCode}>UPDATE_ORDER_STATUS</code> dengan status sebelum dan sesudah</td>
+                        </tr>
+                        <tr class="border-t border-border align-top">
+                            <td class="px-3 py-2">Owner atau customer membuka halaman audit</td>
+                            <td class="px-3 py-2">Ditolak, diarahkan ke halaman terlarang</td>
+                        </tr>
+                        <tr class="border-t border-border align-top">
+                            <td class="px-3 py-2">Filter tanggal awal melewati tanggal akhir</td>
+                            <td class="px-3 py-2">Backend membalas <code class={inlineCode}>400</code>, halaman menampilkan pesan error</td>
+                        </tr>
+                        <tr class="border-t border-border align-top">
+                            <td class="px-3 py-2">Backend dimatikan, lalu klik tombol Muat ulang di header</td>
+                            <td class="px-3 py-2">Muncul alert dengan tombol coba lagi</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <p class="mt-3 text-foreground-secondary leading-relaxed">
+                Cocokkan juga isi tabel langsung dari SSMS:
+            </p>
+            <CodeBlock
+                code={verificationSql}
+                language="sql"
+                filename="Verifikasi isi audit"
+            />
+
+            <p class="mt-3 text-foreground-secondary leading-relaxed">
+                Bandingkan <code class={inlineCode}>created_at</code> di database dengan waktu di
+                halaman. Nilainya boleh berbeda zona, tetapi harus menunjuk ke waktu kejadian
+                yang sama.
+            </p>
+
+            <div class="mt-4 p-3 rounded-lg bg-primary/5 dark:bg-primary/10 border-l-4 border-primary">
+                <span class="font-bold text-primary">Uji atomik, opsional</span>
+                <p class="mt-1 text-sm md:text-base text-foreground-secondary leading-relaxed">
+                    Cabut izin insert audit sementara dengan{' '}
+                    <code class={inlineCode}>DENY INSERT ON dbo.AUDIT_LOGS TO praktikum_user</code>,
+                    lalu coba tambah menu. Permintaan harus gagal dan menu tidak boleh bertambah.
+                    Setelah itu pulihkan dengan{' '}
+                    <code class={inlineCode}>REVOKE INSERT ON dbo.AUDIT_LOGS TO praktikum_user</code>.
+                </p>
+            </div>
+        </Step>
+
+        <Step id="c1">
+            <SectionDivider label="Penutup" />
+            <StepHeader title="Checklist & Rangkuman" tone="primary" />
+
+            <p class="text-foreground-secondary leading-relaxed">
+                Sebelum menutup praktikum, pastikan semua bagian halaman sudah terisi.
+            </p>
+            <CodeBlock
+                code={c1Checklist}
+                language="text"
+                filename="Checklist TODO Pertemuan 09"
+                compact
+            />
+
+            <h4 class="mt-5 mb-2 font-semibold text-foreground">Yang sudah dikerjakan</h4>
+            <ul class="text-foreground-secondary leading-relaxed space-y-1.5 list-disc list-inside">
+                <li>Halaman riwayat audit yang hanya bisa dibuka <strong>admin</strong>.</li>
+                <li>Filter aksi, target, dan rentang tanggal yang diterapkan terpisah dari draft.</li>
+                <li><strong>Pagination</strong> 20 baris dengan total dan nomor halaman.</li>
+                <li><strong>Modal detail</strong> metadata JSON yang mudah dibaca.</li>
+                <li><strong>State</strong> loading, kosong, dan error yang jelas.</li>
+                <li>Pemahaman bahwa audit ditulis di transaksi yang sama dengan mutasi bisnis.</li>
+            </ul>
+
+            <div class="mt-4 p-3 rounded-lg bg-primary/5 dark:bg-primary/10 border-l-4 border-primary">
+                <span class="font-bold text-primary">Rangkuman</span>
+                <p class="text-sm md:text-base text-foreground-secondary mt-1">
+                    Menambah tabel audit hanya langkah awal. Catatannya harus append-only,
+                    ditulis terpusat, cukup detail, dan tidak pernah terpisah dari mutasi yang
+                    dicatatnya. Halaman riwayat hanya pintu masuk. Nilai sebenarnya ada pada
+                    catatan yang bisa dipercaya saat sesuatu berjalan salah.
+                </p>
+            </div>
+
+            <div class="mt-4 flex flex-wrap gap-3">
+                <a href={ho1Url}
+                   target="_blank" rel="noopener noreferrer"
+                   class="inline-flex items-center gap-2 text-sm font-medium text-primary hover:underline">
+                    <img src="/icons/github.svg" alt="" aria-hidden="true" class="w-4 h-4 invert-0 dark:invert" />
+                    Versi lengkap Hands-on 9
+                </a>
+            </div>
+        </Step>
+
+    </ScrollyLayout>
+
+    <ScrollyTOC sections={tocSections} />
+</ScrollySection>
+
+<script>
+    import { initScrolly } from '../../lib/scrollyClient';
+    initScrolly();
+</script>
