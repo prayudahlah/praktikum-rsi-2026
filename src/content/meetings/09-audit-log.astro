@@ -389,6 +389,16 @@ const tocSections: TOCSection[] = [
         <Step id="s5" diagram="/diagrams/09/atomik-a.svg">
             <StepHeader title="Mutasi dan Audit Atomik" tone="primary" />
 
+            <div class="mb-4 p-3 rounded-lg bg-primary/5 dark:bg-primary/10 border-l-4 border-primary">
+                <span class="font-bold text-primary">Kode di bagian ini sudah ada di starter</span>
+                <p class="mt-1 text-sm md:text-base text-foreground-secondary leading-relaxed">
+                    Bagian Mekanisme menjelaskan cara kerja backend audit, bukan langkah yang
+                    harus ditempel. Yang perlu kamu tulis hanya
+                    <code class={inlineCode}>frontend/src/pages/AuditLogPage.tsx</code> pada
+                    Hands-on 1.
+                </p>
+            </div>
+
             <p class="text-foreground-secondary leading-relaxed">
                 Menulis audit relatif mudah. Yang perlu dijaga adalah agar audit dan mutasi
                 bisnis tidak terpisah. Kalau menu berhasil disimpan tetapi audit gagal, jejaknya
@@ -727,16 +737,11 @@ const tocSections: TOCSection[] = [
                 versi berikut:
             </p>
 
-            <details class="mt-4">
-                <summary class="cursor-pointer text-sm font-semibold text-primary hover:underline">
-                    Tampilkan kode lengkap AuditLogPage.tsx
-                </summary>
-                <CodeBlock
-                    code={h1AuditPage}
-                    language="tsx"
-                    filename="frontend/src/pages/AuditLogPage.tsx"
-                />
-            </details>
+            <CodeBlock
+                code={h1AuditPage}
+                language="tsx"
+                filename="frontend/src/pages/AuditLogPage.tsx"
+            />
 
             <h4 class="mt-5 mb-2 font-semibold text-foreground">Cara kerjanya</h4>
             <ul class="text-foreground-secondary leading-relaxed space-y-1.5 list-disc list-inside">
