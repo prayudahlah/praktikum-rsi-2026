@@ -19,7 +19,6 @@ import h1AuditRoute from '../snippets/09/h1-audit-route.txt?raw';
 import h1AuditPage from '../snippets/09/h1-audit-page.txt?raw';
 import h1AuditHelper from '../snippets/09/h1-audit-helper.txt?raw';
 import h1Types from '../snippets/09/h1-types.txt?raw';
-import c1Checklist from '../snippets/09/c1-checklist.txt?raw';
 
 const inlineCode = 'font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded';
 
@@ -147,7 +146,7 @@ const tocSections: TOCSection[] = [
     },
     {
         label: 'Penutup',
-        items: [{ id: 'c1', title: 'Checklist & Rangkuman' }],
+        items: [{ id: 'c1', title: 'Cihuyy' }],
     },
 ];
 ---
@@ -866,37 +865,29 @@ const tocSections: TOCSection[] = [
 
         <Step id="c1">
             <SectionDivider label="Penutup" />
-            <StepHeader title="Checklist & Rangkuman" tone="primary" />
+            <StepHeader title="Cihuyy" tone="primary" />
 
             <p class="text-foreground-secondary leading-relaxed">
-                Sebelum menutup praktikum, pastikan semua bagian halaman sudah terisi.
+                Setelah hands-on selesai, Maem Bolo sudah meninggalkan jejak untuk aktivitas
+                pentingnya. Login, perubahan menu, pembuatan pesanan, dan perubahan status
+                pesanan tercatat di <code class={inlineCode}>AUDIT_LOGS</code>. Halaman riwayat
+                hanya menampilkan catatan itu. Pekerjaan utamanya ada di backend, tempat mutasi
+                dan audit ditulis dalam satu transaksi.
             </p>
-            <CodeBlock
-                code={c1Checklist}
-                language="text"
-                filename="Checklist TODO Pertemuan 09"
-                compact
-            />
 
-            <h4 class="mt-5 mb-2 font-semibold text-foreground">Yang sudah dikerjakan</h4>
-            <ul class="text-foreground-secondary leading-relaxed space-y-1.5 list-disc list-inside">
-                <li>Halaman riwayat audit yang hanya bisa dibuka <strong>admin</strong>.</li>
-                <li>Filter aksi, target, dan rentang tanggal yang diterapkan terpisah dari draft.</li>
-                <li><strong>Pagination</strong> 20 baris dengan total dan nomor halaman.</li>
-                <li><strong>Modal detail</strong> metadata JSON yang mudah dibaca.</li>
-                <li><strong>State</strong> loading, kosong, dan error yang jelas.</li>
-                <li>Pemahaman bahwa audit ditulis di transaksi yang sama dengan mutasi bisnis.</li>
-            </ul>
+            <p class="mt-3 text-foreground-secondary leading-relaxed">
+                Tampilan halaman hanya bagian kecil. Yang menentukan adalah sifat catatannya:
+                hanya bisa ditambah, ditulis terpusat di service layer, dan cukup detail untuk
+                menjawab siapa, kapan, apa, serta data apa yang berubah. Password, token, dan
+                cookie tidak masuk ke dalamnya.
+            </p>
 
-            <div class="mt-4 p-3 rounded-lg bg-primary/5 dark:bg-primary/10 border-l-4 border-primary">
-                <span class="font-bold text-primary">Rangkuman</span>
-                <p class="text-sm md:text-base text-foreground-secondary mt-1">
-                    Menambah tabel audit hanya langkah awal. Catatannya harus append-only,
-                    ditulis terpusat, cukup detail, dan tidak pernah terpisah dari mutasi yang
-                    dicatatnya. Halaman riwayat hanya pintu masuk. Nilai sebenarnya ada pada
-                    catatan yang bisa dipercaya saat sesuatu berjalan salah.
-                </p>
-            </div>
+            <p class="mt-3 text-foreground-secondary leading-relaxed">
+                Ketika menambah fitur berikutnya, biasakan bertanya: aktivitas apa di fitur ini
+                yang nanti perlu ditelusuri? Kalau pertanyaan itu dijawab sejak awal, audit
+                tumbuh bersama aplikasi. Menunggu sampai data bermasalah membuat catatan yang
+                dibutuhkan sering tidak ada.
+            </p>
 
             <div class="mt-4 flex flex-wrap gap-3">
                 <a href={ho1Url}
