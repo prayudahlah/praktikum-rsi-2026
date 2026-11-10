@@ -1,0 +1,52 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 760" font-family="ui-sans-serif, system-ui, sans-serif">
+  <rect width="1200" height="760" fill="#ffffff"/>
+  <text x="60" y="70" font-size="30" font-weight="700" fill="#18181b">Alur uji hands-on</text>
+  <text x="60" y="102" font-size="15" fill="#71717a">Kerjakan berurutan, lalu periksa hasilnya di halaman audit.</text>
+
+  <line x1="100" y1="160" x2="100" y2="650" stroke="#cbd5e1" stroke-width="3"/>
+
+  <circle cx="100" cy="170" r="19" fill="#2563eb"/>
+  <text x="100" y="177" font-size="15" font-weight="700" fill="#ffffff" text-anchor="middle">1</text>
+  <text x="142" y="166" font-size="17" font-weight="700" fill="#0f172a">Login tiga role</text>
+  <text x="142" y="190" font-size="13" fill="#475569">owner, admin, customer</text>
+  <rect x="760" y="148" width="380" height="44" rx="22" fill="#dbeafe"/>
+  <text x="950" y="176" font-size="13" font-weight="700" fill="#1e40af" text-anchor="middle">LOGIN</text>
+
+  <circle cx="100" cy="250" r="19" fill="#2563eb"/>
+  <text x="100" y="257" font-size="15" font-weight="700" fill="#ffffff" text-anchor="middle">2</text>
+  <text x="142" y="246" font-size="17" font-weight="700" fill="#0f172a">Owner mengelola menu</text>
+  <text x="142" y="270" font-size="13" fill="#475569">tambah, ubah, lalu hapus</text>
+  <rect x="760" y="228" width="380" height="44" rx="22" fill="#dcfce7"/>
+  <text x="950" y="256" font-size="12" font-weight="700" fill="#166534" text-anchor="middle">CREATE, UPDATE, DELETE_MENU</text>
+
+  <circle cx="100" cy="330" r="19" fill="#2563eb"/>
+  <text x="100" y="337" font-size="15" font-weight="700" fill="#ffffff" text-anchor="middle">3</text>
+  <text x="142" y="326" font-size="17" font-weight="700" fill="#0f172a">Customer checkout</text>
+  <text x="142" y="350" font-size="13" fill="#475569">satu pesanan berisi satu menu</text>
+  <rect x="760" y="308" width="380" height="44" rx="22" fill="#ede9fe"/>
+  <text x="950" y="336" font-size="13" font-weight="700" fill="#5b21b6" text-anchor="middle">CREATE_ORDER</text>
+
+  <circle cx="100" cy="410" r="19" fill="#2563eb"/>
+  <text x="100" y="417" font-size="15" font-weight="700" fill="#ffffff" text-anchor="middle">4</text>
+  <text x="142" y="406" font-size="17" font-weight="700" fill="#0f172a">Admin menyelesaikan pesanan</text>
+  <text x="142" y="430" font-size="13" fill="#475569">status confirmed menjadi completed</text>
+  <rect x="760" y="388" width="380" height="44" rx="22" fill="#fef3c7"/>
+  <text x="950" y="416" font-size="13" font-weight="700" fill="#92400e" text-anchor="middle">UPDATE_ORDER_STATUS</text>
+
+  <circle cx="100" cy="490" r="19" fill="#2563eb"/>
+  <text x="100" y="497" font-size="15" font-weight="700" fill="#ffffff" text-anchor="middle">5</text>
+  <text x="142" y="486" font-size="17" font-weight="700" fill="#0f172a">Coba akses sebagai role lain</text>
+  <text x="142" y="510" font-size="13" fill="#475569">owner dan customer membuka halaman audit</text>
+  <rect x="760" y="468" width="380" height="44" rx="22" fill="#fee2e2"/>
+  <text x="950" y="496" font-size="13" font-weight="700" fill="#b91c1c" text-anchor="middle">403 dan halaman terlarang</text>
+
+  <circle cx="100" cy="570" r="19" fill="#2563eb"/>
+  <text x="100" y="577" font-size="15" font-weight="700" fill="#ffffff" text-anchor="middle">6</text>
+  <text x="142" y="566" font-size="17" font-weight="700" fill="#0f172a">Periksa riwayat sebagai admin</text>
+  <text x="142" y="590" font-size="13" fill="#475569">filter, pagination, dan detail metadata</text>
+  <rect x="760" y="548" width="380" height="44" rx="22" fill="#dbeafe"/>
+  <text x="950" y="576" font-size="13" font-weight="700" fill="#1e40af" text-anchor="middle">data sesuai filter</text>
+
+  <line x1="60" y1="680" x2="1140" y2="680" stroke="#e2e8f0" stroke-width="1"/>
+  <text x="60" y="712" font-size="13" fill="#64748b">Setelah tiap langkah, buka halaman audit dan tekan tombol Muat ulang di header.</text>
+</svg>

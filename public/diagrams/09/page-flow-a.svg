@@ -1,0 +1,75 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 760" font-family="ui-sans-serif, system-ui, sans-serif">
+  <rect width="1200" height="760" fill="#ffffff"/>
+  <text x="60" y="70" font-size="30" font-weight="700" fill="#18181b">Cara halaman memuat data</text>
+  <text x="60" y="102" font-size="15" fill="#71717a">Satu jalur data untuk filter, tabel, dan modal.</text>
+
+  <rect x="60" y="150" width="180" height="90" rx="10" fill="#eff6ff" stroke="#93c5fd" stroke-width="2"/>
+  <text x="78" y="184" font-size="15" font-weight="700" fill="#0f172a">Form filter</text>
+  <text x="78" y="208" font-size="12" fill="#475569">draft diubah pengguna</text>
+
+  <rect x="280" y="150" width="180" height="90" rx="10" fill="#eff6ff" stroke="#93c5fd" stroke-width="2"/>
+  <text x="298" y="184" font-size="15" font-weight="700" fill="#0f172a">Filter diterapkan</text>
+  <text x="298" y="208" font-size="12" fill="#475569">filters, page, token</text>
+
+  <rect x="500" y="150" width="180" height="90" rx="10" fill="#f8fafc" stroke="#cbd5e1" stroke-width="2"/>
+  <text x="518" y="184" font-size="15" font-weight="700" fill="#0f172a">useEffect</text>
+  <text x="518" y="208" font-size="12" fill="#475569">satu permintaan</text>
+
+  <rect x="720" y="150" width="180" height="90" rx="10" fill="#f5f3ff" stroke="#c4b5fd" stroke-width="2"/>
+  <text x="738" y="184" font-size="15" font-weight="700" fill="#0f172a">getAuditLogs</text>
+  <text x="738" y="208" font-size="12" fill="#475569">filter dan pagination</text>
+
+  <rect x="940" y="150" width="180" height="90" rx="10" fill="#ecfdf5" stroke="#6ee7b7" stroke-width="2"/>
+  <text x="958" y="184" font-size="15" font-weight="700" fill="#0f172a">Respons</text>
+  <text x="958" y="208" font-size="12" fill="#475569">items dan pagination</text>
+
+  <line x1="240" y1="195" x2="274" y2="195" stroke="#94a3b8" stroke-width="2"/>
+  <path d="M274 195 l-11 -6 v12 z" fill="#94a3b8"/>
+  <line x1="460" y1="195" x2="494" y2="195" stroke="#94a3b8" stroke-width="2"/>
+  <path d="M494 195 l-11 -6 v12 z" fill="#94a3b8"/>
+  <line x1="680" y1="195" x2="714" y2="195" stroke="#94a3b8" stroke-width="2"/>
+  <path d="M714 195 l-11 -6 v12 z" fill="#94a3b8"/>
+  <line x1="900" y1="195" x2="934" y2="195" stroke="#94a3b8" stroke-width="2"/>
+  <path d="M934 195 l-11 -6 v12 z" fill="#94a3b8"/>
+
+  <line x1="1030" y1="240" x2="1030" y2="296" stroke="#94a3b8" stroke-width="2"/>
+  <path d="M1030 296 l-6 -11 h12 z" fill="#94a3b8"/>
+
+  <rect x="600" y="300" width="480" height="100" rx="12" fill="#eff6ff" stroke="#93c5fd" stroke-width="2"/>
+  <text x="622" y="334" font-size="16" font-weight="700" fill="#0f172a">State halaman</text>
+  <text x="622" y="358" font-size="13" fill="#475569">logs, pagination, isLoading, error</text>
+  <text x="622" y="380" font-size="12" fill="#1e3a8a">sumber tampilan di bawah</text>
+
+  <line x1="840" y1="400" x2="840" y2="424" stroke="#94a3b8" stroke-width="2"/>
+  <path d="M840 424 l-6 -11 h12 z" fill="#94a3b8"/>
+
+  <rect x="600" y="430" width="480" height="56" rx="10" fill="#f8fafc" stroke="#cbd5e1" stroke-width="2"/>
+  <rect x="600" y="430" width="8" height="56" rx="4" fill="#2563eb"/>
+  <text x="622" y="454" font-size="14" font-weight="700" fill="#0f172a">Kartu statistik</text>
+  <text x="622" y="474" font-size="12" fill="#475569">total, di halaman ini, nomor halaman</text>
+
+  <rect x="600" y="500" width="480" height="56" rx="10" fill="#f8fafc" stroke="#cbd5e1" stroke-width="2"/>
+  <rect x="600" y="500" width="8" height="56" rx="4" fill="#10b981"/>
+  <text x="622" y="524" font-size="14" font-weight="700" fill="#0f172a">Tabel</text>
+  <text x="622" y="544" font-size="12" fill="#475569">waktu, aksi, target, pengguna, ringkasan</text>
+
+  <rect x="600" y="570" width="480" height="56" rx="10" fill="#f8fafc" stroke="#cbd5e1" stroke-width="2"/>
+  <rect x="600" y="570" width="8" height="56" rx="4" fill="#8b5cf6"/>
+  <text x="622" y="594" font-size="14" font-weight="700" fill="#0f172a">Modal detail</text>
+  <text x="622" y="614" font-size="12" fill="#475569">metadata JSON satu catatan</text>
+
+  <rect x="60" y="300" width="480" height="326" rx="12" fill="#fffbeb" stroke="#fcd34d" stroke-width="2"/>
+  <text x="82" y="336" font-size="16" font-weight="700" fill="#92400e">Tiga keadaan</text>
+  <text x="82" y="366" font-size="13" fill="#78350f">isLoading: panel memuat</text>
+  <text x="82" y="394" font-size="13" fill="#78350f">logs kosong: empty state</text>
+  <text x="82" y="422" font-size="13" fill="#78350f">error: alert dan tombol coba lagi</text>
+  <line x1="82" y1="446" x2="518" y2="446" stroke="#fcd34d"/>
+  <text x="82" y="478" font-size="13" fill="#78350f">Saat error, logs dikosongkan supaya</text>
+  <text x="82" y="500" font-size="13" fill="#78350f">data lama tidak tampil.</text>
+  <text x="82" y="542" font-size="13" fill="#78350f">Filter baru mengembalikan page ke 1.</text>
+  <text x="82" y="572" font-size="13" fill="#78350f">Tombol Muat ulang memakai reloadToken.</text>
+  <text x="82" y="602" font-size="13" fill="#78350f">Permintaan lama diabaikan lewat flag active.</text>
+
+  <line x1="60" y1="680" x2="1140" y2="680" stroke="#e2e8f0" stroke-width="1"/>
+  <text x="60" y="712" font-size="13" fill="#64748b">Satu perubahan filter, halaman, atau tombol Muat ulang memicu satu permintaan.</text>
+</svg>
