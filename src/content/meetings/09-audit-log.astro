@@ -164,32 +164,29 @@ const tocSections: TOCSection[] = [
             <StepHeader title="Kenapa Audit Log?" tone="primary" />
 
             <p class="text-foreground-secondary leading-relaxed">
-                Bayangkan pagi-pagi kamu membuka dashboard dan data nasabah tiba-tiba hilang.
-                Semua orang bilang "bukan aku". Rapat darurat, saling tuduh, tetapi tidak ada
-                bukti siapa yang menghapus. Tanpa catatan, pertanyaan "siapa yang mengubah data
-                ini" tidak akan pernah terjawab.
+                Pada Pertemuan 8, owner bisa menambah, mengubah, dan menghapus menu, sedangkan
+                admin bisa mengubah status pesanan. Begitu aplikasi dipakai, pertanyaan yang
+                muncul biasanya adalah siapa yang mengubah data ini dan kapan. Maka tiap ada
+                aktivitas harus dicatat dan bisa ditelusuri dengan mudah.
             </p>
 
             <p class="mt-3 text-foreground-secondary leading-relaxed">
-                <strong>Audit log</strong> adalah catatan aktivitas penting di dalam aplikasi:
-                siapa melakukan apa, pada data apa, dan kapan. Bukan untuk mengawasi orang,
-                tetapi untuk membuat perubahan di sistem bisa ditelusuri.
+                Audit log menjawab pertanyaan itu. Setiap aktivitas penting disimpan sebagai satu
+                baris berisi pelaku, aksi, data yang disentuh, dan waktu kejadian. Audit log ini
+                hanya tambahan (append-only), tidak diubah atau dihapus dari aplikasi, sehingga
+                bisa dipakai saat ada masalah yang perlu ditelusuri.
             </p>
 
-            <h4 class="mt-5 mb-2 font-semibold text-foreground">Yang bisa dijawab audit log</h4>
-            <ul class="text-foreground-secondary leading-relaxed space-y-1.5 list-disc list-inside">
-                <li><strong>Telusur</strong>: siapa mengubah menu ini dan kapan.</li>
-                <li><strong>Investigasi</strong>: saat ada data hilang atau berubah tanpa izin.</li>
-                <li><strong>Keamanan</strong>: mendeteksi akses atau aksi yang mencurigakan.</li>
-                <li><strong>Debug</strong>: mencari penyebab data berubah tanpa menebak.</li>
-                <li><strong>Kepatuhan</strong>: banyak aturan mewajibkan jejak audit.</li>
-            </ul>
+            <p class="mt-3 text-foreground-secondary leading-relaxed">
+                Log ini dipakai untuk menelusuri perubahan, menyelidiki data yang hilang,
+                mendeteksi akses mencurigakan, membantu debug, dan memenuhi kebutuhan kepatuhan.
+            </p>
 
             <div class="mt-4 p-3 rounded-lg bg-primary/5 dark:bg-primary/10 border-l-4 border-primary">
-                <span class="font-bold text-primary">Inti pertemuan ini</span>
+                <span class="font-bold text-primary">Pegangan utama</span>
                 <p class="text-sm md:text-base text-foreground-secondary mt-1">
-                    Audit log mengubah dugaan menjadi bukti. Kalau catatannya bisa diubah atau
-                    dihapus dari aplikasi, catatan itu tidak lagi berguna sebagai bukti.
+                    Kalau catatan audit masih bisa diubah atau dihapus dari aplikasi, catatan itu
+                    tidak bisa dipakai sebagai bukti.
                 </p>
             </div>
         </Step>
@@ -198,8 +195,8 @@ const tocSections: TOCSection[] = [
             <StepHeader title="Audit Log vs Application Log" tone="primary" />
 
             <p class="text-foreground-secondary leading-relaxed">
-                Keduanya sama-sama catatan, tetapi menjawab pertanyaan yang berbeda. Audit log
-                menjawab <strong>siapa melakukan apa</strong>. Application log menjawab
+                Keduanya catatan, tetapi menjawab pertanyaan berbeda. Audit log menjawab
+                <strong>siapa melakukan apa</strong>. Application log menjawab
                 <strong>sistem sedang apa</strong>.
             </p>
 
@@ -243,9 +240,9 @@ const tocSections: TOCSection[] = [
             </div>
 
             <p class="mt-3 text-foreground-secondary leading-relaxed">
-                Keduanya penting, tetapi jangan dicampur dalam satu tabel. Application log boleh
-                dibersihkan kapan saja. Audit log tidak. Kalau digabung, suatu hari seseorang akan
-                menghapus log lama dan bukti ikut hilang.
+                Keduanya perlu, tetapi disimpan di tempat berbeda. Application log boleh
+                dibersihkan kapan saja, sedangkan audit log tidak. Kalau digabung, pembersihan
+                log lama bisa ikut menghapus bukti.
             </p>
         </Step>
 
@@ -342,8 +339,8 @@ const tocSections: TOCSection[] = [
 
             <p class="text-foreground-secondary leading-relaxed">
                 Tabel audit sudah dibuat pada Pertemuan 3, tepatnya di skema
-                <code class={inlineCode}>review_kantin</code>. Bentuknya sederhana karena yang
-                penting bukan jumlah kolom, tetapi apakah catatannya bisa dipercaya.
+                <code class={inlineCode}>review_kantin</code>. Kolomnya sedikit. Yang menentukan
+                adalah apakah catatannya bisa dipercaya.
             </p>
 
             <CodeBlock
@@ -389,8 +386,8 @@ const tocSections: TOCSection[] = [
             <StepHeader title="Mutasi dan Audit Atomik" tone="primary" />
 
             <p class="text-foreground-secondary leading-relaxed">
-                Bagian tersulit bukan menulis audit, tetapi memastikan audit dan mutasi bisnis
-                tidak pernah terpisah. Kalau menu berhasil disimpan tetapi audit gagal, jejaknya
+                Menulis audit relatif mudah. Yang perlu dijaga adalah agar audit dan mutasi
+                bisnis tidak terpisah. Kalau menu berhasil disimpan tetapi audit gagal, jejaknya
                 hilang. Kalau audit berhasil tetapi menu gagal, catatan menggambarkan hal yang
                 tidak pernah terjadi. Keduanya sama-sama salah.
             </p>
@@ -548,8 +545,8 @@ const tocSections: TOCSection[] = [
             <StepHeader title="Halaman Riwayat" tone="primary" />
 
             <p class="text-foreground-secondary leading-relaxed">
-                Audit yang baik harus bisa dibaca tanpa membuka database. Halaman riwayat
-                memberi admin tabel yang bisa difilter, halaman yang bisa dipindah, dan detail
+                Riwayat audit perlu bisa dibaca tanpa membuka database. Halaman riwayat
+                menyediakan tabel yang bisa difilter, halaman yang bisa dipindah, dan detail
                 metadata untuk satu catatan.
             </p>
 
@@ -725,29 +722,29 @@ const tocSections: TOCSection[] = [
                 filename="frontend/src/pages/AuditLogPage.tsx"
             />
 
-            <h4 class="mt-5 mb-2 font-semibold text-foreground">Bagian pentingnya</h4>
+            <h4 class="mt-5 mb-2 font-semibold text-foreground">Cara kerjanya</h4>
             <ul class="text-foreground-secondary leading-relaxed space-y-1.5 list-disc list-inside">
                 <li>
-                    <strong>Memuat data.</strong> Satu <code class={inlineCode}>useEffect</code>{' '}
-                    memanggil <code class={inlineCode}>getAuditLogs</code> setiap filter, halaman,
-                    atau tombol refresh berubah. Flag <code class={inlineCode}>active</code>{' '}
-                    mencegah hasil lama menimpa hasil baru.
+                    Satu <code class={inlineCode}>useEffect</code> memanggil{' '}
+                    <code class={inlineCode}>getAuditLogs</code> setiap filter, halaman, atau
+                    tombol refresh berubah. Flag <code class={inlineCode}>active</code> mencegah
+                    hasil lama menimpa hasil baru.
                 </li>
                 <li>
-                    <strong>Filter.</strong> Ada dua state: draft yang diubah di form, dan filter
-                    yang sudah diterapkan. Filter baru selalu mengembalikan halaman ke 1.
+                    Filter menyimpan dua state: draft yang diubah di form dan filter yang sudah
+                    diterapkan. Filter baru selalu mengembalikan halaman ke 1.
                 </li>
                 <li>
-                    <strong>Pagination.</strong> Ukuran halaman 20. Tombol sebelumnya dan
-                    berikutnya mengikuti <code class={inlineCode}>totalPages</code> dari server.
+                    Pagination memakai 20 baris per halaman. Tombol sebelumnya dan berikutnya
+                    mengikuti <code class={inlineCode}>totalPages</code> dari server.
                 </li>
                 <li>
-                    <strong>Modal detail.</strong> Metadata ditampilkan sebagai JSON yang sudah
-                    diformat, bukan teks mentah satu baris.
+                    Modal detail menampilkan metadata sebagai JSON yang sudah diformat, bukan teks
+                    mentah satu baris.
                 </li>
                 <li>
-                    <strong>State.</strong> Loading memakai panel, data kosong memakai empty
-                    state, dan error memakai alert dengan tombol coba lagi.
+                    Loading memakai panel, data kosong memakai empty state, dan error memakai
+                    alert dengan tombol coba lagi.
                 </li>
             </ul>
 
@@ -860,7 +857,7 @@ const tocSections: TOCSection[] = [
                 compact
             />
 
-            <h4 class="mt-5 mb-2 font-semibold text-foreground">Yang sudah kamu bangun</h4>
+            <h4 class="mt-5 mb-2 font-semibold text-foreground">Yang sudah dikerjakan</h4>
             <ul class="text-foreground-secondary leading-relaxed space-y-1.5 list-disc list-inside">
                 <li>Halaman riwayat audit yang hanya bisa dibuka admin.</li>
                 <li>Filter aksi, target, dan rentang tanggal yang diterapkan terpisah dari draft.</li>
@@ -873,9 +870,9 @@ const tocSections: TOCSection[] = [
             <div class="mt-4 p-3 rounded-lg bg-primary/5 dark:bg-primary/10 border-l-4 border-primary">
                 <span class="font-bold text-primary">Rangkuman</span>
                 <p class="text-sm md:text-base text-foreground-secondary mt-1">
-                    Audit log bukan sekadar tabel tambahan. Ia harus append-only, ditulis
-                    terpusat, cukup detail, dan tidak pernah terpisah dari mutasi yang
-                    dicatatnya. Halaman riwayat hanyalah pintu masuk. Nilai sebenarnya ada pada
+                    Menambah tabel audit hanya langkah awal. Catatannya harus append-only,
+                    ditulis terpusat, cukup detail, dan tidak pernah terpisah dari mutasi yang
+                    dicatatnya. Halaman riwayat hanya pintu masuk. Nilai sebenarnya ada pada
                     catatan yang bisa dipercaya saat sesuatu berjalan salah.
                 </p>
             </div>
