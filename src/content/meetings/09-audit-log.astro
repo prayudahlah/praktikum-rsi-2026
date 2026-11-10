@@ -586,7 +586,7 @@ const tocSections: TOCSection[] = [
                 <span class="font-bold text-primary">Satu sumber data</span>
                 <p class="text-sm md:text-base text-foreground-secondary mt-1">
                     Halaman hanya perlu satu jalur pemuatan data. Setiap perubahan filter,
-                    halaman, atau tombol refresh memicu satu permintaan. Hasil permintaan lama
+                    halaman, atau tombol Muat ulang memicu satu permintaan. Hasil permintaan lama
                     diabaikan supaya tidak menimpa hasil yang lebih baru.
                 </p>
             </div>
@@ -621,6 +621,12 @@ const tocSections: TOCSection[] = [
                     <code class={inlineCode}>praktikum_user</code>.
                 </p>
             </div>
+
+            <p class="mt-3 text-foreground-secondary leading-relaxed">
+                <code class={inlineCode}>03-audit-samples.sql</code> bersifat opsional. Isinya
+                hanya query <code class={inlineCode}>SELECT</code> untuk memeriksa isi tabel,
+                tidak mengubah data.
+            </p>
 
             <h4 class="mt-5 mb-2 font-semibold text-foreground">Akun demo</h4>
             <div class="mt-3 overflow-x-auto rounded-lg border border-border">
@@ -738,7 +744,7 @@ const tocSections: TOCSection[] = [
                 <li>
                     Satu <code class={inlineCode}>useEffect</code> memanggil{' '}
                     <code class={inlineCode}>getAuditLogs</code> setiap filter, halaman, atau
-                    tombol refresh berubah. Flag <code class={inlineCode}>active</code> mencegah
+                    tombol Muat ulang berubah. Flag <code class={inlineCode}>active</code> mencegah
                     hasil lama menimpa hasil baru.
                 </li>
                 <li>
@@ -779,7 +785,7 @@ const tocSections: TOCSection[] = [
             <StepHeader title="Uji Hands-on 9" tone="success" />
 
             <p class="text-foreground-secondary leading-relaxed">
-                Jalankan alur ini berurutan, lalu kembali ke halaman audit dan tekan refresh.
+                Jalankan alur ini berurutan, lalu kembali ke halaman audit dan tekan tombol Muat ulang di header.
             </p>
 
             <div class="mt-4 overflow-x-auto rounded-lg border border-border">
@@ -824,7 +830,7 @@ const tocSections: TOCSection[] = [
                             <td class="px-3 py-2">Backend membalas <code class={inlineCode}>400</code>, halaman menampilkan pesan error</td>
                         </tr>
                         <tr class="border-t border-border align-top">
-                            <td class="px-3 py-2">Backend dimatikan, lalu klik refresh</td>
+                            <td class="px-3 py-2">Backend dimatikan, lalu klik tombol Muat ulang di header</td>
                             <td class="px-3 py-2">Muncul alert dengan tombol coba lagi</td>
                         </tr>
                     </tbody>
