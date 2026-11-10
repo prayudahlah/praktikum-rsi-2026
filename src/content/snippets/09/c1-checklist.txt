@@ -1,0 +1,13 @@
+TODO Hands-on Pertemuan 09
+--------------------------
+[ ] frontend/src/pages/AuditLogPage.tsx
+    - muat data dari getAuditLogs
+    - filter aksi, target, dan rentang tanggal
+    - pagination 20 baris per halaman
+    - modal detail metadata JSON
+    - state loading, kosong, dan error
+
+Sudah tersedia di branch starter:
+- backend audit: transaksi, endpoint, RBAC
+- getAuditLogs, tipe data, dan helper label
+- route /admin/audit-logs dan menu Audit

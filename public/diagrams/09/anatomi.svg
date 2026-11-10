@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 760" font-family="ui-sans-serif, system-ui, sans-serif">
+  <rect width="1200" height="760" fill="#ffffff"/>
+  <text x="60" y="60" font-size="30" font-weight="700" fill="#18181b">Anatomi satu baris audit</text>
+  <text x="60" y="92" font-size="16" fill="#71717a">Minimal bisa menjawab: siapa, kapan, melakukan apa, pada data apa, dan hasilnya.</text>
+
+  <rect x="60" y="120" width="1080" height="580" rx="16" fill="#f8fafc" stroke="#cbd5e1" stroke-width="2"/>
+  <text x="88" y="158" font-size="18" font-weight="700" fill="#0f172a">dbo.AUDIT_LOGS</text>
+
+  <g font-size="15">
+    <rect x="88" y="184" width="220" height="46" rx="8" fill="#e2e8f0"/>
+    <text x="104" y="213" font-weight="700" fill="#0f172a">id</text>
+    <text x="330" y="213" fill="#475569">21, naik terus</text>
+
+    <rect x="88" y="242" width="220" height="46" rx="8" fill="#e2e8f0"/>
+    <text x="104" y="271" font-weight="700" fill="#0f172a">user_id</text>
+    <text x="330" y="271" fill="#475569">1, pelaku aksi</text>
+
+    <rect x="88" y="300" width="220" height="46" rx="8" fill="#e2e8f0"/>
+    <text x="104" y="329" font-weight="700" fill="#0f172a">action</text>
+    <text x="330" y="329" fill="#475569">UPDATE_MENU</text>
+
+    <rect x="88" y="358" width="220" height="46" rx="8" fill="#e2e8f0"/>
+    <text x="104" y="387" font-weight="700" fill="#0f172a">target_table</text>
+    <text x="330" y="387" fill="#475569">MENU_ITEMS</text>
+
+    <rect x="88" y="416" width="220" height="46" rx="8" fill="#e2e8f0"/>
+    <text x="104" y="445" font-weight="700" fill="#0f172a">target_id</text>
+    <text x="330" y="445" fill="#475569">7, primary key objek</text>
+
+    <rect x="88" y="474" width="220" height="46" rx="8" fill="#e2e8f0"/>
+    <text x="104" y="503" font-weight="700" fill="#0f172a">metadata</text>
+    <text x="330" y="503" fill="#475569">{ before, after, changed }</text>
+
+    <rect x="88" y="532" width="220" height="46" rx="8" fill="#e2e8f0"/>
+    <text x="104" y="561" font-weight="700" fill="#0f172a">created_at</text>
+    <text x="330" y="561" fill="#475569">2026-11-10 09:15:00, UTC</text>
+  </g>
+
+  <rect x="88" y="612" width="1024" height="60" rx="10" fill="#eff6ff" stroke="#bfdbfe"/>
+  <text x="106" y="648" font-size="14" fill="#1e3a8a">Log tidak menyimpan password, token, cookie, atau header otorisasi. Metadata hanya konteks yang aman.</text>
+</svg>

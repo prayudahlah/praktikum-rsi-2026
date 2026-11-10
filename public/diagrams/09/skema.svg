@@ -1,0 +1,59 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 760" font-family="ui-sans-serif, system-ui, sans-serif">
+  <rect width="1200" height="760" fill="#ffffff"/>
+  <text x="60" y="60" font-size="30" font-weight="700" fill="#18181b">Skema tabel dan index</text>
+  <text x="60" y="92" font-size="16" fill="#71717a">Index mengikuti cara data dibaca: terbaru dulu, sering difilter.</text>
+
+  <rect x="60" y="130" width="600" height="560" rx="16" fill="#f8fafc" stroke="#cbd5e1" stroke-width="2"/>
+  <text x="88" y="170" font-size="18" font-weight="700" fill="#0f172a">dbo.AUDIT_LOGS</text>
+
+  <g font-size="15">
+    <rect x="88" y="194" width="544" height="44" rx="8" fill="#e2e8f0"/>
+    <text x="104" y="222" font-weight="700" fill="#0f172a">id</text>
+    <text x="360" y="222" fill="#475569">INT IDENTITY, PK</text>
+
+    <rect x="88" y="246" width="544" height="44" rx="8" fill="#ffffff" stroke="#e2e8f0"/>
+    <text x="104" y="274" font-weight="700" fill="#0f172a">user_id</text>
+    <text x="360" y="274" fill="#475569">INT, FK ke USERS</text>
+
+    <rect x="88" y="298" width="544" height="44" rx="8" fill="#ffffff" stroke="#e2e8f0"/>
+    <text x="104" y="326" font-weight="700" fill="#0f172a">action</text>
+    <text x="360" y="326" fill="#475569">NVARCHAR(50)</text>
+
+    <rect x="88" y="350" width="544" height="44" rx="8" fill="#ffffff" stroke="#e2e8f0"/>
+    <text x="104" y="378" font-weight="700" fill="#0f172a">target_table</text>
+    <text x="360" y="378" fill="#475569">NVARCHAR(50)</text>
+
+    <rect x="88" y="402" width="544" height="44" rx="8" fill="#ffffff" stroke="#e2e8f0"/>
+    <text x="104" y="430" font-weight="700" fill="#0f172a">target_id</text>
+    <text x="360" y="430" fill="#475569">INT</text>
+
+    <rect x="88" y="454" width="544" height="44" rx="8" fill="#ffffff" stroke="#e2e8f0"/>
+    <text x="104" y="482" font-weight="700" fill="#0f172a">metadata</text>
+    <text x="360" y="482" fill="#475569">NVARCHAR(MAX), JSON</text>
+
+    <rect x="88" y="506" width="544" height="44" rx="8" fill="#ffffff" stroke="#e2e8f0"/>
+    <text x="104" y="534" font-weight="700" fill="#0f172a">created_at</text>
+    <text x="360" y="534" fill="#475569">DATETIME2, default UTC</text>
+  </g>
+
+  <rect x="700" y="130" width="440" height="560" rx="16" fill="#eff6ff" stroke="#2563eb" stroke-width="2"/>
+  <text x="728" y="170" font-size="18" font-weight="700" fill="#1d4ed8">Tiga index</text>
+
+  <rect x="728" y="198" width="384" height="86" rx="10" fill="#ffffff" stroke="#bfdbfe"/>
+  <text x="744" y="228" font-size="14" font-weight="700" fill="#0f172a">IX_AUDIT_LOGS_created_at</text>
+  <text x="744" y="254" font-size="13" fill="#475569">created_at DESC, id DESC</text>
+  <text x="744" y="274" font-size="12" fill="#64748b">selalu urut terbaru</text>
+
+  <rect x="728" y="300" width="384" height="86" rx="10" fill="#ffffff" stroke="#bfdbfe"/>
+  <text x="744" y="330" font-size="14" font-weight="700" fill="#0f172a">IX_user_created</text>
+  <text x="744" y="356" font-size="13" fill="#475569">user_id, created_at DESC</text>
+  <text x="744" y="376" font-size="12" fill="#64748b">riwayat per pelaku</text>
+
+  <rect x="728" y="402" width="384" height="86" rx="10" fill="#ffffff" stroke="#bfdbfe"/>
+  <text x="744" y="432" font-size="14" font-weight="700" fill="#0f172a">IX_action_target_created</text>
+  <text x="744" y="458" font-size="13" fill="#475569">action, target_table, created_at</text>
+  <text x="744" y="478" font-size="12" fill="#64748b">filter aksi dan target</text>
+
+  <text x="728" y="540" font-size="13" fill="#1e3a8a">Tanpa index, query riwayat</text>
+  <text x="728" y="562" font-size="13" fill="#1e3a8a">memindai seluruh tabel.</text>
+</svg>

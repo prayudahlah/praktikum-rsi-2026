@@ -1,0 +1,49 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 760" font-family="ui-sans-serif, system-ui, sans-serif">
+  <rect width="1200" height="760" fill="#ffffff"/>
+  <text x="60" y="64" font-size="30" font-weight="700" fill="#18181b">Alur satu aktivitas sampai tercatat</text>
+  <text x="60" y="96" font-size="16" fill="#71717a">Setiap mutasi bisnis menulis audit di transaksi yang sama.</text>
+
+  <rect x="60" y="140" width="330" height="100" rx="14" fill="#f8fafc" stroke="#cbd5e1" stroke-width="2"/>
+  <text x="82" y="178" font-size="18" font-weight="700" fill="#0f172a">Request pengguna</text>
+  <text x="82" y="204" font-size="14" fill="#64748b">POST /api/menu</text>
+
+  <rect x="435" y="140" width="330" height="100" rx="14" fill="#f8fafc" stroke="#cbd5e1" stroke-width="2"/>
+  <text x="457" y="178" font-size="18" font-weight="700" fill="#0f172a">Service</text>
+  <text x="457" y="204" font-size="14" fill="#64748b">validasi, ownership, aturan bisnis</text>
+
+  <rect x="810" y="120" width="330" height="150" rx="14" fill="#eff6ff" stroke="#2563eb" stroke-width="2"/>
+  <text x="830" y="150" font-size="16" font-weight="700" fill="#1d4ed8">withTransaction</text>
+  <rect x="830" y="168" width="290" height="40" rx="8" fill="#ffffff" stroke="#bfdbfe"/>
+  <text x="846" y="193" font-size="14" fill="#0f172a">Mutasi bisnis</text>
+  <rect x="830" y="216" width="290" height="40" rx="8" fill="#ffffff" stroke="#bfdbfe"/>
+  <text x="846" y="241" font-size="14" fill="#0f172a">INSERT AUDIT_LOGS</text>
+
+  <line x1="390" y1="190" x2="430" y2="190" stroke="#94a3b8" stroke-width="2"/>
+  <path d="M430 190 l-10 -5 v10 z" fill="#94a3b8"/>
+  <line x1="765" y1="190" x2="805" y2="190" stroke="#94a3b8" stroke-width="2"/>
+  <path d="M805 190 l-10 -5 v10 z" fill="#94a3b8"/>
+
+  <rect x="810" y="320" width="330" height="90" rx="14" fill="#f0fdf4" stroke="#16a34a" stroke-width="2"/>
+  <text x="830" y="355" font-size="18" font-weight="700" fill="#15803d">COMMIT</text>
+  <text x="830" y="380" font-size="14" fill="#4b5563">berhasil: mutasi dan audit tersimpan</text>
+
+  <rect x="810" y="450" width="330" height="90" rx="14" fill="#fef2f2" stroke="#dc2626" stroke-width="2"/>
+  <text x="830" y="485" font-size="18" font-weight="700" fill="#b91c1c">ROLLBACK</text>
+  <text x="830" y="510" font-size="14" fill="#4b5563">satu langkah gagal: keduanya batal</text>
+
+  <line x1="975" y1="270" x2="975" y2="315" stroke="#94a3b8" stroke-width="2"/>
+  <path d="M975 315 l-5 -10 h10 z" fill="#94a3b8"/>
+  <line x1="975" y1="410" x2="975" y2="445" stroke="#94a3b8" stroke-width="2"/>
+  <path d="M975 445 l-5 -10 h10 z" fill="#94a3b8"/>
+
+  <rect x="435" y="575" width="330" height="100" rx="14" fill="#f8fafc" stroke="#cbd5e1" stroke-width="2"/>
+  <text x="457" y="613" font-size="18" font-weight="700" fill="#0f172a">GET /api/audit-logs</text>
+  <text x="457" y="639" font-size="14" fill="#64748b">admin, filter, pagination</text>
+
+  <rect x="60" y="575" width="330" height="100" rx="14" fill="#f8fafc" stroke="#cbd5e1" stroke-width="2"/>
+  <text x="82" y="613" font-size="18" font-weight="700" fill="#0f172a">Halaman admin</text>
+  <text x="82" y="639" font-size="14" fill="#64748b">tabel, filter, modal detail</text>
+
+  <line x1="805" y1="625" x2="395" y2="625" stroke="#94a3b8" stroke-width="2"/>
+  <path d="M395 625 l10 -5 v10 z" fill="#94a3b8"/>
+</svg>
