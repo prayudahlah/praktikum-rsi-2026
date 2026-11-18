@@ -1,0 +1,48 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 760" font-family="ui-sans-serif, system-ui, sans-serif">
+  <rect width="1200" height="760" fill="#ffffff"/>
+  <text x="60" y="70" font-size="30" font-weight="700" fill="#18181b">Menyiapkan ngrok</text>
+  <text x="60" y="102" font-size="15" fill="#71717a">Empat langkah sebelum tunnel berjalan.</text>
+
+  <rect x="60" y="230" width="240" height="190" rx="14" fill="#f8fafc" stroke="#cbd5e1" stroke-width="2"/>
+  <circle cx="94" cy="266" r="16" fill="#2563eb"/>
+  <text x="94" y="272" font-size="14" font-weight="700" fill="#ffffff" text-anchor="middle">1</text>
+  <text x="124" y="272" font-size="17" font-weight="700" fill="#0f172a">Daftar akun</text>
+  <text x="84" y="316" font-size="13" fill="#475569">buka ngrok.com</text>
+  <text x="84" y="340" font-size="13" fill="#475569">ambil authtoken</text>
+  <text x="84" y="380" font-size="12" fill="#64748b">akun pribadi</text>
+
+  <rect x="340" y="230" width="240" height="190" rx="14" fill="#f8fafc" stroke="#cbd5e1" stroke-width="2"/>
+  <circle cx="374" cy="266" r="16" fill="#2563eb"/>
+  <text x="374" y="272" font-size="14" font-weight="700" fill="#ffffff" text-anchor="middle">2</text>
+  <text x="404" y="272" font-size="17" font-weight="700" fill="#0f172a">Pasang</text>
+  <text x="364" y="316" font-size="13" fill="#475569">winget</text>
+  <text x="364" y="340" font-size="13" fill="#475569">brew</text>
+  <text x="364" y="364" font-size="13" fill="#475569">apt</text>
+  <text x="364" y="400" font-size="12" fill="#64748b">sesuai sistem operasi</text>
+
+  <rect x="620" y="230" width="240" height="190" rx="14" fill="#f8fafc" stroke="#cbd5e1" stroke-width="2"/>
+  <circle cx="654" cy="266" r="16" fill="#2563eb"/>
+  <text x="654" y="272" font-size="14" font-weight="700" fill="#ffffff" text-anchor="middle">3</text>
+  <text x="684" y="272" font-size="17" font-weight="700" fill="#0f172a">Simpan token</text>
+  <text x="644" y="316" font-size="12" fill="#1d4ed8">ngrok config</text>
+  <text x="644" y="340" font-size="12" fill="#1d4ed8">add-authtoken</text>
+  <text x="644" y="378" font-size="12" fill="#64748b">cukup sekali</text>
+
+  <rect x="900" y="230" width="240" height="190" rx="14" fill="#f8fafc" stroke="#cbd5e1" stroke-width="2"/>
+  <circle cx="934" cy="266" r="16" fill="#2563eb"/>
+  <text x="934" y="272" font-size="14" font-weight="700" fill="#ffffff" text-anchor="middle">4</text>
+  <text x="964" y="272" font-size="17" font-weight="700" fill="#0f172a">Jalankan</text>
+  <text x="924" y="316" font-size="12" fill="#1d4ed8">ngrok start --all</text>
+  <text x="924" y="352" font-size="12" fill="#64748b">dua tunnel aktif</text>
+
+  <line x1="302" y1="325" x2="334" y2="325" stroke="#94a3b8" stroke-width="2"/>
+  <path d="M334 325 l-11 -6 v12 z" fill="#94a3b8"/>
+  <line x1="582" y1="325" x2="614" y2="325" stroke="#94a3b8" stroke-width="2"/>
+  <path d="M614 325 l-11 -6 v12 z" fill="#94a3b8"/>
+  <line x1="862" y1="325" x2="894" y2="325" stroke="#94a3b8" stroke-width="2"/>
+  <path d="M894 325 l-11 -6 v12 z" fill="#94a3b8"/>
+
+  <line x1="60" y1="520" x2="1140" y2="520" stroke="#e2e8f0" stroke-width="1"/>
+  <text x="60" y="556" font-size="15" font-weight="700" fill="#0f172a">Tidak perlu server, kartu kredit, atau domain.</text>
+  <text x="60" y="582" font-size="13" fill="#64748b">Authtoken disimpan di laptop dan dipakai ulang setiap menjalankan ngrok.</text>
+</svg>

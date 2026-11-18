@@ -1,0 +1,451 @@
+---
+import {
+    ScrollySection,
+    Step,
+    StepHeader,
+    SectionDivider,
+    ScrollyLayout,
+    ScrollyTOC,
+} from '../../components/scrolly';
+import type { TOCSection } from '../../components/scrolly';
+import CodeBlock from '../../components/ui/CodeBlock.astro';
+import TerminalBlock from '../../components/ui/TerminalBlock.astro';
+
+const inlineCode = 'font-mono text-[0.9em] bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded';
+
+const installCommands = `# Windows (PowerShell)
+winget install ngrok.ngrok
+
+# macOS
+brew install ngrok/ngrok/ngrok
+
+# Linux (Ubuntu/Debian)
+curl -sSL https://ngrok-agent.s3.amazonaws.com/ngrok.asc \\
+  | sudo tee /etc/apt/trusted.gpg.d/ngrok.asc >/dev/null \\
+  && echo "deb https://ngrok-agent.s3.amazonaws.com buster main" \\
+  | sudo tee /etc/apt/sources.list.d/ngrok.list \\
+  && sudo apt update \\
+  && sudo apt install ngrok`;
+
+const ngrokYml = `version: "2"
+authtoken: TEMPEL_AUTHTOKEN
+
+tunnels:
+  frontend:
+    proto: http
+    addr: 5174
+  backend:
+    proto: http
+    addr: 3002`;
+
+const frontendEnv = `VITE_API_BASE_URL=https://URL-BACKEND.ngrok-free.app/api`;
+
+const backendEnv = `NODE_ENV=production
+CORS_ORIGIN=https://URL-FRONTEND.ngrok-free.app`;
+
+const cookieChange = `// backend/src/utils/cookie.ts
+// ubah sameSite di setAuthCookie dan clearAuthCookie
+sameSite: 'none',`;
+
+const viteChange = `// frontend/vite.config.ts
+server: {
+  port: 5174,
+  strictPort: true,
+  allowedHosts: ['.ngrok-free.app'],
+},`;
+
+const tocSections: TOCSection[] = [
+    {
+        label: 'Konsep',
+        items: [{ id: 's1', title: 'Kenapa Tunnel?' }],
+    },
+    {
+        label: 'Hands-on: Deploy dengan ngrok',
+        items: [
+            { id: 'h1', title: 'Pasang ngrok dan Authtoken' },
+            { id: 'h2', title: 'Dua Tunnel' },
+            { id: 'h3', title: 'Sesuaikan Aplikasi' },
+            { id: 'h4', title: 'Uji dan Bersihkan' },
+        ],
+    },
+    {
+        label: 'Alternatif',
+        items: [{ id: 'alt', title: 'Alternatif Deploy' }],
+    },
+    {
+        label: 'Penutup',
+        items: [{ id: 'c1', title: 'Catatan Akhir' }],
+    },
+];
+---
+
+<ScrollySection className="meeting-relaxed">
+    <ScrollyLayout defaultSrc="/diagrams/10/alur.svg">
+
+        <Step id="s1" diagram="/diagrams/10/alur.svg">
+            <SectionDivider label="Testing & Deployment" />
+            <StepHeader title="Kenapa Tunnel?" tone="primary" />
+
+            <p class="text-foreground-secondary leading-relaxed">
+                Sampai Pertemuan 9, aplikasi hanya bisa dibuka dari{' '}
+                <code class={inlineCode}>localhost</code>. Deployment berarti aplikasi bisa diakses
+                dari perangkat lain lewat internet. Cara paling cepat untuk mencobanya adalah
+                tunnel, tanpa membeli server dan tanpa mengatur domain.
+            </p>
+
+            <p class="mt-3 text-foreground-secondary leading-relaxed">
+                <strong>ngrok</strong> membuat alamat HTTPS publik yang diteruskan ke port di
+                laptopmu. Browser di luar mengakses alamat ngrok, lalu ngrok meneruskan permintaan
+                ke aplikasi lokal. Database tetap di dalam dan tidak ikut terbuka.
+            </p>
+
+            <ul class="mt-3 text-foreground-secondary leading-relaxed space-y-1.5 list-disc list-inside">
+                <li>Cocok untuk demo, presentasi, dan pengujian dari ponsel.</li>
+                <li>Tidak perlu akun cloud, kartu kredit, atau server.</li>
+                <li>Alamat berubah setiap ngrok dijalankan ulang, kecuali memakai domain berbayar.</li>
+                <li>Selama laptop tidur atau terminal ditutup, aplikasi tidak bisa diakses.</li>
+            </ul>
+
+            <div class="mt-4 p-3 rounded-lg bg-warning/5 dark:bg-warning/10 border-l-4 border-warning">
+                <span class="font-bold text-warning">Tunnel bukan hosting permanen</span>
+                <p class="mt-1 text-sm md:text-base text-foreground-secondary leading-relaxed">
+                    Gunakan hanya untuk demonstrasi. Setelah selesai, hentikan tunnel dan jangan
+                    biarkan aplikasi praktikum terbuka tanpa pengawasan.
+                </p>
+            </div>
+        </Step>
+
+        <Step id="h1" diagram="/diagrams/10/setup-a.svg">
+            <SectionDivider label="Hands-on: Deploy dengan ngrok" />
+            <StepHeader title="Pasang ngrok dan Authtoken" tone="success" />
+
+            <p class="text-foreground-secondary leading-relaxed">
+                Aplikasi yang dipakai adalah hasil Hands-on Pertemuan 9. Tidak perlu clone ulang,
+                tidak perlu menyiapkan database lagi. Pastikan backend berjalan di{' '}
+                <code class={inlineCode}>3002</code> dan frontend di{' '}
+                <code class={inlineCode}>5174</code>.
+            </p>
+
+            <h4 class="mt-5 mb-2 font-semibold text-foreground">1. Buat akun dan ambil authtoken</h4>
+            <p class="text-foreground-secondary leading-relaxed">
+                Daftar di{' '}
+                <a href="https://ngrok.com/signup" target="_blank" rel="noopener noreferrer" class="text-primary hover:underline">ngrok.com</a>,
+                lalu buka menu{' '}
+                <a href="https://dashboard.ngrok.com/get-started/your-authtoken" target="_blank" rel="noopener noreferrer" class="text-primary hover:underline">Your Authtoken</a>{' '}
+                di dashboard. Salin token yang tersedia.
+            </p>
+
+            <h4 class="mt-5 mb-2 font-semibold text-foreground">2. Pasang ngrok</h4>
+            <p class="text-foreground-secondary leading-relaxed">
+                Kalau tidak nyaman memakai terminal, unduh installer dari{' '}
+                <a href="https://ngrok.com/download" target="_blank" rel="noopener noreferrer" class="text-primary hover:underline">ngrok.com/download</a>,
+                lalu jalankan. Perintah berikut adalah alternatifnya.
+            </p>
+            <CodeBlock
+                code={installCommands}
+                language="bash"
+                filename="Instalasi ngrok"
+                compact
+            />
+
+            <h4 class="mt-5 mb-2 font-semibold text-foreground">3. Hubungkan akun</h4>
+            <TerminalBlock
+                code={`ngrok config add-authtoken TEMPEL_AUTHTOKEN`}
+                title="Terminal: simpan authtoken"
+            />
+
+            <p class="mt-3 text-foreground-secondary leading-relaxed">
+                Kalau berhasil, ngrok menampilkan konfirmasi bahwa authtoken tersimpan.
+            </p>
+        </Step>
+
+        <Step id="h2" diagram="/diagrams/10/alur.svg">
+            <StepHeader title="Dua Tunnel" tone="success" />
+
+            <p class="text-foreground-secondary leading-relaxed">
+                Frontend dan backend berjalan di port berbeda, jadi butuh dua tunnel. Buka file
+                konfigurasi dengan <code class={inlineCode}>ngrok config edit</code>, lalu isi
+                seperti berikut.
+            </p>
+
+            <CodeBlock
+                code={ngrokYml}
+                language="yaml"
+                filename="ngrok.yml"
+            />
+
+            <TerminalBlock
+                code={`ngrok start --all`}
+                title="Terminal: jalankan kedua tunnel"
+            />
+
+            <p class="mt-3 text-foreground-secondary leading-relaxed">
+                Salin dua alamat HTTPS yang muncul. Satu untuk frontend, satu untuk backend.
+                Alamat ini yang dipakai pada langkah berikutnya.
+            </p>
+        </Step>
+
+        <Step id="h3" diagram="/diagrams/10/sesuaikan-a.svg">
+            <StepHeader title="Sesuaikan Aplikasi" tone="success" />
+
+            <p class="text-foreground-secondary leading-relaxed">
+                Ada empat penyesuaian. Tanpa ini, halaman bisa terbuka tetapi login dan data tidak
+                jalan.
+            </p>
+
+            <h4 class="mt-5 mb-2 font-semibold text-foreground">1. Alamat API di frontend</h4>
+            <p class="text-foreground-secondary leading-relaxed">
+                Ganti isi <code class={inlineCode}>frontend/.env</code> dengan alamat backend,
+                lalu restart Vite.
+            </p>
+            <CodeBlock
+                code={frontendEnv}
+                language="ini"
+                filename="frontend/.env"
+                compact
+            />
+
+            <h4 class="mt-5 mb-2 font-semibold text-foreground">2. Alamat frontend di backend</h4>
+            <p class="text-foreground-secondary leading-relaxed">
+                Ganti <code class={inlineCode}>CORS_ORIGIN</code> dengan alamat frontend. Jalankan
+                backend dengan <code class={inlineCode}>NODE_ENV=production</code> agar cookie
+                memakai <code class={inlineCode}>Secure</code>.
+            </p>
+            <CodeBlock
+                code={backendEnv}
+                language="ini"
+                filename="backend/.env"
+                compact
+            />
+
+            <h4 class="mt-5 mb-2 font-semibold text-foreground">3. Cookie lintas domain</h4>
+            <p class="text-foreground-secondary leading-relaxed">
+                Dua alamat ngrok dianggap situs berbeda, sehingga cookie{' '}
+                <code class={inlineCode}>SameSite=Lax</code> tidak ikut terkirim. Ubah menjadi{' '}
+                <code class={inlineCode}>'none'</code> di kedua fungsi pada file cookie, lalu
+                restart backend.
+            </p>
+            <CodeBlock
+                code={cookieChange}
+                language="ts"
+                filename="backend/src/utils/cookie.ts"
+                compact
+            />
+
+            <h4 class="mt-5 mb-2 font-semibold text-foreground">4. Izinkan host ngrok di Vite</h4>
+            <p class="text-foreground-secondary leading-relaxed">
+                Vite menolak host yang tidak dikenal. Tambahkan domain ngrok, lalu restart Vite.
+            </p>
+            <CodeBlock
+                code={viteChange}
+                language="ts"
+                filename="frontend/vite.config.ts"
+                compact
+            />
+
+            <div class="mt-4 p-3 rounded-lg bg-primary/5 dark:bg-primary/10 border-l-4 border-primary">
+                <span class="font-bold text-primary">Kalau memakai satu tunnel saja</span>
+                <p class="mt-1 text-sm md:text-base text-foreground-secondary leading-relaxed">
+                    Cara lain adalah meneruskan <code class={inlineCode}>/api</code> lewat proxy
+                    Vite dan hanya membuka tunnel frontend. Dengan begitu cookie tetap satu origin
+                    dan tidak perlu <code class={inlineCode}>SameSite=None</code>. Namun langkah
+                    ini mengubah konfigurasi Vite lebih banyak.
+                </p>
+            </div>
+        </Step>
+
+        <Step id="h4" diagram="/diagrams/10/uji-a.svg">
+            <StepHeader title="Uji dan Bersihkan" tone="success" />
+
+            <p class="text-foreground-secondary leading-relaxed">
+                Buka alamat frontend dari ponsel atau jaringan lain, lalu uji alur berikut.
+            </p>
+
+            <div class="mt-4 overflow-x-auto rounded-lg border border-border">
+                <table class="w-full border-collapse text-left text-sm md:text-base">
+                    <thead>
+                        <tr class="bg-muted text-foreground">
+                            <th class="px-3 py-2 font-semibold">Uji</th>
+                            <th class="px-3 py-2 font-semibold">Hasil yang diharapkan</th>
+                        </tr>
+                    </thead>
+                    <tbody class="text-foreground-secondary">
+                        <tr class="border-t border-border align-top">
+                            <td class="px-3 py-2">Buka alamat frontend dari ponsel</td>
+                            <td class="px-3 py-2">Halaman login tampil, bukan error host</td>
+                        </tr>
+                        <tr class="border-t border-border align-top">
+                            <td class="px-3 py-2">Login admin</td>
+                            <td class="px-3 py-2">Masuk ke halaman admin, sesi tersimpan</td>
+                        </tr>
+                        <tr class="border-t border-border align-top">
+                            <td class="px-3 py-2">Buka riwayat audit</td>
+                            <td class="px-3 py-2">Data tampil dari backend publik</td>
+                        </tr>
+                        <tr class="border-t border-border align-top">
+                            <td class="px-3 py-2">Tambah menu sebagai owner</td>
+                            <td class="px-3 py-2">Menu tersimpan dan audit bertambah</td>
+                        </tr>
+                        <tr class="border-t border-border align-top">
+                            <td class="px-3 py-2">Owner membuka halaman audit</td>
+                            <td class="px-3 py-2">Ditolak dengan 403</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <h4 class="mt-5 mb-2 font-semibold text-foreground">Kalau gagal</h4>
+            <div class="mt-3 overflow-x-auto rounded-lg border border-border">
+                <table class="w-full border-collapse text-left text-sm md:text-base">
+                    <thead>
+                        <tr class="bg-muted text-foreground">
+                            <th class="px-3 py-2 font-semibold">Gejala</th>
+                            <th class="px-3 py-2 font-semibold">Penyebab dan solusi</th>
+                        </tr>
+                    </thead>
+                    <tbody class="text-foreground-secondary">
+                        <tr class="border-t border-border align-top">
+                            <td class="px-3 py-2">Blocked request, host not allowed</td>
+                            <td class="px-3 py-2">Tambahkan domain ngrok ke <code class={inlineCode}>allowedHosts</code>, lalu restart Vite</td>
+                        </tr>
+                        <tr class="border-t border-border align-top">
+                            <td class="px-3 py-2">Login berhasil lalu kembali ke halaman login</td>
+                            <td class="px-3 py-2">Cookie belum <code class={inlineCode}>SameSite=None; Secure</code>, atau backend belum production</td>
+                        </tr>
+                        <tr class="border-t border-border align-top">
+                            <td class="px-3 py-2">CORS error</td>
+                            <td class="px-3 py-2">Samakan <code class={inlineCode}>CORS_ORIGIN</code> dengan alamat frontend, tanpa garis miring di akhir</td>
+                        </tr>
+                        <tr class="border-t border-border align-top">
+                            <td class="px-3 py-2">Halaman peringatan ngrok</td>
+                            <td class="px-3 py-2">Klik Visit Site. Untuk curl atau Postman, tambahkan header <code class={inlineCode}>ngrok-skip-browser-warning: true</code></td>
+                        </tr>
+                        <tr class="border-t border-border align-top">
+                            <td class="px-3 py-2">Data kosong padahal login berhasil</td>
+                            <td class="px-3 py-2">Alamat backend di <code class={inlineCode}>.env</code> frontend salah, atau Vite belum di-restart</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <p class="mt-3 text-foreground-secondary leading-relaxed">
+                Setelah selesai, hentikan ngrok dengan <code class={inlineCode}>Ctrl+C</code>.
+                Alamat publik langsung tidak berlaku. Jangan membuka port{' '}
+                <code class={inlineCode}>1433</code> ke internet.
+            </p>
+        </Step>
+
+        <Step id="alt" diagram="/diagrams/10/penutup.webp">
+            <SectionDivider label="Alternatif" />
+            <StepHeader title="Alternatif Deploy" tone="primary" />
+
+            <p class="text-foreground-secondary leading-relaxed">
+                ngrok cukup untuk demo di kelas. Untuk kebutuhan lain, ini pilihan yang sering
+                dipakai, dari yang paling murah sampai yang paling fleksibel.
+            </p>
+
+            <div class="mt-4 overflow-x-auto rounded-lg border border-border">
+                <table class="w-full border-collapse text-left text-sm md:text-base">
+                    <thead>
+                        <tr class="bg-muted text-foreground">
+                            <th class="px-3 py-2 font-semibold">Opsi</th>
+                            <th class="px-3 py-2 font-semibold">Bagian yang di-deploy</th>
+                            <th class="px-3 py-2 font-semibold">Biaya</th>
+                            <th class="px-3 py-2 font-semibold">Cocok kalau</th>
+                        </tr>
+                    </thead>
+                    <tbody class="text-foreground-secondary">
+                        <tr class="border-t border-border align-top">
+                            <td class="px-3 py-2 font-semibold text-foreground">Cloudflare Tunnel</td>
+                            <td class="px-3 py-2">Seluruh aplikasi lokal</td>
+                            <td class="px-3 py-2">Gratis untuk quick tunnel</td>
+                            <td class="px-3 py-2">Ingin alternatif ngrok, bisa memakai domain sendiri</td>
+                        </tr>
+                        <tr class="border-t border-border align-top">
+                            <td class="px-3 py-2 font-semibold text-foreground">Vercel atau Netlify</td>
+                            <td class="px-3 py-2">Frontend statis</td>
+                            <td class="px-3 py-2">Gratis</td>
+                            <td class="px-3 py-2">Frontend dipisah, backend di tempat lain</td>
+                        </tr>
+                        <tr class="border-t border-border align-top">
+                            <td class="px-3 py-2 font-semibold text-foreground">Render, Railway, Fly.io</td>
+                            <td class="px-3 py-2">Backend Node</td>
+                            <td class="px-3 py-2">Gratis terbatas atau berbayar</td>
+                            <td class="px-3 py-2">Backend harus selalu hidup tanpa laptop</td>
+                        </tr>
+                        <tr class="border-t border-border align-top">
+                            <td class="px-3 py-2 font-semibold text-foreground">Supabase atau Neon</td>
+                            <td class="px-3 py-2">Database PostgreSQL</td>
+                            <td class="px-3 py-2">Gratis terbatas</td>
+                            <td class="px-3 py-2">Bersedia pindah dari SQL Server ke PostgreSQL</td>
+                        </tr>
+                        <tr class="border-t border-border align-top">
+                            <td class="px-3 py-2 font-semibold text-foreground">VPS</td>
+                            <td class="px-3 py-2">Semua komponen</td>
+                            <td class="px-3 py-2">Berbayar bulanan</td>
+                            <td class="px-3 py-2">Ingin kontrol penuh dan belajar server</td>
+                        </tr>
+                        <tr class="border-t border-border align-top">
+                            <td class="px-3 py-2 font-semibold text-foreground">Container Lab FATISDA</td>
+                            <td class="px-3 py-2">Semua komponen</td>
+                            <td class="px-3 py-2">Gratis untuk mahasiswa</td>
+                            <td class="px-3 py-2">Diajukan lewat <a href="https://fatisda.dev/" target="_blank" rel="noopener noreferrer" class="text-primary hover:underline">fatisda.dev</a></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <p class="mt-3 text-foreground-secondary leading-relaxed">
+                Bagian tersulit biasanya database. Supabase dan Neon memakai PostgreSQL, bukan
+                SQL Server, sehingga pindah ke sana berarti menyesuaikan driver, query, dan tipe
+                data. Lab FATISDA menyediakan container untuk mahasiswa, jadi VPS berbayar bisa
+                diganti container kampus. Pengajuan dilakukan lewat{' '}
+                <a href="https://fatisda.dev/" target="_blank" rel="noopener noreferrer" class="text-primary hover:underline">fatisda.dev</a>.
+            </p>
+
+            <div class="mt-4 p-3 rounded-lg bg-primary/5 dark:bg-primary/10 border-l-4 border-primary">
+                <span class="font-bold text-primary">Untuk kelas ini</span>
+                <p class="mt-1 text-sm md:text-base text-foreground-secondary leading-relaxed">
+                    ngrok sudah cukup untuk menunjukkan aplikasi bisa diakses dari luar. Langkah
+                    termurah berikutnya adalah Cloudflare Tunnel. Kalau butuh yang lebih permanen
+                    tanpa biaya bulanan, ajukan container Lab FATISDA lewat{' '}
+                    <a href="https://fatisda.dev/" target="_blank" rel="noopener noreferrer" class="text-primary hover:underline">fatisda.dev</a>.
+                    Vercel dan Render dipakai saat frontend dan backend dipisah dan berjalan
+                    permanen.
+                </p>
+            </div>
+        </Step>
+
+        <Step id="c1" diagram="/diagrams/10/penutup.webp">
+            <SectionDivider label="Penutup" />
+            <StepHeader title="Catatan Akhir" tone="primary" />
+
+            <p class="text-foreground-secondary leading-relaxed">
+                Tunnel membuat aplikasi bisa diakses dari luar tanpa server. Yang berubah hanya
+                alamat, bukan aplikasinya. Build produksi, environment, CORS, dan cookie tetap
+                harus benar, dan itu yang membedakan demo dari aplikasi yang siap dipakai.
+            </p>
+
+            <p class="mt-3 text-foreground-secondary leading-relaxed">
+                Untuk kebutuhan nyata, tunnel diganti hosting permanen seperti Vercel, Render, dan
+                database terkelola. Konsepnya sama: alamat publik, konfigurasi environment, dan
+                pembatasan akses.
+            </p>
+
+            <div class="mt-4 flex flex-wrap gap-3">
+                <a href="/meetings/09-audit-log"
+                   class="inline-flex items-center gap-2 text-sm font-medium text-primary hover:underline">
+                    Kembali ke Pertemuan 9: Audit Log
+                </a>
+            </div>
+        </Step>
+
+    </ScrollyLayout>
+
+    <ScrollyTOC sections={tocSections} />
+</ScrollySection>
+
+<script>
+    import { initScrolly } from '../../lib/scrollyClient';
+    initScrolly();
+</script>

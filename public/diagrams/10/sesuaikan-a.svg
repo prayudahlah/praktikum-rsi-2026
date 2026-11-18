@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 760" font-family="ui-sans-serif, system-ui, sans-serif">
+  <rect width="1200" height="760" fill="#ffffff"/>
+  <text x="60" y="70" font-size="30" font-weight="700" fill="#18181b">Empat penyesuaian</text>
+  <text x="60" y="102" font-size="15" fill="#71717a">Tanpa ini, halaman terbuka tetapi login gagal.</text>
+
+  <rect x="60" y="150" width="520" height="180" rx="14" fill="#eff6ff" stroke="#93c5fd" stroke-width="2"/>
+  <text x="88" y="188" font-size="17" font-weight="700" fill="#1d4ed8">Frontend</text>
+  <text x="88" y="218" font-size="13" fill="#475569">VITE_API_BASE_URL</text>
+  <text x="88" y="248" font-size="14" fill="#0f172a">arahkan ke URL backend</text>
+  <text x="88" y="286" font-size="12" fill="#64748b">restart Vite setelah mengubah .env</text>
+
+  <rect x="620" y="150" width="520" height="180" rx="14" fill="#ecfdf5" stroke="#6ee7b7" stroke-width="2"/>
+  <text x="648" y="188" font-size="17" font-weight="700" fill="#15803d">Backend</text>
+  <text x="648" y="218" font-size="13" fill="#475569">CORS_ORIGIN</text>
+  <text x="648" y="248" font-size="14" fill="#0f172a">arahkan ke URL frontend</text>
+  <text x="648" y="286" font-size="12" fill="#64748b">harus persis, bukan wildcard</text>
+
+  <rect x="60" y="370" width="520" height="180" rx="14" fill="#f5f3ff" stroke="#c4b5fd" stroke-width="2"/>
+  <text x="88" y="408" font-size="17" font-weight="700" fill="#6d28d9">Cookie</text>
+  <text x="88" y="438" font-size="13" fill="#475569">SameSite=None; Secure</text>
+  <text x="88" y="468" font-size="14" fill="#0f172a">karena dua domain berbeda</text>
+  <text x="88" y="506" font-size="12" fill="#64748b">backend harus production agar Secure aktif</text>
+
+  <rect x="620" y="370" width="520" height="180" rx="14" fill="#fffbeb" stroke="#fcd34d" stroke-width="2"/>
+  <text x="648" y="408" font-size="17" font-weight="700" fill="#92400e">Vite</text>
+  <text x="648" y="438" font-size="13" fill="#475569">allowedHosts</text>
+  <text x="648" y="468" font-size="14" fill="#0f172a">izinkan domain ngrok</text>
+  <text x="648" y="506" font-size="12" fill="#64748b">tanpa ini muncul blocked request</text>
+
+  <line x1="60" y1="620" x2="1140" y2="620" stroke="#e2e8f0" stroke-width="1"/>
+  <text x="60" y="656" font-size="15" font-weight="700" fill="#0f172a">Ubah keempatnya, lalu restart backend dan frontend.</text>
+  <text x="60" y="682" font-size="13" fill="#64748b">Perubahan .env tidak terbaca tanpa restart.</text>
+</svg>

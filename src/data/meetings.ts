@@ -84,6 +84,6 @@ export const meetings: Meeting[] = [
     description:
       "Testing manual API, environment configuration & .env, dan tunnel-based exposure.",
     order: 10,
-    published: false,
+    published: true,
   },
 ];
