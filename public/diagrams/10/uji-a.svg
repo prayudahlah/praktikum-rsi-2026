@@ -1,0 +1,49 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 760" font-family="ui-sans-serif, system-ui, sans-serif">
+  <rect width="1200" height="760" fill="#ffffff"/>
+  <text x="60" y="70" font-size="30" font-weight="700" fill="#18181b">Uji dari luar</text>
+  <text x="60" y="102" font-size="15" fill="#71717a">Lima pemeriksaan sebelum tunnel dimatikan.</text>
+
+  <rect x="60" y="220" width="190" height="130" rx="12" fill="#eff6ff" stroke="#93c5fd" stroke-width="2"/>
+  <text x="80" y="258" font-size="15" font-weight="700" fill="#0f172a">Buka URL</text>
+  <text x="80" y="286" font-size="12" fill="#475569">dari ponsel</text>
+  <text x="80" y="318" font-size="12" fill="#1d4ed8">halaman login</text>
+
+  <rect x="280" y="220" width="190" height="130" rx="12" fill="#ecfdf5" stroke="#6ee7b7" stroke-width="2"/>
+  <text x="300" y="258" font-size="15" font-weight="700" fill="#0f172a">Login admin</text>
+  <text x="300" y="286" font-size="12" fill="#475569">cookie tersimpan</text>
+  <text x="300" y="318" font-size="12" fill="#15803d">masuk dashboard</text>
+
+  <rect x="500" y="220" width="190" height="130" rx="12" fill="#f5f3ff" stroke="#c4b5fd" stroke-width="2"/>
+  <text x="520" y="258" font-size="15" font-weight="700" fill="#0f172a">Buka audit</text>
+  <text x="520" y="286" font-size="12" fill="#475569">data dari backend</text>
+  <text x="520" y="318" font-size="12" fill="#5b21b6">tabel tampil</text>
+
+  <rect x="720" y="220" width="190" height="130" rx="12" fill="#fffbeb" stroke="#fcd34d" stroke-width="2"/>
+  <text x="740" y="258" font-size="15" font-weight="700" fill="#0f172a">Tambah menu</text>
+  <text x="740" y="286" font-size="12" fill="#475569">sebagai owner</text>
+  <text x="740" y="318" font-size="12" fill="#92400e">audit bertambah</text>
+
+  <rect x="940" y="220" width="190" height="130" rx="12" fill="#fef2f2" stroke="#fca5a5" stroke-width="2"/>
+  <text x="960" y="258" font-size="15" font-weight="700" fill="#b91c1c">Hentikan</text>
+  <text x="960" y="286" font-size="12" fill="#475569">Ctrl+C di ngrok</text>
+  <text x="960" y="318" font-size="12" fill="#b91c1c">URL tidak berlaku</text>
+
+  <line x1="252" y1="285" x2="274" y2="285" stroke="#94a3b8" stroke-width="2"/>
+  <path d="M274 285 l-11 -6 v12 z" fill="#94a3b8"/>
+  <line x1="472" y1="285" x2="494" y2="285" stroke="#94a3b8" stroke-width="2"/>
+  <path d="M494 285 l-11 -6 v12 z" fill="#94a3b8"/>
+  <line x1="692" y1="285" x2="714" y2="285" stroke="#94a3b8" stroke-width="2"/>
+  <path d="M714 285 l-11 -6 v12 z" fill="#94a3b8"/>
+  <line x1="912" y1="285" x2="934" y2="285" stroke="#94a3b8" stroke-width="2"/>
+  <path d="M934 285 l-11 -6 v12 z" fill="#94a3b8"/>
+
+  <rect x="500" y="430" width="410" height="90" rx="12" fill="#fef2f2" stroke="#fca5a5" stroke-width="2"/>
+  <text x="522" y="464" font-size="14" font-weight="700" fill="#b91c1c">Owner atau customer membuka audit</text>
+  <text x="522" y="490" font-size="12" fill="#475569">harus ditolak 403, bukan menampilkan data</text>
+  <line x1="595" y1="350" x2="595" y2="424" stroke="#f87171" stroke-width="2" stroke-dasharray="5 4"/>
+  <path d="M595 424 l-6 -11 h12 z" fill="#f87171"/>
+
+  <line x1="60" y1="600" x2="1140" y2="600" stroke="#e2e8f0" stroke-width="1"/>
+  <text x="60" y="636" font-size="15" font-weight="700" fill="#0f172a">Uji dari ponsel, bukan hanya dari laptop yang sama.</text>
+  <text x="60" y="662" font-size="13" fill="#64748b">Kalau laptop bisa membuka tetapi ponsel tidak, masalahnya di tunnel atau firewall.</text>
+</svg>
