@@ -193,6 +193,69 @@ const tocSections: TOCSection[] = [
                 jalan.
             </p>
 
+            <h4 class="mt-5 mb-2 font-semibold text-foreground">Kenapa empat ini perlu diubah</h4>
+
+            <p class="mt-3 text-foreground-secondary leading-relaxed">
+                <strong>Alamat API di frontend.</strong> Vite membaca nilai environment saat server
+                dijalankan, lalu menanamkannya ke bundle. Karena itu mengubah{' '}
+                <code class={inlineCode}>.env</code> tidak cukup dengan reload browser, Vite harus
+                dijalankan ulang. Yang diisi adalah alamat publik backend, bukan{' '}
+                <code class={inlineCode}>localhost</code>, sebab yang memanggil nanti browser di
+                ponsel, bukan laptop.
+            </p>
+
+            <p class="mt-3 text-foreground-secondary leading-relaxed">
+                <strong>CORS.</strong> Browser menerapkan same-origin policy. Sebuah halaman hanya
+                boleh memanggil alamat lain kalau server tujuan menyatakan izinnya lewat header{' '}
+                <code class={inlineCode}>Access-Control-Allow-Origin</code>. Izin itu harus menyebut
+                origin persis, karena wildcard <code class={inlineCode}>*</code> tidak boleh dipakai
+                bersama cookie. Itulah sebabnya <code class={inlineCode}>CORS_ORIGIN</code> harus
+                sama persis dengan URL frontend, bukan tebakan yang mendekati.
+            </p>
+
+            <p class="mt-3 text-foreground-secondary leading-relaxed">
+                <strong>Cookie lintas domain.</strong> Cookie disimpan untuk satu situs.{' '}
+                <code class={inlineCode}>SameSite=Lax</code> hanya ikut terkirim pada navigasi
+                biasa, tidak pada request lintas situs seperti fetch dari domain frontend ke domain
+                backend. Karena itu nilainya diubah menjadi{' '}
+                <code class={inlineCode}>None</code>. Browser menolak{' '}
+                <code class={inlineCode}>SameSite=None</code> tanpa{' '}
+                <code class={inlineCode}>Secure</code>, jadi backend harus berjalan dengan{' '}
+                <code class={inlineCode}>NODE_ENV=production</code> agar atribut itu aktif, dan
+                semua request memakai HTTPS dari ngrok.
+            </p>
+
+            <p class="mt-3 text-foreground-secondary leading-relaxed">
+                <strong>Host di Vite.</strong> Vite memeriksa header{' '}
+                <code class={inlineCode}>Host</code> pada request yang masuk dan menolak nama yang
+                tidak dikenal. Ini perlindungan terhadap DNS rebinding, bukan sekadar daftar putih
+                biasa. Karena domain ngrok baru, Vite menganggapnya asing dan memblokirnya, sehingga
+                domain itu harus didaftarkan di{' '}
+                <code class={inlineCode}>allowedHosts</code>.
+            </p>
+
+            <div class="mt-4 p-3 rounded-lg bg-primary/5 dark:bg-primary/10 border-l-4 border-primary">
+                <span class="font-bold text-primary">Rangkaiannya</span>
+                <p class="mt-1 text-sm md:text-base text-foreground-secondary leading-relaxed">
+                    Browser di ponsel membuka URL frontend, lalu memanggil URL backend. Dua alamat
+                    berbeda membuat browser menuntut izin CORS dari backend, dan cookie tidak mau
+                    ikut karena dianggap situs lain. Setelah keduanya diizinkan, Vite masih harus
+                    mengenali domain frontend yang baru.
+                </p>
+            </div>
+
+            <figure class="mt-4 rounded-lg border border-border bg-muted/30 p-3">
+                <img
+                    src="/diagrams/10/cors-cookie.svg"
+                    alt="Alur dari browser ke frontend lalu ke backend, dengan tiga titik gagal: host ditolak Vite, response diblokir CORS, dan cookie tidak terkirim."
+                    class="w-full"
+                    loading="lazy"
+                />
+                <figcaption class="mt-2 text-xs text-foreground-secondary leading-relaxed">
+                    Tiga gerbang yang harus dilalui sebelum data tampil di ponsel.
+                </figcaption>
+            </figure>
+
             <h4 class="mt-5 mb-2 font-semibold text-foreground">1. Alamat API di frontend</h4>
             <p class="text-foreground-secondary leading-relaxed">
                 Ganti isi <code class={inlineCode}>frontend/.env</code> dengan alamat backend,
